@@ -1,7 +1,7 @@
 "use client";
 
-import { useState, useEffect } from "react";
-import { useSearchParams } from "next/navigation";
+import { useState, useEffect, Suspense } from "react";
+import { useSearchParams, useSearchParams } from "next/navigation";
 import { Search, Gift, TrendingUp, User, Phone } from "lucide-react";
 import { getActiveRewardCatalogs } from "@/app/actions/reward-catalog";
 import { getMemberByMemberId, getMemberByPhone } from "@/app/actions/member-portal";
@@ -9,7 +9,7 @@ import RewardCatalogGrid from "@/components/rewards/RewardCatalogGrid";
 
 type SearchType = "memberId" | "phone";
 
-export default function MemberRewardsPage() {
+function MemberRewardsContent() {
     const searchParams = useSearchParams();
     const [searchType, setSearchType] = useState<SearchType>("memberId");
     const [searchValue, setSearchValue] = useState("");
@@ -259,5 +259,20 @@ export default function MemberRewardsPage() {
                 />
             </div>
         </div>
+    );
+}
+
+export default function MemberRewardsPage() {
+    return (
+        <Suspense fallback={
+            <div className="min-h-screen flex items-center justify-center bg-gray-50 dark:bg-gray-900">
+                <div className="text-center">
+                    <div className="h-8 w-8 animate-spin rounded-full border-4 border-brand-600 border-t-transparent mx-auto mb-4"></div>
+                    <p className="text-gray-600 dark:text-gray-400">Memuat...</p>
+                </div>
+            </div>
+        }>
+            <MemberRewardsContent />
+        </Suspense>
     );
 }
