@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect, Suspense } from "react";
-import { useSearchParams, useSearchParams } from "next/navigation";
+import { useSearchParams } from "next/navigation";
 import { Search, Gift, TrendingUp, User, Phone } from "lucide-react";
 import { getActiveRewardCatalogs } from "@/app/actions/reward-catalog";
 import { getMemberByMemberId, getMemberByPhone } from "@/app/actions/member-portal";
