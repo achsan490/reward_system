@@ -1,0 +1,152 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+  output   = "../src/generated/prisma"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+model Admin {
+  id        String   @id @default(cuid())
+  email     String   @unique
+  password  String   // hashed password with bcrypt
+  name      String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@map("admins")
+}
+
+model Member {
+  id               String             @id @default(cuid())
+  memberId         String             @unique // ID member dari file upload
+  name             String
+  email            String?
+  phone            String?
+  totalPoints      Float              @default(0)
+  totalSpent       Float              @default(0)
+  transactionCount Int                @default(0)
+  createdAt        DateTime           @default(now())
+  updatedAt        DateTime           @updatedAt
+  transactions     Transaction[]
+  rewards          RewardWinner[]
+  redemptions      RewardRedemption[]
+
+  @@map("members")
+}
+
+model Transaction {
+  id              String   @id @default(cuid())
+  memberId        String
+  member          Member   @relation(fields: [memberId], references: [id], onDelete: Cascade)
+  transactionDate DateTime
+  amount          Float
+  pointsEarned    Float
+  pointsExpiryDate DateTime? // When points from this transaction will expire
+  pointsExpired   Boolean  @default(false) // Flag to mark if points have expired
+  description     String?
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+
+  @@index([memberId])
+  @@index([transactionDate])
+  @@index([pointsExpiryDate])
+  @@map("transactions")
+}
+
+model SystemSetting {
+  id        String   @id @default(cuid())
+  key       String   @unique
+  value     String
+  label     String
+  type      String   // 'number', 'string', 'boolean'
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@map("system_settings")
+}
+
+model RewardCampaign {
+  id           String         @id @default(cuid())
+  name         String
+  description  String?
+  criteria     String         // 'top_points', 'top_spending', 'top_transactions'
+  winnersCount Int            // Number of winners
+  startDate    DateTime
+  endDate      DateTime
+  status       String         // 'active', 'completed', 'cancelled'
+  createdAt    DateTime       @default(now())
+  updatedAt    DateTime       @updatedAt
+  rewards      RewardWinner[]
+
+  @@map("reward_campaigns")
+}
+
+model RewardWinner {
+  id                String         @id @default(cuid())
+  campaignId        String
+  campaign          RewardCampaign @relation(fields: [campaignId], references: [id], onDelete: Cascade)
+  memberId          String
+  member            Member         @relation(fields: [memberId], references: [id], onDelete: Cascade)
+  rank              Int
+  pointsAtWin       Float
+  spentAtWin        Float
+  transactionsAtWin Int
+  rewardClaimed     Boolean        @default(false)
+  claimedAt         DateTime?
+  notes             String?
+  createdAt         DateTime       @default(now())
+  updatedAt         DateTime       @updatedAt
+
+  @@index([campaignId])
+  @@index([memberId])
+  @@map("reward_winners")
+}
+
+model RewardCatalog {
+  id              String             @id @default(cuid())
+  name            String
+  description     String?            @db.Text
+  pointsRequired  Float
+  stock           Int?               // null = unlimited
+  imageUrl        String?
+  category        String?            // 'voucher', 'discount', 'product', 'other'
+  isActive        Boolean            @default(true)
+  validUntil      DateTime?          // Expiry date for catalog item
+  createdAt       DateTime           @default(now())
+  updatedAt       DateTime           @updatedAt
+  redemptions     RewardRedemption[]
+
+  @@map("reward_catalog")
+}
+
+model RewardRedemption {
+  id              String        @id @default(cuid())
+  memberId        String
+  member          Member        @relation(fields: [memberId], references: [id], onDelete: Cascade)
+  catalogId       String
+  catalog         RewardCatalog @relation(fields: [catalogId], references: [id], onDelete: Cascade)
+  pointsUsed      Float
+  status          String        // 'pending', 'approved', 'rejected', 'completed'
+  notes           String?       @db.Text // Notes from member
+  adminNotes      String?       @db.Text // Notes from admin
+  redeemedAt      DateTime      @default(now())
+  processedAt     DateTime?     // When approved/rejected
+  processedBy     String?       // Admin ID who processed
+  completedAt     DateTime?     // When reward was given
+  createdAt       DateTime      @default(now())
+  updatedAt       DateTime      @updatedAt
+
+  @@index([memberId])
+  @@index([catalogId])
+  @@index([status])
+  @@map("reward_redemptions")
+}

@@ -1,0 +1,136 @@
+"use client";
+
+import { useState, useEffect } from "react";
+import { Clock, CheckCircle, XCircle, Package } from "lucide-react";
+import { getAllRedemptions, getRedemptionStats } from "@/app/actions/reward-redemption";
+import RedemptionRequestsTable from "./RedemptionRequestsTable";
+
+export default function RedemptionRequestsContent() {
+    const [redemptions, setRedemptions] = useState<any[]>([]);
+    const [stats, setStats] = useState<any>(null);
+    const [loading, setLoading] = useState(true);
+    const [statusFilter, setStatusFilter] = useState<string>("all");
+
+    const loadData = async () => {
+        setLoading(true);
+        const [redemptionsResult, statsResult] = await Promise.all([
+            getAllRedemptions(statusFilter !== "all" ? { status: statusFilter } : undefined),
+            getRedemptionStats(),
+        ]);
+
+        if (redemptionsResult.success) {
+            setRedemptions(redemptionsResult.data || []);
+        }
+        if (statsResult.success) {
+            setStats(statsResult.data);
+        }
+        setLoading(false);
+    };
+
+    useEffect(() => {
+        loadData();
+    }, [statusFilter]);
+
+    return (
+        <div className="space-y-6">
+            {/* Stats Cards */}
+            {stats && (
+                <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
+                    <div className="rounded-lg border border-gray-200 bg-white p-4 dark:border-gray-800 dark:bg-gray-900">
+                        <div className="flex items-center gap-3">
+                            <div className="rounded-lg bg-orange-100 p-2 dark:bg-orange-900/40">
+                                <Clock className="h-5 w-5 text-orange-600 dark:text-orange-400" />
+                            </div>
+                            <div>
+                                <p className="text-sm text-gray-500 dark:text-gray-400">
+                                    Pending
+                                </p>
+                                <p className="text-2xl font-bold text-gray-900 dark:text-white">
+                                    {stats.pendingRedemptions}
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div className="rounded-lg border border-gray-200 bg-white p-4 dark:border-gray-800 dark:bg-gray-900">
+                        <div className="flex items-center gap-3">
+                            <div className="rounded-lg bg-green-100 p-2 dark:bg-green-900/40">
+                                <CheckCircle className="h-5 w-5 text-green-600 dark:text-green-400" />
+                            </div>
+                            <div>
+                                <p className="text-sm text-gray-500 dark:text-gray-400">
+                                    Approved
+                                </p>
+                                <p className="text-2xl font-bold text-gray-900 dark:text-white">
+                                    {stats.approvedRedemptions}
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div className="rounded-lg border border-gray-200 bg-white p-4 dark:border-gray-800 dark:bg-gray-900">
+                        <div className="flex items-center gap-3">
+                            <div className="rounded-lg bg-blue-100 p-2 dark:bg-blue-900/40">
+                                <Package className="h-5 w-5 text-blue-600 dark:text-blue-400" />
+                            </div>
+                            <div>
+                                <p className="text-sm text-gray-500 dark:text-gray-400">
+                                    Completed
+                                </p>
+                                <p className="text-2xl font-bold text-gray-900 dark:text-white">
+                                    {stats.completedRedemptions}
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div className="rounded-lg border border-gray-200 bg-white p-4 dark:border-gray-800 dark:bg-gray-900">
+                        <div className="flex items-center gap-3">
+                            <div className="rounded-lg bg-purple-100 p-2 dark:bg-purple-900/40">
+                                <XCircle className="h-5 w-5 text-purple-600 dark:text-purple-400" />
+                            </div>
+                            <div>
+                                <p className="text-sm text-gray-500 dark:text-gray-400">
+                                    Total Points Used
+                                </p>
+                                <p className="text-2xl font-bold text-gray-900 dark:text-white">
+                                    {stats.totalPointsRedeemed.toLocaleString("id-ID")}
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            )}
+
+            {/* Filter */}
+            <div className="flex items-center gap-2">
+                <label className="text-sm font-medium text-gray-700 dark:text-gray-300">
+                    Filter:
+                </label>
+                <select
+                    value={statusFilter}
+                    onChange={(e) => setStatusFilter(e.target.value)}
+                    className="rounded-lg border border-gray-300 bg-white px-3 py-1.5 text-sm text-gray-900 focus:border-brand-500 focus:outline-none focus:ring-2 focus:ring-brand-500/20 dark:border-gray-700 dark:bg-gray-800 dark:text-white"
+                >
+                    <option value="all">Semua Status</option>
+                    <option value="pending">Pending</option>
+                    <option value="approved">Approved</option>
+                    <option value="completed">Completed</option>
+                    <option value="rejected">Rejected</option>
+                </select>
+            </div>
+
+            {/* Table */}
+            {loading ? (
+                <div className="flex items-center justify-center py-12">
+                    <div className="h-8 w-8 animate-spin rounded-full border-4 border-gray-200 border-t-brand-500"></div>
+                </div>
+            ) : (
+                <RedemptionRequestsTable
+                    redemptions={redemptions}
+                    onRefresh={loadData}
+                />
+            )}
+        </div>
+    );
+}

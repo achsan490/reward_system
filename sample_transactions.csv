@@ -1,0 +1,21 @@
+member_id,member_name,transaction_date,amount
+M001,Ahmad Fauzi,2025-01-15,50000
+M002,Siti Nurhaliza,2025-01-16,125000
+M003,Budi Santoso,2025-01-17,75000
+M001,Ahmad Fauzi,2025-01-18,100000
+M004,Dewi Lestari,2025-01-19,250000
+M002,Siti Nurhaliza,2025-01-20,80000
+M005,Eko Prasetyo,2025-01-21,45000
+M003,Budi Santoso,2025-01-22,150000
+M001,Ahmad Fauzi,2025-01-23,60000
+M004,Dewi Lestari,2025-01-24,300000
+M006,Fitri Handayani,2025-01-25,90000
+M002,Siti Nurhaliza,2025-01-26,110000
+M005,Eko Prasetyo,2025-01-27,55000
+M007,Gunawan Wijaya,2025-01-28,180000
+M003,Budi Santoso,2025-01-29,95000
+M004,Dewi Lestari,2025-01-30,200000
+M006,Fitri Handayani,2025-02-01,120000
+M008,Hendra Kurniawan,2025-02-02,65000
+M001,Ahmad Fauzi,2025-02-03,85000
+M007,Gunawan Wijaya,2025-02-04,140000
