@@ -166,7 +166,17 @@ export async function generateMemberQRCode(
         }
 
         // Generate QR code URL (points to public member check page)
-        const baseUrl = process.env.NEXT_PUBLIC_APP_URL || "http://localhost:3000";
+        const appUrl = process.env.NEXT_PUBLIC_APP_URL;
+        const vercelUrl = process.env.VERCEL_URL ? `https://${process.env.VERCEL_URL}` : null;
+        const baseUrl = appUrl || vercelUrl;
+
+        if (!baseUrl) {
+            return {
+                success: false,
+                error: "Application URL not configured. Please set NEXT_PUBLIC_APP_URL environment variable in Vercel.",
+            };
+        }
+
         const qrData = `${baseUrl}/member/check?id=${member.memberId}`;
 
         // Generate QR code as data URL
