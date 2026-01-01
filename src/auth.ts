@@ -28,32 +28,21 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
                         },
                     });
 
-                    if (!admin) {
-                        console.log("Admin not found:", credentials.email);
-                        return null;
-                    }
+                    if (!admin) return null;
 
                     const passwordMatch = await bcrypt.compare(
                         credentials.password as string,
                         admin.password
                     );
 
-                    if (!passwordMatch) {
-                        console.log("Password mismatch for:", credentials.email);
-                        return null;
-                    }
+                    if (!passwordMatch) return null;
 
-                    console.log("Login successful for:", admin.email);
                     return {
                         id: admin.id,
                         email: admin.email,
                         name: admin.name,
                     };
                 } catch (error) {
-                    console.error("Database error during authorization:", error);
-                    // Critical for Vercel: Rethrow or return null based on how you want to handle it
-                    // Returning null is safer for production to not reveal DB info, 
-                    // but logging the error locally/on Vercel is key.
                     return null;
                 }
             },

@@ -1,8 +1,8 @@
 "use client";
 
-import { AlertCircle, TrendingDown, Users, DollarSign, MessageCircle } from "lucide-react";
-import Link from "next/link";
+import { AlertCircle, TrendingDown, Users, DollarSign } from "lucide-react";
 import { formatDateShortID, getDaysUntilExpiry } from "@/lib/expirationUtils";
+import WhatsAppButton from "../common/WhatsAppButton";
 
 interface ExpirationReportData {
     summary: {
@@ -158,32 +158,21 @@ export default function ExpirationReportContent({ data }: { data: ExpirationRepo
                                             </td>
                                             <td className="px-4 py-3">
                                                 <span
-                                                    className={`inline-flex rounded-full px-2 py-1 text-xs font-medium ${isUrgent
-                                                            ? "bg-red-100 text-red-700 dark:bg-red-900/40 dark:text-red-400"
-                                                            : "bg-yellow-100 text-yellow-700 dark:bg-yellow-900/40 dark:text-yellow-400"
+                                                    className={`inline-flex rounded-full px-2 py-1 text-xs font-medium${isUrgent
+                                                            ? " bg-red-100 text-red-700 dark:bg-red-900/40 dark:text-red-400"
+                                                            : " bg-yellow-100 text-yellow-700 dark:bg-yellow-900/40 dark:text-yellow-400"
                                                         }`}
                                                 >
                                                     {daysRemaining} hari
                                                 </span>
                                             </td>
                                             <td className="px-4 py-3">
-                                                {item.member.phone ? (
-                                                    <a
-                                                        href={`https://wa.me/${item.member.phone.replace(/^0/, '62')}?text=${encodeURIComponent(
-                                                            `Halo ${item.member.name}, Anda memiliki ${item.expiringPoints} poin yang akan kadaluarsa pada ${formatDateShortID(item.earliestExpiryDate)}. Segera tukarkan sebelum hangus!`
-                                                        )}`}
-                                                        target="_blank"
-                                                        rel="noopener noreferrer"
-                                                        className="inline-flex items-center gap-1 rounded-lg bg-green-600 px-3 py-1.5 text-xs font-medium text-white hover:bg-green-700"
-                                                    >
-                                                        <MessageCircle className="h-3 w-3" />
-                                                        WhatsApp
-                                                    </a>
-                                                ) : (
-                                                    <span className="text-xs text-gray-400">
-                                                        No WA
-                                                    </span>
-                                                )}
+                                                <WhatsAppButton
+                                                    phone={item.member.phone}
+                                                    message={`Halo ${item.member.name}, kami ingin mengingatkan bahwa ada ${item.expiringPoints} poin Anda yang akan kadaluarsa pada ${formatDateShortID(item.earliestExpiryDate)}. Yuk tukarkan sekarang!`}
+                                                    variant="compact"
+                                                    label="Kirim WA"
+                                                />
                                             </td>
                                         </tr>
                                     );

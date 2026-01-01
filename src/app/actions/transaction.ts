@@ -156,6 +156,7 @@ export async function getTopMembers(limit: number = 10) {
                 id: true,
                 memberId: true,
                 name: true,
+                phone: true,
                 totalPoints: true,
                 totalSpent: true,
                 transactionCount: true,

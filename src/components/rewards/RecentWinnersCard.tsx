@@ -1,11 +1,13 @@
 "use client";
 
 import { Trophy, TrendingUp, DollarSign, ShoppingCart } from "lucide-react";
+import WhatsAppButton from "../common/WhatsAppButton";
 
 interface Member {
     id: string;
     memberId: string;
     name: string;
+    phone: string | null;
     totalPoints: number;
     totalSpent: number;
     transactionCount: number;
@@ -105,6 +107,12 @@ export default function RecentWinnersCard({ members }: RecentWinnersCardProps) {
                                 </p>
                             </div>
                         </div>
+
+                        <WhatsAppButton
+                            phone={member.phone}
+                            message={`Halo ${member.name}, Selamat! Anda termasuk dalam Top ${index + 1} member dengan total ${member.totalPoints.toLocaleString("id-ID")} poin. Terima kasih atas loyalitas Anda!`}
+                            variant="compact"
+                        />
                     </div>
                 ))}
             </div>

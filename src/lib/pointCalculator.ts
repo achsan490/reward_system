@@ -23,8 +23,11 @@ export function parseCSV(csvContent: string): Array<{
     transactionDate: string;
     amount: number;
 }> {
-    const lines = csvContent.trim().split('\n');
-    const headers = lines[0].split(',').map(h => h.trim().toLowerCase());
+    // Handle both Windows and Unix line endings
+    const lines = csvContent.trim().split(/\r?\n/);
+    if (lines.length < 2) return [];
+
+    const headers = lines[0].split(',').map(h => h.trim().toLowerCase().replace(/["']/g, ''));
 
     // Detect column indices
     const memberIdIndex = headers.findIndex(h => h.includes('member_id') || h.includes('memberid'));
@@ -36,10 +39,30 @@ export function parseCSV(csvContent: string): Array<{
     const data = [];
 
     for (let i = 1; i < lines.length; i++) {
-        const values = lines[i].split(',').map(v => v.trim());
+        const values = lines[i].split(',').map(v => v.trim().replace(/["']/g, ''));
 
-        if (values.length < 4) {
-            continue; // Skip invalid rows
+        if (values.length < 2) continue; // Skip empty rows
+
+        // Robust numeric parsing: remove everything except digits and decimal point/comma
+        let amountStr = values[amountIndex] || '0';
+        // If it looks like IDR (e.g., 10.000,00), convert to JS float (10000.00)
+        // First, check if there's a comma that acts as a decimal
+        if (amountStr.includes(',') && amountStr.includes('.')) {
+            // Likely 1.234,56 style
+            amountStr = amountStr.replace(/\./g, '').replace(',', '.');
+        } else if (amountStr.includes(',') && !amountStr.includes('.')) {
+            // Could be 1234,56 or 1,234. Hard to tell, but usually comma is decimal if only one.
+            // But if it's 1.000 it might be thousand.
+            // We'll assume if it's followed by 3 digits it might be thousand, but that's risky.
+            // Simplified Indonesian common format in CSV often just uses digits or standard float.
+            if (amountStr.split(',')[1]?.length === 3) {
+                // Likely thousand separator
+                amountStr = amountStr.replace(',', '');
+            } else {
+                amountStr = amountStr.replace(',', '.');
+            }
+        } else {
+            amountStr = amountStr.replace(/[^0-9.-]/g, '');
         }
 
         const row: {
@@ -51,8 +74,8 @@ export function parseCSV(csvContent: string): Array<{
         } = {
             memberId: values[memberIdIndex] || '',
             memberName: values[memberNameIndex] || '',
-            transactionDate: values[dateIndex] || '',
-            amount: parseFloat(values[amountIndex] || '0')
+            transactionDate: parseRobustDate(values[dateIndex] || ''),
+            amount: parseFloat(amountStr) || 0
         };
 
         // Add phone if column exists and has value
@@ -60,13 +83,32 @@ export function parseCSV(csvContent: string): Array<{
             row.phone = values[phoneIndex];
         }
 
-        // Validate required data
-        if (row.memberId && row.memberName && row.transactionDate && !isNaN(row.amount)) {
+        // Validate required data (transactionDate can be flexible)
+        if (row.memberId && row.memberName && !isNaN(row.amount)) {
             data.push(row);
         }
     }
 
     return data;
+}
+
+/**
+ * Parse date string robustly, handling DD/MM/YYYY and YYYY-MM-DD
+ */
+function parseRobustDate(dateStr: string): string {
+    if (!dateStr) return '';
+
+    // If it's already YYYY-MM-DD, return as is
+    if (/^\d{4}-\d{2}-\d{2}/.test(dateStr)) return dateStr;
+
+    // Handle DD/MM/YYYY or DD-MM-YYYY
+    const dmyMatch = dateStr.match(/^(\d{1,2})[/-](\d{1,2})[/-](\d{4})/);
+    if (dmyMatch) {
+        const [, day, month, year] = dmyMatch;
+        return `${year}-${month.padStart(2, '0')}-${day.padStart(2, '0')}`;
+    }
+
+    return dateStr;
 }
 
 /**

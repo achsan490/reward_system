@@ -11,6 +11,7 @@ import {
     formatDateShortID,
 } from "@/lib/expirationUtils";
 import { createWhatsAppUrl } from "@/lib/phoneUtils";
+import WhatsAppButton from "../common/WhatsAppButton";
 
 interface Transaction {
     id: string;
@@ -239,31 +240,16 @@ export default function CustomerDetailModal({
                                             </p>
 
                                             {/* WhatsApp Button */}
-                                            {customer.phone && (() => {
-                                                const message = `Halo ${customer.name},\n\nKami ingin mengingatkan bahwa Anda memiliki ${expiringPoints.totalExpiringPoints} poin reward yang akan kadaluarsa pada ${formatDateShortID(expiringPoints.earliestExpiryDate)}.\n\nSegera tukarkan poin Anda sebelum hangus!\n\nTerima kasih.`;
-                                                const whatsappUrl = createWhatsAppUrl(customer.phone, message);
-
-                                                return whatsappUrl ? (
-                                                    <div className="mt-3 space-y-2">
-                                                        <a
-                                                            href={whatsappUrl}
-                                                            target="_blank"
-                                                            rel="noopener noreferrer"
-                                                            className="inline-flex items-center gap-2 rounded-lg bg-green-600 px-4 py-2 text-sm font-medium text-white hover:bg-green-700 dark:bg-green-500 dark:hover:bg-green-600"
-                                                        >
-                                                            <MessageCircle className="h-4 w-4" />
-                                                            Hubungi via WhatsApp
-                                                        </a>
-                                                        <p className="text-xs text-red-700 dark:text-red-400">
-                                                            Klik tombol di atas untuk mengirim pesan pengingat otomatis
-                                                        </p>
-                                                    </div>
-                                                ) : (
-                                                    <p className="mt-2 text-xs text-red-700 dark:text-red-400">
-                                                        ℹ️ Format nomor WhatsApp tidak valid. Silakan perbaiki nomor telepon.
-                                                    </p>
-                                                );
-                                            })()}
+                                            <div className="mt-3 space-y-2">
+                                                <WhatsAppButton
+                                                    phone={customer.phone}
+                                                    message={`Halo ${customer.name},\n\nKami ingin mengingatkan bahwa Anda memiliki ${expiringPoints.totalExpiringPoints} poin reward yang akan kadaluarsa pada ${formatDateShortID(expiringPoints.earliestExpiryDate)}.\n\nSegera tukarkan poin Anda sebelum hangus!\n\nTerima kasih.`}
+                                                    label="Hubungi via WhatsApp"
+                                                />
+                                                <p className="text-xs text-red-700 dark:text-red-400">
+                                                    Klik tombol di atas untuk mengirim pesan pengingat otomatis
+                                                </p>
+                                            </div>
 
                                             {!customer.phone && (
                                                 <p className="mt-2 text-xs text-red-700 dark:text-red-400">

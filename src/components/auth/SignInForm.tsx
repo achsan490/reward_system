@@ -29,10 +29,11 @@ export default function SignInForm() {
       });
 
       if (result?.error) {
-        if (result.error === "CredentialsSignin" || result.error.includes("credential")) {
+        console.error("SignIn result error:", result.error);
+        if (result.error === "CredentialsSignin" || result.error.toLowerCase().includes("credential")) {
           setError("Email atau password salah");
         } else {
-          setError("Terjadi kesalahan teknis. Periksa koneksi database atau log Vercel.");
+          setError("Ada masalah teknis. Coba lagi nanti");
         }
         setIsLoading(false);
         return;
@@ -42,8 +43,8 @@ export default function SignInForm() {
       router.push("/");
       router.refresh();
     } catch (error: any) {
-      console.error("Login error:", error);
-      setError("Terjadi kesalahan sistem saat mencoba login");
+      console.error("Login exception:", error);
+      setError("Terjadi kesalahan sistem: " + (error.message || "Unknown error"));
       setIsLoading(false);
     }
   };

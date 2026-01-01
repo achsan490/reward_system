@@ -8,8 +8,10 @@ import {
     Eye,
     Award,
     ShoppingCart,
+    MessageCircle,
 } from "lucide-react";
 import CustomerDetailModal from "./CustomerDetailModal";
+import WhatsAppButton from "../common/WhatsAppButton";
 
 interface Customer {
     id: string;
@@ -183,17 +185,25 @@ export default function CustomerTable({ customers }: CustomerTableProps) {
                                             {customer.transactionCount}x
                                         </td>
                                         <td className="whitespace-nowrap px-6 py-4 text-sm">
-                                            <button
-                                                onClick={() =>
-                                                    setSelectedCustomerId(
-                                                        customer.id
-                                                    )
-                                                }
-                                                className="inline-flex items-center gap-1 rounded-lg bg-brand-50 px-3 py-1.5 text-sm font-medium text-brand-700 hover:bg-brand-100 dark:bg-brand-900/20 dark:text-brand-400 dark:hover:bg-brand-900/40"
-                                            >
-                                                <Eye className="h-4 w-4" />
-                                                Detail
-                                            </button>
+                                            <div className="flex items-center gap-2">
+                                                <button
+                                                    onClick={() =>
+                                                        setSelectedCustomerId(
+                                                            customer.id
+                                                        )
+                                                    }
+                                                    className="inline-flex items-center gap-1 rounded-lg bg-brand-50 px-3 py-1.5 text-sm font-medium text-brand-700 hover:bg-brand-100 dark:bg-brand-900/20 dark:text-brand-400 dark:hover:bg-brand-900/40"
+                                                >
+                                                    <Eye className="h-4 w-4" />
+                                                    Detail
+                                                </button>
+                                                <WhatsAppButton
+                                                    phone={customer.phone}
+                                                    message={`Halo ${customer.name}, kami dari tim reward ingin menyapa Anda. Anda memiliki ${customer.totalPoints} poin saat ini.`}
+                                                    variant="compact"
+                                                    label="WA"
+                                                />
+                                            </div>
                                         </td>
                                     </tr>
                                 ))

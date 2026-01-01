@@ -3,7 +3,7 @@
 import { useState } from "react";
 import { CheckCircle, XCircle, Package, MessageCircle } from "lucide-react";
 import { approveRedemption, rejectRedemption, completeRedemption } from "@/app/actions/reward-redemption";
-import { createWhatsAppUrl } from "@/lib/phoneUtils";
+import WhatsAppButton from "../common/WhatsAppButton";
 
 interface RedemptionRequestsTableProps {
     redemptions: any[];
@@ -145,20 +145,13 @@ export default function RedemptionRequestsTable({
                                             <p className="text-sm text-gray-500 dark:text-gray-400">
                                                 {redemption.member.memberId}
                                             </p>
-                                            {redemption.member.phone && (
-                                                <a
-                                                    href={createWhatsAppUrl(
-                                                        redemption.member.phone,
-                                                        `Halo ${redemption.member.name}, penukaran reward Anda "${redemption.catalog.name}" telah disetujui. Silakan ambil hadiah Anda.`
-                                                    ) || "#"}
-                                                    target="_blank"
-                                                    rel="noopener noreferrer"
-                                                    className="mt-1 inline-flex items-center gap-1 text-xs text-green-600 hover:text-green-700 dark:text-green-400"
-                                                >
-                                                    <MessageCircle className="h-3 w-3" />
-                                                    WhatsApp
-                                                </a>
-                                            )}
+                                            <WhatsAppButton
+                                                phone={redemption.member.phone}
+                                                message={`Halo ${redemption.member.name}, penukaran reward Anda "${redemption.catalog.name}" telah disetujui. Silakan ambil hadiah Anda.`}
+                                                variant="compact"
+                                                label="WhatsApp"
+                                                className="mt-1"
+                                            />
                                         </div>
                                     </td>
                                     <td className="px-4 py-3">

@@ -1,9 +1,10 @@
 "use client";
 
-import { Trophy, CheckCircle, XCircle, Mail, Phone, User } from "lucide-react";
+import { Trophy, CheckCircle, XCircle, Mail, Phone, User, MessageCircle } from "lucide-react";
 import { useState } from "react";
 import { markRewardClaimed } from "@/app/actions/rewards";
 import { useRouter } from "next/navigation";
+import WhatsAppButton from "../common/WhatsAppButton";
 
 interface Winner {
     id: string;
@@ -239,8 +240,8 @@ export default function WinnersTable({ winners, criteria }: WinnersTableProps) {
                                         }
                                         disabled={processingId === winner.id}
                                         className={`rounded-lg px-4 py-2 text-sm font-medium transition-colors disabled:cursor-not-allowed disabled:opacity-50 ${winner.rewardClaimed
-                                                ? "bg-gray-100 text-gray-700 hover:bg-gray-200 dark:bg-gray-800 dark:text-gray-300 dark:hover:bg-gray-700"
-                                                : "bg-green-600 text-white hover:bg-green-700 dark:bg-green-500 dark:hover:bg-green-600"
+                                            ? "bg-gray-100 text-gray-700 hover:bg-gray-200 dark:bg-gray-800 dark:text-gray-300 dark:hover:bg-gray-700"
+                                            : "bg-green-600 text-white hover:bg-green-700 dark:bg-green-500 dark:hover:bg-green-600"
                                             }`}
                                     >
                                         {processingId === winner.id ? (
@@ -254,6 +255,12 @@ export default function WinnersTable({ winners, criteria }: WinnersTableProps) {
                                             "Tandai Sudah Diklaim"
                                         )}
                                     </button>
+
+                                    <WhatsAppButton
+                                        phone={winner.member.phone}
+                                        message={`Halo ${winner.member.name}, Selamat! Anda terpilih sebagai salah satu pemenang dalam campaign kami. Segera klaim reward Anda!`}
+                                        label="Hubungi WA"
+                                    />
                                 </div>
                             </div>
                         </div>
