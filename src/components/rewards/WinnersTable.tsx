@@ -258,7 +258,7 @@ export default function WinnersTable({ winners, criteria }: WinnersTableProps) {
 
                                     <WhatsAppButton
                                         phone={winner.member.phone}
-                                        message={`Halo ${winner.member.name}, Selamat! Anda terpilih sebagai salah satu pemenang dalam campaign kami. Segera klaim reward Anda!`}
+                                        message={`Kepada Yth. ${winner.member.name}, Selamat! Anda terpilih sebagai pemenang ke-${winner.rank} dengan ${winner.pointsAtWin} poin. Silakan klaim reward Anda.`}
                                         label="Hubungi WA"
                                     />
                                 </div>

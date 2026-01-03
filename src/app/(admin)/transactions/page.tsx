@@ -6,6 +6,7 @@ import {
 } from "@/app/actions/transaction";
 import TransactionUpload from "@/components/transactions/TransactionUpload";
 import TransactionTable from "@/components/transactions/TransactionTable";
+import StoreDatabaseSync from "@/components/transactions/StoreDatabaseSync";
 
 export const metadata: Metadata = {
     title: "Data Transaksi | Reward System",
@@ -39,6 +40,9 @@ export default async function TransactionsPage() {
                     Upload dan kelola data transaksi member untuk sistem point reward
                 </p>
             </div>
+
+            {/* Store Database Sync Section */}
+            <StoreDatabaseSync />
 
             {/* Upload Section */}
             <TransactionUpload />
