@@ -56,42 +56,64 @@ export async function fetchStoreTransactions(
             ? parseInt(expirationDaysSetting.value)
             : 90;
 
-        // 4. Transform data & calculate points
-        const transformedData = await Promise.all(
-            storeData.map(async (row) => {
-                const pointsEarned = calculatePoints(row.amount, conversionRate);
-
-                // Calculate expiry date if enabled
-                let pointsExpiryDate: Date | null = null;
-                if (expirationEnabled) {
-                    pointsExpiryDate = new Date(row.transactionDate);
-                    pointsExpiryDate.setDate(
-                        pointsExpiryDate.getDate() + expirationDays
-                    );
+        // 4. Batch check for duplicates (OPTIMIZED - single query instead of N queries)
+        const memberIds = [...new Set(storeData.map(row => row.memberId))];
+        const existingTransactions = await prisma.transaction.findMany({
+            where: {
+                member: {
+                    memberId: { in: memberIds }
+                },
+                transactionDate: {
+                    gte: new Date(startDate),
+                    lte: new Date(endDate)
                 }
+            },
+            select: {
+                member: {
+                    select: {
+                        memberId: true
+                    }
+                },
+                transactionDate: true,
+                amount: true
+            }
+        });
 
-                // Check if transaction already exists (duplicate detection)
-                const exists = await prisma.transaction.findFirst({
-                    where: {
-                        member: { memberId: row.memberId },
-                        transactionDate: row.transactionDate,
-                        amount: row.amount,
-                    },
-                });
-
-                return {
-                    memberId: row.memberId,
-                    memberName: row.memberName,
-                    transactionDate: row.transactionDate,
-                    amount: row.amount,
-                    phone: row.phone,
-                    pointsEarned,
-                    pointsExpiryDate,
-                    isDuplicate: !!exists,
-                    existingId: exists?.id,
-                };
-            })
+        // Create a Set for fast duplicate lookup
+        const existingSet = new Set(
+            existingTransactions.map(t =>
+                `${t.member.memberId}-${t.transactionDate.getTime()}-${t.amount}`
+            )
         );
+
+        // 5. Transform data & calculate points (NO database queries in loop)
+        const transformedData = storeData.map((row) => {
+            const pointsEarned = calculatePoints(row.amount, conversionRate);
+
+            // Calculate expiry date if enabled
+            let pointsExpiryDate: Date | null = null;
+            if (expirationEnabled) {
+                pointsExpiryDate = new Date(row.transactionDate);
+                pointsExpiryDate.setDate(
+                    pointsExpiryDate.getDate() + expirationDays
+                );
+            }
+
+            // Check if transaction exists using Set (O(1) lookup)
+            const key = `${row.memberId}-${new Date(row.transactionDate).getTime()}-${row.amount}`;
+            const isDuplicate = existingSet.has(key);
+
+            return {
+                memberId: row.memberId,
+                memberName: row.memberName,
+                transactionDate: row.transactionDate,
+                amount: row.amount,
+                phone: row.phone,
+                pointsEarned,
+                pointsExpiryDate,
+                isDuplicate,
+            };
+        });
 
         const newCount = transformedData.filter((t) => !t.isDuplicate).length;
         const duplicateCount = transformedData.filter((t) => t.isDuplicate).length;

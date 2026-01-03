@@ -34,8 +34,14 @@ export function generateDummyStoreTransactions(
     ];
 
     // Generate random transactions dalam rentang tanggal
-    const currentDate = new Date(startDate);
+    const start = new Date(startDate);
     const end = new Date(endDate);
+
+    // Reset time to start of day for accurate comparison
+    start.setHours(0, 0, 0, 0);
+    end.setHours(23, 59, 59, 999);
+
+    const currentDate = new Date(start);
 
     while (currentDate <= end) {
         // Random 2-5 transaksi per hari
@@ -64,7 +70,7 @@ export function generateDummyStoreTransactions(
             });
         }
 
-        // Next day
+        // Next day - create new Date to avoid mutation issues
         currentDate.setDate(currentDate.getDate() + 1);
     }
 
