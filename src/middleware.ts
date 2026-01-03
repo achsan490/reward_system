@@ -21,8 +21,17 @@ export async function middleware(request: NextRequest) {
     // Check if current path is public
     const isPublicPath = publicPaths.some((path) => pathname.startsWith(path));
 
+    // Debug logging for Vercel
+    console.log('[Middleware Debug]', {
+        pathname,
+        isPublicPath,
+        hasSession: !!session,
+        publicPaths
+    });
+
     // If user is not authenticated and trying to access protected route
     if (!session && !isPublicPath) {
+        console.log('[Middleware] Blocking access to:', pathname);
         const loginUrl = new URL("/login", request.url);
         return NextResponse.redirect(loginUrl);
     }
@@ -33,6 +42,7 @@ export async function middleware(request: NextRequest) {
         return NextResponse.redirect(dashboardUrl);
     }
 
+    console.log('[Middleware] Allowing access to:', pathname);
     return NextResponse.next();
 }
 
