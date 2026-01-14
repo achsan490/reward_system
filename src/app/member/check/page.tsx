@@ -1,5 +1,7 @@
 "use client";
 
+export const runtime = "nodejs";
+
 import { useState, useEffect, Suspense } from "react";
 import { useSearchParams } from "next/navigation";
 import { Search, AlertTriangle, TrendingUp, Calendar, Receipt, User, Phone, Gift } from "lucide-react";

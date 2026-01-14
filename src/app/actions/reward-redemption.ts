@@ -115,16 +115,32 @@ export async function redeemReward(
                 );
             }
 
-            // 4. Create redemption record
+            // 4. Determine status based on category (Auto-approve Vouchers & Discounts)
+            // Robust check: trim whitespace and lowercase
+            const isAutoApprove = ["voucher", "discount"].includes(catalog.category?.trim().toLowerCase() || "");
+
+            // 5. Create redemption record
             const redemption = await tx.rewardRedemption.create({
                 data: {
                     memberId,
                     catalogId,
                     pointsUsed: catalog.pointsRequired,
-                    status: "pending",
+                    status: isAutoApprove ? "approved" : "pending",
                     notes,
+                    processedAt: isAutoApprove ? new Date() : undefined,
+                    processedBy: isAutoApprove ? "SYSTEM" : undefined,
                 },
             });
+
+            // 6. If auto-approved, decrement stock immediately
+            if (isAutoApprove && catalog.stock !== null) {
+                await tx.rewardCatalog.update({
+                    where: { id: catalogId },
+                    data: {
+                        stock: { decrement: 1 },
+                    },
+                });
+            }
 
             return { redemption, catalog, member };
         });
@@ -419,6 +435,56 @@ export async function getRedemptionStats() {
         return {
             success: false,
             error: "Failed to fetch statistics",
+        };
+    }
+}
+
+/**
+ * Delete redemption record
+ */
+export async function deleteRedemption(redemptionId: string) {
+    try {
+        await prisma.rewardRedemption.delete({
+            where: { id: redemptionId },
+        });
+
+        revalidatePath("/redemption-requests");
+        revalidatePath("/member/my-redemptions");
+
+        return {
+            success: true,
+            message: "Redemption record deleted successfully",
+        };
+    } catch (error) {
+        console.error("Error deleting redemption:", error);
+        return {
+            success: false,
+            error: "Failed to delete redemption record",
+        };
+    }
+}
+
+/**
+ * Delete all completed redemption records
+ */
+export async function deleteAllCompletedRedemptions() {
+    try {
+        const result = await prisma.rewardRedemption.deleteMany({
+            where: { status: "completed" },
+        });
+
+        revalidatePath("/redemption-requests");
+        revalidatePath("/member/my-redemptions");
+
+        return {
+            success: true,
+            message: `Successfully deleted ${result.count} completed redemption records`,
+        };
+    } catch (error) {
+        console.error("Error deleting completed redemptions:", error);
+        return {
+            success: false,
+            error: "Failed to delete completed redemption records",
         };
     }
 }

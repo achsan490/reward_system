@@ -73,7 +73,7 @@ export default function TransactionTable({
                                         </div>
                                     </td>
                                     <td className="px-6 py-4 text-sm text-gray-600 dark:text-gray-400">
-                                        {format(new Date(txn.transactionDate), "dd MMM yyyy", {
+                                        {format(new Date(txn.transactionDate), "EEEE, dd MMM yyyy", {
                                             locale: id,
                                         })}
                                     </td>

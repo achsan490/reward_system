@@ -29,6 +29,8 @@ export default function DatePicker({
       static: true,
       monthSelectorType: "static",
       dateFormat: "Y-m-d",
+      altInput: true,
+      altFormat: "d/m/Y",
       defaultDate,
       onChange,
     });

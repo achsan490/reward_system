@@ -1,8 +1,8 @@
 "use client";
 
 import { useState } from "react";
-import { CheckCircle, XCircle, Package, MessageCircle } from "lucide-react";
-import { approveRedemption, rejectRedemption, completeRedemption } from "@/app/actions/reward-redemption";
+import { CheckCircle, XCircle, Package, MessageCircle, Trash } from "lucide-react";
+import { approveRedemption, rejectRedemption, completeRedemption, deleteRedemption } from "@/app/actions/reward-redemption";
 import WhatsAppButton from "../common/WhatsAppButton";
 
 interface RedemptionRequestsTableProps {
@@ -70,6 +70,22 @@ export default function RedemptionRequestsTable({
 
         setProcessing(redemption.id);
         const result = await completeRedemption(redemption.id);
+        setProcessing(null);
+
+        if (result.success) {
+            onRefresh();
+        } else {
+            alert(result.error);
+        }
+    };
+
+    const handleDelete = async (redemption: any) => {
+        if (!confirm(`Apakah Anda yakin ingin menghapus data penukaran ini? Data yang dihapus tidak dapat dikembalikan.`)) {
+            return;
+        }
+
+        setProcessing(redemption.id);
+        const result = await deleteRedemption(redemption.id);
         setProcessing(null);
 
         if (result.success) {
@@ -215,6 +231,18 @@ export default function RedemptionRequestsTable({
                                                 >
                                                     <Package className="h-4 w-4" />
                                                     Complete
+                                                </button>
+                                            )}
+                                            {/* Delete button available for all finished statuses */}
+                                            {["completed", "rejected", "approved"].includes(redemption.status) && (
+                                                <button
+                                                    onClick={() => handleDelete(redemption)}
+                                                    disabled={processing === redemption.id}
+                                                    className="inline-flex items-center gap-1 rounded px-2 py-1 text-xs font-medium text-gray-500 hover:bg-gray-100 disabled:opacity-50 dark:text-gray-400 dark:hover:bg-gray-800"
+                                                    title="Delete"
+                                                >
+                                                    <Trash className="h-4 w-4" />
+                                                    Delete
                                                 </button>
                                             )}
                                         </div>

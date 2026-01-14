@@ -29,6 +29,21 @@ export async function fetchStoreTransactions(
     endDate: string
 ) {
     try {
+        // Validation
+        if (!startDate || !endDate) {
+            return { success: false, error: "Invalid date range" };
+        }
+
+        const start = new Date(startDate);
+        const end = new Date(endDate);
+
+        // Ensure end of day for endDate to include all transactions of that day
+        end.setHours(23, 59, 59, 999);
+
+        if (isNaN(start.getTime()) || isNaN(end.getTime())) {
+            return { success: false, error: "Invalid date format" };
+        }
+
         // 1. Query database toko (dummy data untuk sekarang)
         const storeData = await queryStoreDatabaseDummy(startDate, endDate);
 
@@ -37,6 +52,28 @@ export async function fetchStoreTransactions(
                 success: true,
                 data: [],
                 message: "Tidak ada transaksi dalam rentang tanggal ini",
+                stats: { total: 0, new: 0, duplicate: 0 }
+            };
+        }
+
+        // EXPLICIT FILTERING - Safety net for date range
+        // Filter data to strictly match the requested range (ignoring time)
+        // Using strict string comparison on ISO dates (YYYY-MM-DD) to ensure absolute accuracy
+        const filteredStoreData = storeData.filter(txn => {
+            const txnDate = new Date(txn.transactionDate);
+            const txnStr = txnDate.toISOString().split('T')[0]; // "2026-02-02"
+
+            // Allow string comparison
+            return txnStr >= startDate && txnStr <= endDate;
+        });
+
+        if (filteredStoreData.length === 0) {
+            console.log(`Debug: Filtered all data. Input: ${startDate}-${endDate}. Raw count: ${storeData.length}`);
+            return {
+                success: true,
+                data: [],
+                message: "No transactions found in this date range (after filter)",
+                stats: { total: 0, new: 0, duplicate: 0 }
             };
         }
 
@@ -57,15 +94,15 @@ export async function fetchStoreTransactions(
             : 90;
 
         // 4. Batch check for duplicates (OPTIMIZED - single query instead of N queries)
-        const memberIds = [...new Set(storeData.map(row => row.memberId))];
+        const memberIds = [...new Set(filteredStoreData.map(row => row.memberId))];
         const existingTransactions = await prisma.transaction.findMany({
             where: {
                 member: {
                     memberId: { in: memberIds }
                 },
                 transactionDate: {
-                    gte: new Date(startDate),
-                    lte: new Date(endDate)
+                    gte: start,
+                    lte: end
                 }
             },
             select: {
@@ -87,7 +124,7 @@ export async function fetchStoreTransactions(
         );
 
         // 5. Transform data & calculate points (NO database queries in loop)
-        const transformedData = storeData.map((row) => {
+        const transformedData = filteredStoreData.map((row) => {
             const pointsEarned = calculatePoints(row.amount, conversionRate);
 
             // Calculate expiry date if enabled

@@ -1,8 +1,8 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { Clock, CheckCircle, XCircle, Package } from "lucide-react";
-import { getAllRedemptions, getRedemptionStats } from "@/app/actions/reward-redemption";
+import { Clock, CheckCircle, XCircle, Package, Trash2 } from "lucide-react";
+import { getAllRedemptions, getRedemptionStats, deleteAllCompletedRedemptions } from "@/app/actions/reward-redemption";
 import RedemptionRequestsTable from "./RedemptionRequestsTable";
 
 export default function RedemptionRequestsContent() {
@@ -118,6 +118,29 @@ export default function RedemptionRequestsContent() {
                     <option value="completed">Completed</option>
                     <option value="rejected">Rejected</option>
                 </select>
+
+                <div className="flex-1"></div>
+
+                {/* Bulk Delete Button */}
+                <button
+                    onClick={async () => {
+                        if (confirm("Apakah Anda yakin ingin menghapus SEMUA data penukaran yang sudah selesai (Completed)? Tindakan ini tidak dapat dibatalkan.")) {
+                            setLoading(true);
+                            const result = await deleteAllCompletedRedemptions();
+                            if (result.success) {
+                                alert(result.message);
+                                loadData();
+                            } else {
+                                alert(result.error);
+                                setLoading(false);
+                            }
+                        }
+                    }}
+                    className="inline-flex items-center gap-2 rounded-lg bg-red-50 px-4 py-2 text-sm font-medium text-red-700 hover:bg-red-100 dark:bg-red-900/20 dark:text-red-400 dark:hover:bg-red-900/30"
+                >
+                    <Trash2 className="h-4 w-4" />
+                    Hapus Semua Completed
+                </button>
             </div>
 
             {/* Table */}

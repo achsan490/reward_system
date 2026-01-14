@@ -17,8 +17,13 @@ export async function getMemberByMemberId(memberId: string) {
             };
         }
 
-        const member = await prisma.member.findUnique({
-            where: { memberId: memberId.trim() },
+        const member = await prisma.member.findFirst({
+            where: {
+                OR: [
+                    { memberId: memberId.trim() },
+                    { memberId: memberId.trim().toUpperCase() }
+                ]
+            },
             select: {
                 id: true,
                 memberId: true,
@@ -66,7 +71,7 @@ export async function getMemberByMemberId(memberId: string) {
         console.error("Error getting member by ID:", error);
         return {
             success: false,
-            error: "Failed to fetch member information",
+            error: `Error: ${error instanceof Error ? error.message : String(error)}`,
         };
     }
 }
@@ -154,7 +159,7 @@ export async function generateMemberQRCode(
     try {
         // Verify member exists
         const member = await prisma.member.findUnique({
-            where: { memberId },
+            where: { memberId: memberId.trim() },
             select: { id: true, memberId: true },
         });
 
@@ -238,8 +243,13 @@ export async function bulkGenerateQRCodes(memberIds: string[]) {
  */
 export async function getMemberCardData(memberId: string) {
     try {
-        const member = await prisma.member.findUnique({
-            where: { memberId },
+        const member = await prisma.member.findFirst({
+            where: {
+                OR: [
+                    { memberId: memberId.trim() },
+                    { memberId: memberId.trim().toUpperCase() }
+                ]
+            },
             select: {
                 id: true,
                 memberId: true,
