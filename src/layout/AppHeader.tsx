@@ -6,9 +6,74 @@ import { useSidebar } from "@/context/SidebarContext";
 import Logo from "@/components/common/Logo";
 import Link from "next/link";
 import React, { useState, useEffect, useRef } from "react";
+import { useRouter } from "next/navigation";
+import { searchCustomers } from "@/app/actions/customers";
+import { NAVIGATION_DATA, NavigationItem } from "@/utils/navigation-data";
+import { Search, Loader2 } from "lucide-react";
 
 const AppHeader: React.FC = () => {
+  const router = useRouter();
   const [isApplicationMenuOpen, setApplicationMenuOpen] = useState(false);
+  const [query, setQuery] = useState("");
+  const [isSearching, setIsSearching] = useState(false);
+  const [navResults, setNavResults] = useState<NavigationItem[]>([]);
+  const [memberResults, setMemberResults] = useState<any[]>([]);
+  const [showDropdown, setShowDropdown] = useState(false);
+  const dropdownRef = useRef<HTMLDivElement>(null);
+
+  // Close dropdown when clicking outside
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node) && !inputRef.current?.contains(event.target as Node)) {
+        setShowDropdown(false);
+      }
+    };
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, []);
+
+  // Search Logic
+  useEffect(() => {
+    const search = async () => {
+      if (!query.trim()) {
+        setNavResults([]);
+        setMemberResults([]);
+        setShowDropdown(false);
+        return;
+      }
+
+      setIsSearching(true);
+      setShowDropdown(true);
+
+      // Local Search (Navigation)
+      const navs = NAVIGATION_DATA.filter(item =>
+        item.name.toLowerCase().includes(query.toLowerCase()) ||
+        item.section.toLowerCase().includes(query.toLowerCase())
+      );
+      setNavResults(navs);
+
+      // Server Search (Members)
+      try {
+        const result = await searchCustomers(query);
+        if (result.success && Array.isArray(result.data)) {
+          setMemberResults(result.data.slice(0, 5)); // Limit to 5 members
+        }
+      } catch (error) {
+        console.error("Search failed", error);
+      } finally {
+        setIsSearching(false);
+      }
+    };
+
+    const timeoutId = setTimeout(search, 300);
+    return () => clearTimeout(timeoutId);
+  }, [query]);
+
+  const handleResultClick = (path: string) => {
+    router.push(path);
+    setShowDropdown(false);
+    setQuery("");
+  };
 
   const { isMobileOpen, toggleSidebar, toggleMobileSidebar } = useSidebar();
 
@@ -108,38 +173,82 @@ const AppHeader: React.FC = () => {
           </button>
 
           <div className="hidden lg:block">
-            <form>
+            <div className="relative">
               <div className="relative">
                 <span className="absolute -translate-y-1/2 left-4 top-1/2 pointer-events-none">
-                  <svg
-                    className="fill-gray-500 dark:fill-gray-400"
-                    width="20"
-                    height="20"
-                    viewBox="0 0 20 20"
-                    fill="none"
-                    xmlns="http://www.w3.org/2000/svg"
-                  >
-                    <path
-                      fillRule="evenodd"
-                      clipRule="evenodd"
-                      d="M3.04175 9.37363C3.04175 5.87693 5.87711 3.04199 9.37508 3.04199C12.8731 3.04199 15.7084 5.87693 15.7084 9.37363C15.7084 12.8703 12.8731 15.7053 9.37508 15.7053C5.87711 15.7053 3.04175 12.8703 3.04175 9.37363ZM9.37508 1.54199C5.04902 1.54199 1.54175 5.04817 1.54175 9.37363C1.54175 13.6991 5.04902 17.2053 9.37508 17.2053C11.2674 17.2053 13.003 16.5344 14.357 15.4176L17.177 18.238C17.4699 18.5309 17.9448 18.5309 18.2377 18.238C18.5306 17.9451 18.5306 17.4703 18.2377 17.1774L15.418 14.3573C16.5365 13.0033 17.2084 11.2669 17.2084 9.37363C17.2084 5.04817 13.7011 1.54199 9.37508 1.54199Z"
-                      fill=""
-                    />
-                  </svg>
+                  <Search className="h-5 w-5 text-gray-500 dark:text-gray-400" />
                 </span>
                 <input
                   ref={inputRef}
                   type="text"
-                  placeholder="Search or type command..."
+                  value={query}
+                  onChange={(e) => setQuery(e.target.value)}
+                  onFocus={() => query.trim() && setShowDropdown(true)}
+                  placeholder="Seach (Ctrl+K)..."
                   className="dark:bg-dark-900 h-11 w-full rounded-lg border border-gray-200 bg-transparent py-2.5 pl-12 pr-14 text-sm text-gray-800 shadow-theme-xs placeholder:text-gray-400 focus:border-brand-300 focus:outline-hidden focus:ring-3 focus:ring-brand-500/10 dark:border-gray-800 dark:bg-gray-900 dark:bg-white/[0.03] dark:text-white/90 dark:placeholder:text-white/30 dark:focus:border-brand-800 xl:w-[430px]"
                 />
 
-                <button className="absolute right-2.5 top-1/2 inline-flex -translate-y-1/2 items-center gap-0.5 rounded-lg border border-gray-200 bg-gray-50 px-[7px] py-[4.5px] text-xs -tracking-[0.2px] text-gray-500 dark:border-gray-800 dark:bg-white/[0.03] dark:text-gray-400">
-                  <span> ⌘ </span>
-                  <span> K </span>
+                <button
+                  type="button" // Prevent form submission
+                  className="absolute right-2.5 top-1/2 inline-flex -translate-y-1/2 items-center gap-0.5 rounded-lg border border-gray-200 bg-gray-50 px-[7px] py-[4.5px] text-xs -tracking-[0.2px] text-gray-500 dark:border-gray-800 dark:bg-white/[0.03] dark:text-gray-400"
+                >
+                  {isSearching ? <Loader2 className="h-4 w-4 animate-spin" /> : <><span>⌘</span><span>K</span></>}
                 </button>
               </div>
-            </form>
+
+              {/* Search Results Dropdown */}
+              {showDropdown && (
+                <div
+                  ref={dropdownRef}
+                  className="absolute top-full left-0 mt-2 w-full rounded-xl border border-gray-200 bg-white shadow-xl dark:border-gray-800 dark:bg-gray-900 z-50 max-h-[400px] overflow-y-auto"
+                >
+                  {/* Navigation Results */}
+                  {navResults.length > 0 && (
+                    <div className="p-2">
+                      <h3 className="px-3 py-2 text-xs font-semibold text-gray-500 uppercase dark:text-gray-400">Pages</h3>
+                      {navResults.map((item, index) => (
+                        <button
+                          key={`nav-${index}`}
+                          onClick={() => handleResultClick(item.path)}
+                          className="flex w-full items-center justify-between rounded-lg px-3 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:text-gray-200 dark:hover:bg-gray-800"
+                        >
+                          <span>{item.name}</span>
+                          <span className="text-xs text-gray-400">{item.section}</span>
+                        </button>
+                      ))}
+                    </div>
+                  )}
+
+                  {/* Member Results */}
+                  {memberResults.length > 0 && (
+                    <div className="p-2 border-t border-gray-100 dark:border-gray-800">
+                      <h3 className="px-3 py-2 text-xs font-semibold text-gray-500 uppercase dark:text-gray-400">Members</h3>
+                      {memberResults.map((member) => (
+                        <button
+                          key={member.id}
+                          onClick={() => handleResultClick(`/customers`)} // Ideally go to detail page if exists, falling back to list
+                          className="flex w-full flex-col items-start rounded-lg px-3 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:text-gray-200 dark:hover:bg-gray-800"
+                        >
+                          <span className="font-medium">{member.name}</span>
+                          <div className="flex items-center gap-2 text-xs text-gray-500">
+                            <span>{member.memberId}</span>
+                            <span>•</span>
+                            <span>{member.email}</span>
+                          </div>
+                        </button>
+                      ))}
+                    </div>
+                  )}
+
+                  {/* No Results */}
+                  {!isSearching && navResults.length === 0 && memberResults.length === 0 && (
+                    <div className="p-4 text-center text-sm text-gray-500">
+                      No results found for "{query}"
+                    </div>
+                  )}
+                </div>
+              )}
+            </div>
           </div>
         </div>
         <div

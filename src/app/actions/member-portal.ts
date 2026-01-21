@@ -304,6 +304,7 @@ export async function getAllMembersForGeneration() {
                 memberId: true,
                 name: true,
                 totalPoints: true,
+                phone: true,
             },
         });
 

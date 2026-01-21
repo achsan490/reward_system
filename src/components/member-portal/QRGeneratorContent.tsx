@@ -3,6 +3,7 @@
 import { useState, useEffect } from "react";
 import { Download, QrCode } from "lucide-react";
 import { getAllMembersForGeneration, generateMemberQRCode } from "@/app/actions/member-portal";
+import MemberCombobox from "./MemberCombobox";
 
 export default function QRGeneratorContent() {
     const [members, setMembers] = useState<any[]>([]);
@@ -52,18 +53,12 @@ export default function QRGeneratorContent() {
                         <label className="mb-2 block text-sm font-medium text-gray-700 dark:text-gray-300">
                             Pilih Member
                         </label>
-                        <select
+                        <MemberCombobox
+                            members={members}
                             value={selectedMemberId}
-                            onChange={(e) => setSelectedMemberId(e.target.value)}
-                            className="w-full rounded-lg border border-gray-300 bg-white px-4 py-2.5 text-gray-900 focus:border-brand-500 focus:outline-none focus:ring-2 focus:ring-brand-500/20 dark:border-gray-700 dark:bg-gray-800 dark:text-white"
-                        >
-                            <option value="">-- Pilih Member --</option>
-                            {members.map((member) => (
-                                <option key={member.id} value={member.memberId}>
-                                    {member.name} ({member.memberId})
-                                </option>
-                            ))}
-                        </select>
+                            onChange={setSelectedMemberId}
+                            placeholder="Cari member (Nama, ID, atau WA)..."
+                        />
                     </div>
 
                     <button
