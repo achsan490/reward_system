@@ -132,8 +132,13 @@ export default function StoreDatabaseSync() {
                             defaultDate={startDate ? new Date(startDate) : undefined}
                             onChange={(dates: Date[]) => {
                                 if (dates && dates.length > 0) {
-                                    // Set as ISO string YYYY-MM-DD
-                                    const dateStr = dates[0].toISOString().split('T')[0];
+                                    // Fix: Use local date formatting to prevent timezone issues
+                                    // toISOString() converts to UTC which can shift dates -1 day
+                                    const date = dates[0];
+                                    const year = date.getFullYear();
+                                    const month = String(date.getMonth() + 1).padStart(2, '0');
+                                    const day = String(date.getDate()).padStart(2, '0');
+                                    const dateStr = `${year}-${month}-${day}`;
                                     setStartDate(dateStr);
                                 } else {
                                     setStartDate("");
@@ -151,7 +156,12 @@ export default function StoreDatabaseSync() {
                             defaultDate={endDate ? new Date(endDate) : undefined}
                             onChange={(dates: Date[]) => {
                                 if (dates && dates.length > 0) {
-                                    const dateStr = dates[0].toISOString().split('T')[0];
+                                    // Fix: Use local date formatting to prevent timezone issues
+                                    const date = dates[0];
+                                    const year = date.getFullYear();
+                                    const month = String(date.getMonth() + 1).padStart(2, '0');
+                                    const day = String(date.getDate()).padStart(2, '0');
+                                    const dateStr = `${year}-${month}-${day}`;
                                     setEndDate(dateStr);
                                 } else {
                                     setEndDate("");
@@ -214,9 +224,9 @@ export default function StoreDatabaseSync() {
                                 {stats.new}
                             </p>
                         </div>
-                        <div className="rounded-lg bg-yellow-50 p-3 dark:bg-yellow-900/20">
-                            <p className="text-xs text-yellow-600 dark:text-yellow-400">Duplicates</p>
-                            <p className="text-2xl font-bold text-yellow-700 dark:text-yellow-300">
+                        <div className="rounded-lg bg-blue-50 p-3 dark:bg-blue-900/20">
+                            <p className="text-xs text-blue-600 dark:text-blue-400">Already Synced</p>
+                            <p className="text-2xl font-bold text-blue-700 dark:text-blue-300">
                                 {stats.duplicate}
                             </p>
                         </div>
@@ -275,9 +285,9 @@ export default function StoreDatabaseSync() {
                                     >
                                         <td className="px-4 py-3">
                                             {txn.isDuplicate ? (
-                                                <span className="inline-flex items-center gap-1 rounded-full bg-yellow-100 px-2 py-1 text-xs font-medium text-yellow-700 dark:bg-yellow-900/20 dark:text-yellow-400">
-                                                    <XCircle className="h-3 w-3" />
-                                                    Duplicate
+                                                <span className="inline-flex items-center gap-1 rounded-full bg-blue-100 px-2 py-1 text-xs font-medium text-blue-700 dark:bg-blue-900/20 dark:text-blue-400">
+                                                    <CheckCircle2 className="h-3 w-3" />
+                                                    Already Synced
                                                 </span>
                                             ) : (
                                                 <span className="inline-flex items-center gap-1 rounded-full bg-green-100 px-2 py-1 text-xs font-medium text-green-700 dark:bg-green-900/20 dark:text-green-400">

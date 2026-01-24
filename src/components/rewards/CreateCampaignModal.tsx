@@ -252,13 +252,14 @@ export default function CreateCampaignModal({
                                 required
                                 min="1"
                                 max="100"
-                                value={formData.winnersCount}
-                                onChange={(e) =>
+                                value={formData.winnersCount || ""}
+                                onChange={(e) => {
+                                    const value = e.target.value;
                                     setFormData({
                                         ...formData,
-                                        winnersCount: parseInt(e.target.value),
-                                    })
-                                }
+                                        winnersCount: value === "" ? 0 : parseInt(value),
+                                    });
+                                }}
                                 className="w-full rounded-lg border border-gray-300 bg-white px-4 py-2.5 text-gray-900 focus:border-brand-500 focus:ring-2 focus:ring-brand-500/20 dark:border-gray-700 dark:bg-gray-800 dark:text-white dark:focus:border-brand-400"
                             />
                         </div>

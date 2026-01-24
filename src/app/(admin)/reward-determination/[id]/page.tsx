@@ -2,6 +2,7 @@ import { Metadata } from "next";
 import { getRewardCampaignById } from "@/app/actions/rewards";
 import WinnersTable from "@/components/rewards/WinnersTable";
 import ExportWinnersButton from "@/components/rewards/ExportWinnersButton";
+import NotifyWinnersButton from "@/components/rewards/NotifyWinnersButton";
 import Link from "next/link";
 import { ArrowLeft, Calendar, Award, Users, CheckCircle } from "lucide-react";
 import { notFound } from "next/navigation";
@@ -20,7 +21,9 @@ interface CampaignDetailPageProps {
 export default async function CampaignDetailPage({
     params,
 }: CampaignDetailPageProps) {
-    const result = await getRewardCampaignById(params.id);
+    // Next.js 15+ requires awaiting params
+    const { id } = await params;
+    const result = await getRewardCampaignById(id);
 
     if (!result.success || !result.data) {
         notFound();
@@ -100,10 +103,17 @@ export default async function CampaignDetailPage({
                         )}
                     </div>
 
-                    <ExportWinnersButton
-                        campaignId={campaign.id}
-                        campaignName={campaign.name}
-                    />
+                    <div className="flex flex-col gap-3 sm:flex-row">
+                        <NotifyWinnersButton
+                            campaignId={campaign.id}
+                            campaignName={campaign.name}
+                            winnersCount={campaign.rewards.length}
+                        />
+                        <ExportWinnersButton
+                            campaignId={campaign.id}
+                            campaignName={campaign.name}
+                        />
+                    </div>
                 </div>
             </div>
 

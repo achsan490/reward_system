@@ -2,6 +2,7 @@
 
 import { prisma } from "@/lib/prisma";
 import { revalidatePath } from "next/cache";
+import { generateWinnersWhatsAppUrls } from "@/lib/whatsapp";
 
 /**
  * Get all reward campaigns with optional filtering
@@ -132,6 +133,14 @@ export async function calculateWinners(campaignId: string) {
             return { success: false, error: "Campaign not found" };
         }
 
+        console.log("🎯 Calculating winners for campaign:", {
+            name: campaign.name,
+            criteria: campaign.criteria,
+            winnersCount: campaign.winnersCount,
+            startDate: campaign.startDate,
+            endDate: campaign.endDate,
+        });
+
         // Delete existing winners for this campaign
         await prisma.rewardWinner.deleteMany({
             where: { campaignId: campaignId },
@@ -147,7 +156,25 @@ export async function calculateWinners(campaignId: string) {
             orderByField = "transactionCount";
         }
 
-        // Get top members
+        // Build multi-level sorting to handle ties fairly
+        // Primary: Campaign criteria (points/spending/transactions)
+        // Tiebreaker 1: Transaction count (more active members get priority)
+        // Tiebreaker 2: Member registration date (first-come-first-served)
+        const orderByClause: any[] = [
+            { [orderByField]: "desc" }, // Primary criteria
+        ];
+
+        // Add tiebreaker only if primary criteria is not transactionCount
+        if (orderByField !== "transactionCount") {
+            orderByClause.push({ transactionCount: "desc" });
+        }
+
+        // Always add createdAt as final tiebreaker
+        orderByClause.push({ createdAt: "asc" });
+
+        console.log("🔍 Querying members with transactions in date range...");
+
+        // Get top members with multi-level sorting
         const topMembers = await prisma.member.findMany({
             where: {
                 transactions: {
@@ -159,17 +186,36 @@ export async function calculateWinners(campaignId: string) {
                     },
                 },
             },
-            orderBy: {
-                [orderByField]: "desc",
-            },
+            orderBy: orderByClause,
             take: campaign.winnersCount,
             select: {
                 id: true,
+                memberId: true,
+                name: true,
                 totalPoints: true,
                 totalSpent: true,
                 transactionCount: true,
             },
         });
+
+        console.log(`✅ Found ${topMembers.length} eligible members:`,
+            topMembers.map(m => ({
+                memberId: m.memberId,
+                name: m.name,
+                points: m.totalPoints,
+                spent: m.totalSpent,
+                transactions: m.transactionCount
+            }))
+        );
+
+        if (topMembers.length === 0) {
+            console.warn("⚠️ No members found with transactions in the specified date range!");
+            return {
+                success: true,
+                data: [],
+                message: `No members with transactions found between ${campaign.startDate.toISOString()} and ${campaign.endDate.toISOString()}`,
+            };
+        }
 
         // Create winner records
         const winners = await Promise.all(
@@ -187,6 +233,8 @@ export async function calculateWinners(campaignId: string) {
             )
         );
 
+        console.log(`🏆 Successfully created ${winners.length} winners!`);
+
         revalidatePath("/reward-determination");
         return {
             success: true,
@@ -194,7 +242,7 @@ export async function calculateWinners(campaignId: string) {
             message: `Successfully calculated ${winners.length} winners`,
         };
     } catch (error) {
-        console.error("Error calculating winners:", error);
+        console.error("❌ Error calculating winners:", error);
         return {
             success: false,
             error: error instanceof Error ? error.message : "Unknown error",
@@ -457,3 +505,80 @@ export async function getCampaignInsights() {
         };
     }
 }
+
+/**
+ * Generate WhatsApp notification URLs for all winners
+ */
+export async function notifyWinners(campaignId: string) {
+    try {
+        const campaign = await prisma.rewardCampaign.findUnique({
+            where: { id: campaignId },
+            include: {
+                rewards: {
+                    include: {
+                        member: {
+                            select: {
+                                name: true,
+                                phone: true,
+                            },
+                        },
+                    },
+                    orderBy: {
+                        rank: "asc",
+                    },
+                },
+            },
+        });
+
+        if (!campaign) {
+            return { success: false, error: "Campaign not found" };
+        }
+
+        console.log(`📱 Generating WhatsApp notifications for campaign: ${campaign.name}`);
+
+        // Generate WhatsApp URLs for all winners
+        const winnersData = campaign.rewards.map((winner) => ({
+            phone: winner.member.phone,
+            memberName: winner.member.name,
+            rank: winner.rank,
+            campaignName: campaign.name,
+            pointsAtWin: winner.pointsAtWin,
+            criteria: campaign.criteria,
+        }));
+
+        const results = generateWinnersWhatsAppUrls(winnersData);
+
+        const successCount = results.filter((r) => r.success).length;
+        const failCount = results.filter((r) => !r.success).length;
+
+        // Log results
+        results.forEach((result) => {
+            if (result.success) {
+                console.log(`✅ WhatsApp URL generated for ${result.memberName}`);
+            } else {
+                console.warn(`⚠️ Failed to generate URL for ${result.memberName}: ${result.error}`);
+            }
+        });
+
+        const message = `Generated ${successCount} WhatsApp notification(s)${failCount > 0 ? `, ${failCount} failed` : ""}`;
+        console.log(`📊 Notification summary: ${message}`);
+
+        return {
+            success: true,
+            message,
+            stats: {
+                total: campaign.rewards.length,
+                success: successCount,
+                failed: failCount,
+            },
+            results,
+        };
+    } catch (error) {
+        console.error("❌ Error generating WhatsApp notifications:", error);
+        return {
+            success: false,
+            error: error instanceof Error ? error.message : "Unknown error",
+        };
+    }
+}
+

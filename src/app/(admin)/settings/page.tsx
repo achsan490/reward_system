@@ -4,6 +4,7 @@ import { getPointExpirationSettings } from "@/app/actions/point-expiration";
 import PointConversionSetting from "@/components/settings/PointConversionSetting";
 import PointExpirationSetting from "@/components/settings/PointExpirationSetting";
 import ResetDataSection from "@/components/settings/ResetDataSection";
+import ClearAllDataSection from "@/components/settings/ClearAllDataSection";
 
 export const metadata: Metadata = {
     title: "Pengaturan Sistem | Reward System",
@@ -41,6 +42,10 @@ export default async function SettingsPage() {
 
             <div className="border-t border-gray-200 pt-6 dark:border-gray-800">
                 <ResetDataSection />
+            </div>
+
+            <div className="border-t border-gray-200 pt-6 dark:border-gray-800">
+                <ClearAllDataSection />
             </div>
         </div>
     );

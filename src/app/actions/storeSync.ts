@@ -2,7 +2,7 @@
 
 import { prisma } from "@/lib/prisma";
 import { calculatePoints } from "@/lib/pointCalculator";
-import { queryStoreDatabaseDummy } from "@/lib/storeDatabaseDummy";
+import { queryStoreDatabase } from "@/lib/storeDatabase";
 import { revalidatePath } from "next/cache";
 
 /**
@@ -44,8 +44,8 @@ export async function fetchStoreTransactions(
             return { success: false, error: "Invalid date format" };
         }
 
-        // 1. Query database toko (dummy data untuk sekarang)
-        const storeData = await queryStoreDatabaseDummy(startDate, endDate);
+        // 1. Query database toko (POS system)
+        const storeData = await queryStoreDatabase(startDate, endDate);
 
         if (storeData.length === 0) {
             return {

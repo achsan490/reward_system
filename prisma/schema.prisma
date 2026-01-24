@@ -12,6 +12,7 @@ generator client {
 datasource db {
   provider = "postgresql"
   url      = env("DATABASE_URL")
+  directUrl = env("DIRECT_URL")
 }
 
 model Admin {
@@ -149,4 +150,25 @@ model RewardRedemption {
   @@index([catalogId])
   @@index([status])
   @@map("reward_redemptions")
+}
+
+// Represents the "External" Store Database Table
+// This table simulates the POS database that we will eventually connect to
+model StoreTransactionSource {
+  id              String   @id @default(cuid())
+  transactionId   String   @unique
+  memberId        String
+  memberName      String
+  transactionDate DateTime
+  amount          Float
+  phone           String?
+  items           String?  // JSON string of items bought
+  cashierName     String?
+
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+
+  @@map("store_transaction_source")
+  @@index([transactionDate])
+  @@index([memberId])
 }
