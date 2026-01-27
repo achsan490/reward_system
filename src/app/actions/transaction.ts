@@ -272,24 +272,41 @@ export async function recalculateAllPoints() {
         });
 
         // Recalculate points for each transaction
+        const updates: any[] = [];
+        const memberPoints = new Map<string, number>();
+
         for (const txn of transactions) {
             const newPoints = calculatePoints(txn.amount, conversionRate);
 
-            // Update transaction
-            await prisma.transaction.update({
-                where: { id: txn.id },
-                data: {
-                    pointsEarned: newPoints,
-                },
-            });
+            // Add transaction update to batch
+            updates.push(
+                prisma.transaction.update({
+                    where: { id: txn.id },
+                    data: { pointsEarned: newPoints },
+                })
+            );
 
-            // Update member total
-            await prisma.member.update({
-                where: { id: txn.memberId },
-                data: {
-                    totalPoints: { increment: newPoints },
-                },
-            });
+            // Accumulate member points
+            const currentPoints = memberPoints.get(txn.memberId) || 0;
+            memberPoints.set(txn.memberId, currentPoints + newPoints);
+        }
+
+        // Add member updates to batch
+        for (const [memberId, points] of memberPoints.entries()) {
+            updates.push(
+                prisma.member.update({
+                    where: { id: memberId },
+                    data: { totalPoints: points },
+                })
+            );
+        }
+
+        // Execute all updates in a single transaction
+        // Split into chunks if there are too many updates to avoid database limits
+        const chunkSize = 50;
+        for (let i = 0; i < updates.length; i += chunkSize) {
+            const chunk = updates.slice(i, i + chunkSize);
+            await prisma.$transaction(chunk);
         }
 
         revalidatePath("/transactions");
