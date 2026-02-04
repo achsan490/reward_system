@@ -179,67 +179,134 @@ export async function fetchStoreTransactions(
  */
 export async function saveStoreTransactions(transactions: any[]) {
     try {
-        let savedCount = 0;
-        let skippedCount = 0;
         const errors: string[] = [];
+        let skippedCount = 0;
 
-        for (const txn of transactions) {
-            try {
-                // Skip duplicates
-                if (txn.isDuplicate) {
-                    skippedCount++;
-                    continue;
-                }
-
-                // Find or create member
-                let member = await prisma.member.findUnique({
-                    where: { memberId: txn.memberId },
-                });
-
-                if (!member) {
-                    member = await prisma.member.create({
-                        data: {
-                            memberId: txn.memberId,
-                            name: txn.memberName,
-                            phone: txn.phone,
-                        },
-                    });
-                } else if (txn.phone && !member.phone) {
-                    // Update phone if member exists but doesn't have phone
-                    await prisma.member.update({
-                        where: { id: member.id },
-                        data: { phone: txn.phone },
-                    });
-                }
-
-                // Create transaction
-                await prisma.transaction.create({
-                    data: {
-                        memberId: member.id,
-                        transactionDate: new Date(txn.transactionDate),
-                        amount: txn.amount,
-                        pointsEarned: txn.pointsEarned,
-                        pointsExpiryDate: txn.pointsExpiryDate,
-                    },
-                });
-
-                // Update member totals
-                await prisma.member.update({
-                    where: { id: member.id },
-                    data: {
-                        totalPoints: { increment: txn.pointsEarned },
-                        totalSpent: { increment: txn.amount },
-                        transactionCount: { increment: 1 },
-                    },
-                });
-
-                savedCount++;
-            } catch (error) {
-                console.error("Error saving transaction:", error);
-                errors.push(
-                    `Failed to save transaction for ${txn.memberName}: ${error instanceof Error ? error.message : "Unknown error"}`
-                );
+        // Filter valid & non-duplicate transactions
+        const validTransactions = transactions.filter(t => {
+            if (t.isDuplicate) {
+                skippedCount++;
+                return false;
             }
+            return true;
+        });
+
+        if (validTransactions.length === 0) {
+            return {
+                success: true,
+                message: skippedCount > 0
+                    ? `Tidak ada transaksi baru. ${skippedCount} duplikat dilewati.`
+                    : "Tidak ada transaksi untuk disimpan.",
+                stats: { saved: 0, skipped: skippedCount, errors: 0 },
+            };
+        }
+
+        // 1. Resolve Members (Bulk)
+        const distinctMemberIds = Array.from(new Set(validTransactions.map(t => t.memberId)));
+
+        // Find existing members
+        const existingMembers = await prisma.member.findMany({
+            where: { memberId: { in: distinctMemberIds } },
+            select: { id: true, memberId: true, phone: true }
+        });
+
+        const existingMemberMap = new Map(existingMembers.map(m => [m.memberId, m]));
+        const newMemberIds = distinctMemberIds.filter(id => !existingMemberMap.has(id));
+
+        // Create new members in bulk
+        if (newMemberIds.length > 0) {
+            const newMembersData = newMemberIds.map(id => {
+                const txn = validTransactions.find(t => t.memberId === id);
+                return {
+                    memberId: id,
+                    name: txn?.memberName || "Unknown",
+                    phone: txn?.phone || null,
+                };
+            });
+
+            await prisma.member.createMany({
+                data: newMembersData,
+                skipDuplicates: true,
+            });
+        }
+
+        // Re-fetch all members to get their internal IDs (CUIDs)
+        const allMembers = await prisma.member.findMany({
+            where: { memberId: { in: distinctMemberIds } },
+            select: { id: true, memberId: true, phone: true }
+        });
+
+        const memberMap = new Map(allMembers.map(m => [m.memberId, m]));
+
+        // 2. Prepare Transactions & Updates
+        const transactionData = [];
+        const memberStatsUpdates = new Map<string, {
+            points: number;
+            spent: number;
+            count: number;
+            phone?: string;
+        }>();
+
+        for (const txn of validTransactions) {
+            const member = memberMap.get(txn.memberId);
+            if (!member) {
+                errors.push(`Failed to resolve member ${txn.memberName}`);
+                continue;
+            }
+
+            // Ensure dates are Date objects
+            const transactionDate = new Date(txn.transactionDate);
+            const pointsExpiryDate = txn.pointsExpiryDate ? new Date(txn.pointsExpiryDate) : null;
+
+            transactionData.push({
+                memberId: member.id,
+                transactionDate: transactionDate,
+                amount: txn.amount,
+                pointsEarned: txn.pointsEarned,
+                pointsExpiryDate: pointsExpiryDate,
+            });
+
+            // Aggregate Member Updates
+            const stats = memberStatsUpdates.get(member.id) || { points: 0, spent: 0, count: 0 };
+            stats.points += txn.pointsEarned;
+            stats.spent += txn.amount;
+            stats.count += 1;
+
+            // Check if we need to update phone
+            if (txn.phone && !member.phone && !stats.phone) {
+                stats.phone = txn.phone;
+            }
+
+            memberStatsUpdates.set(member.id, stats);
+        }
+
+        // 3. Execute Bulk Insert Transactions
+        if (transactionData.length > 0) {
+            await prisma.transaction.createMany({
+                data: transactionData,
+            });
+        }
+
+        // 4. Execute Member Updates (Batched Parallel)
+        const mbUpdates = Array.from(memberStatsUpdates.entries()).map(([id, stats]) => {
+            const data: any = {
+                totalPoints: { increment: stats.points },
+                totalSpent: { increment: stats.spent },
+                transactionCount: { increment: stats.count },
+            };
+            if (stats.phone) {
+                data.phone = stats.phone;
+            }
+            return prisma.member.update({
+                where: { id },
+                data: data,
+            });
+        });
+
+        // Process updates in chunks
+        const chunkSize = 50;
+        for (let i = 0; i < mbUpdates.length; i += chunkSize) {
+            await Promise.all(mbUpdates.slice(i, i + chunkSize));
         }
 
         revalidatePath("/transactions");
@@ -248,9 +315,9 @@ export async function saveStoreTransactions(transactions: any[]) {
 
         return {
             success: true,
-            message: `Berhasil menyimpan ${savedCount} transaksi${skippedCount > 0 ? `, ${skippedCount} duplikat dilewati` : ""}`,
+            message: `Berhasil menyimpan ${transactionData.length} transaksi${skippedCount > 0 ? `, ${skippedCount} duplikat dilewati` : ""}`,
             stats: {
-                saved: savedCount,
+                saved: transactionData.length,
                 skipped: skippedCount,
                 errors: errors.length,
             },
