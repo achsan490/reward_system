@@ -27,7 +27,7 @@ export default function RewardCatalogGrid({
         setRedeeming(false);
 
         if (result.success) {
-            alert("✅ Penukaran berhasil! Menunggu approval admin.");
+            alert("✅ Penukaran berhasil! Silakan cek menu 'Riwayat Penukaran Saya' untuk melihat tiket dan status.");
             setSelectedReward(null);
             setNotes("");
             onRedeemSuccess();

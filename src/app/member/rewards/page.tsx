@@ -2,7 +2,7 @@
 
 import { useState, useEffect, Suspense } from "react";
 import { useSearchParams } from "next/navigation";
-import { Search, Gift, TrendingUp, User, Phone } from "lucide-react";
+import { Search, Gift, TrendingUp, User, Phone, Filter } from "lucide-react";
 import { getActiveRewardCatalogs } from "@/app/actions/reward-catalog";
 import { getMemberByMemberId, getMemberByPhone } from "@/app/actions/member-portal";
 import RewardCatalogGrid from "@/components/rewards/RewardCatalogGrid";
@@ -88,175 +88,129 @@ function MemberRewardsContent() {
         : catalogs;
 
     return (
-        <div className="min-h-screen bg-gradient-to-br from-brand-50 to-brand-100 dark:from-gray-900 dark:to-gray-800 py-12 px-4">
-            <div className="mx-auto max-w-6xl">
+        <div className="min-h-screen bg-gray-50 dark:bg-gray-900 py-12 px-4 sm:px-6">
+            <div className="mx-auto max-w-7xl">
                 {/* Header */}
-                <div className="mb-8 text-center">
-                    <h1 className="text-3xl font-bold text-gray-900 dark:text-white">
-                        🎁 Reward Catalog
+                <div className="mb-12 text-center relative z-10">
+                    <span className="inline-block py-1 px-3 rounded-full bg-brand-100 text-brand-600 text-xs font-semibold tracking-wide uppercase mb-3 dark:bg-brand-900/30 dark:text-brand-400">
+                        Rewards Center
+                    </span>
+                    <h1 className="text-4xl font-extrabold text-gray-900 dark:text-white mb-4 tracking-tight">
+                        Katalog Reward Eksklusif
                     </h1>
-                    <p className="mt-2 text-gray-600 dark:text-gray-400">
-                        Tukarkan poin Anda dengan hadiah menarik
+                    <p className="max-w-xl mx-auto text-lg text-gray-600 dark:text-gray-400">
+                        Tukarkan poin yang Anda kumpulkan dengan berbagai hadiah menarik pilihan kami.
                     </p>
+
                     {member && (
-                        <a
-                            href={`/member/check?${searchType === "memberId" ? `id=${member.memberId}` : `phone=${searchValue}`}`}
-                            className="mt-3 inline-flex items-center gap-1 text-sm text-brand-600 hover:text-brand-700 dark:text-brand-400 dark:hover:text-brand-300"
-                        >
-                            ← Kembali ke Cek Poin
-                        </a>
+                        <div className="mt-6 flex flex-wrap justify-center gap-3">
+                            <a
+                                href={`/member/check?${searchType === "memberId" ? `id=${member.memberId}` : `phone=${searchValue}`}`}
+                                className="inline-flex items-center px-4 py-2 rounded-full border border-gray-300 bg-white text-sm font-medium text-gray-700 hover:bg-gray-50 transition-colors dark:bg-gray-800 dark:border-gray-700 dark:text-gray-300"
+                            >
+                                ← Cek Poin
+                            </a>
+                            <a
+                                href={`/member/my-redemptions?${searchType === "memberId" ? `id=${member.memberId}` : `phone=${searchValue}`}`}
+                                className="inline-flex items-center px-4 py-2 rounded-full border border-gray-300 bg-white text-sm font-medium text-gray-700 hover:bg-gray-50 transition-colors dark:bg-gray-800 dark:border-gray-700 dark:text-gray-300"
+                            >
+                                📋 Lihat Tiket Saya
+                            </a>
+                        </div>
                     )}
                 </div>
 
-                {/* Search Form */}
-                <div className="mb-8 rounded-lg border border-gray-200 bg-white p-6 shadow-sm dark:border-gray-800 dark:bg-gray-900">
-                    {/* Search Type Tabs */}
-                    <div className="mb-4 flex gap-2 rounded-lg bg-gray-50 p-1 dark:bg-gray-800">
-                        <button
-                            type="button"
-                            onClick={() => {
-                                setSearchType("memberId");
-                                setSearchValue("");
-                                setError("");
-                                setMember(null);
-                            }}
-                            className={`flex-1 flex items-center justify-center gap-2 rounded-md px-4 py-2.5 text-sm font-medium transition-all ${searchType === "memberId"
-                                ? "bg-brand-600 text-white shadow-sm dark:bg-brand-500"
-                                : "text-gray-600 hover:bg-gray-100 dark:text-gray-400 dark:hover:bg-gray-700"
-                                }`}
-                        >
-                            <User className="h-4 w-4" />
-                            Member ID
-                        </button>
-                        <button
-                            type="button"
-                            onClick={() => {
-                                setSearchType("phone");
-                                setSearchValue("");
-                                setError("");
-                                setMember(null);
-                            }}
-                            className={`flex-1 flex items-center justify-center gap-2 rounded-md px-4 py-2.5 text-sm font-medium transition-all ${searchType === "phone"
-                                ? "bg-brand-600 text-white shadow-sm dark:bg-brand-500"
-                                : "text-gray-600 hover:bg-gray-100 dark:text-gray-400 dark:hover:bg-gray-700"
-                                }`}
-                        >
-                            <Phone className="h-4 w-4" />
-                            Nomor WhatsApp
-                        </button>
+                {/* Main Content Area */}
+                <div className="grid grid-cols-1 lg:grid-cols-4 gap-8">
+
+                    {/* Left Sidebar: Search & Member Info */}
+                    <div className="lg:col-span-1 space-y-6">
+                        {/* Search Card */}
+                        <div className="bg-white rounded-2xl shadow-lg p-6 dark:bg-gray-800 dark:border dark:border-gray-700">
+                            <h3 className="text-sm uppercase tracking-wider text-gray-500 font-bold mb-4 dark:text-gray-400">Ganti Member</h3>
+
+                            <div className="flex rounded-lg bg-gray-100 p-1 mb-4 dark:bg-gray-700">
+                                <button type="button" onClick={() => { setSearchType("memberId"); setSearchValue(""); setError(""); setMember(null); }} className={`flex-1 py-1.5 text-xs font-medium rounded-md transition-all ${searchType === "memberId" ? "bg-white shadow text-gray-900" : "text-gray-500 hover:text-gray-700 dark:text-gray-400"}`}>ID</button>
+                                <button type="button" onClick={() => { setSearchType("phone"); setSearchValue(""); setError(""); setMember(null); }} className={`flex-1 py-1.5 text-xs font-medium rounded-md transition-all ${searchType === "phone" ? "bg-white shadow text-gray-900" : "text-gray-500 hover:text-gray-700 dark:text-gray-400"}`}>WA</button>
+                            </div>
+
+                            <div className="space-y-3">
+                                <input
+                                    type="text"
+                                    value={searchValue}
+                                    onChange={(e) => setSearchValue(e.target.value)}
+                                    onKeyPress={(e) => e.key === "Enter" && handleSearch()}
+                                    placeholder={searchType === "memberId" ? "ID Member" : "No. WhatsApp"}
+                                    className="block w-full rounded-lg border-gray-300 bg-gray-50 text-sm focus:border-brand-500 focus:ring-brand-500 dark:bg-gray-900 dark:border-gray-600 dark:text-white"
+                                    disabled={loading}
+                                />
+                                <button
+                                    onClick={handleSearch}
+                                    disabled={loading}
+                                    className="w-full flex justify-center items-center py-2.5 px-4 border border-transparent rounded-lg shadow-sm text-sm font-medium text-white bg-brand-600 hover:bg-brand-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-brand-500 disabled:opacity-50"
+                                >
+                                    {loading ? "..." : "Cari Member"}
+                                </button>
+                            </div>
+                            {error && <p className="mt-2 text-xs text-red-600 dark:text-red-400">{error}</p>}
+                        </div>
+
+                        {/* Member Info Card */}
+                        {member && (
+                            <div className="bg-gradient-to-br from-brand-600 to-brand-700 rounded-2xl shadow-xl p-6 text-white sticky top-4">
+                                <div className="flex items-center gap-3 mb-6">
+                                    <div className="p-2 bg-white/20 rounded-full backdrop-blur-sm">
+                                        <TrendingUp className="h-5 w-5 text-white" />
+                                    </div>
+                                    <div>
+                                        <p className="text-brand-100 text-xs font-medium uppercase">Poin Anda</p>
+                                        <p className="text-3xl font-bold">{member.totalPoints.toLocaleString("id-ID")}</p>
+                                    </div>
+                                </div>
+                                <div className="border-t border-white/20 pt-4">
+                                    <p className="font-semibold text-lg truncate">{member.name}</p>
+                                    <p className="text-brand-100 text-sm font-mono">{member.memberId}</p>
+                                </div>
+
+                                {filter === "all" ? (
+                                    <button
+                                        onClick={() => setFilter("affordable")}
+                                        className="mt-6 w-full py-2 bg-white/10 hover:bg-white/20 border border-white/30 rounded-lg text-sm font-medium transition-colors flex items-center justify-center gap-2"
+                                    >
+                                        <Filter className="h-4 w-4" />
+                                        Filter: Bisa Ditukar
+                                    </button>
+                                ) : (
+                                    <button
+                                        onClick={() => setFilter("all")}
+                                        className="mt-6 w-full py-2 bg-white text-brand-700 rounded-lg text-sm font-bold shadow-sm hover:bg-gray-50 transition-colors"
+                                    >
+                                        Tampilkan Semua
+                                    </button>
+                                )}
+                            </div>
+                        )}
                     </div>
 
-                    <div className="flex gap-2">
-                        <input
-                            type="text"
-                            value={searchValue}
-                            onChange={(e) => setSearchValue(e.target.value)}
-                            onKeyPress={(e) => e.key === "Enter" && handleSearch()}
-                            placeholder={
-                                searchType === "memberId"
-                                    ? "Masukkan Member ID (contoh: M001)"
-                                    : "Masukkan Nomor WhatsApp (contoh: 081234567890)"
-                            }
-                            className="flex-1 rounded-lg border border-gray-300 bg-white px-4 py-3 text-gray-900 focus:border-brand-500 focus:outline-none focus:ring-2 focus:ring-brand-500/20 dark:border-gray-700 dark:bg-gray-800 dark:text-white"
-                            disabled={loading}
+                    {/* Right Content: Catalog Grid */}
+                    <div className="lg:col-span-3">
+                        {member && filter === "affordable" && (
+                            <div className="mb-6 bg-brand-50 border border-brand-100 rounded-xl p-4 flex items-center gap-2 text-brand-700 dark:bg-brand-900/20 dark:border-brand-800 dark:text-brand-300">
+                                <Filter className="h-5 w-5" />
+                                <span className="font-medium">Menampilkan {filteredCatalogs.length} reward yang dapat Anda tukarkan saat ini.</span>
+                            </div>
+                        )}
+
+                        <RewardCatalogGrid
+                            catalogs={filteredCatalogs}
+                            member={member}
+                            onRedeemSuccess={() => {
+                                handleSearch();
+                                loadCatalogs();
+                            }}
                         />
-                        <button
-                            onClick={handleSearch}
-                            disabled={loading}
-                            className="inline-flex items-center gap-2 rounded-lg bg-brand-600 px-6 py-3 font-medium text-white hover:bg-brand-700 disabled:opacity-50 dark:bg-brand-500 dark:hover:bg-brand-600"
-                        >
-                            <Search className="h-5 w-5" />
-                            {loading ? "Mencari..." : "Cari"}
-                        </button>
                     </div>
-
-                    {/* Loading State for Auto-submit */}
-                    {loading && autoSubmitted && (
-                        <div className="mt-4 rounded-lg bg-blue-50 p-4 text-center dark:bg-blue-900/20">
-                            <div className="flex items-center justify-center gap-2 text-blue-800 dark:text-blue-400">
-                                <div className="h-5 w-5 animate-spin rounded-full border-2 border-blue-800 border-t-transparent dark:border-blue-400"></div>
-                                <p className="font-medium">Memuat data member Anda...</p>
-                            </div>
-                        </div>
-                    )}
-
-                    {/* Error Message */}
-                    {error && (
-                        <div className="mt-4 rounded-lg bg-red-50 p-3 text-sm text-red-800 dark:bg-red-900/20 dark:text-red-400">
-                            {error}
-                        </div>
-                    )}
-
-                    {member && (
-                        <div className="mt-4 grid gap-4 md:grid-cols-2">
-                            <div className="rounded-lg bg-gray-50 p-4 dark:bg-gray-800">
-                                <div className="flex items-center gap-3">
-                                    <div className="rounded-lg bg-blue-100 p-2 dark:bg-blue-900/40">
-                                        <Gift className="h-5 w-5 text-blue-600 dark:text-blue-400" />
-                                    </div>
-                                    <div>
-                                        <p className="text-sm text-gray-500 dark:text-gray-400">
-                                            Member
-                                        </p>
-                                        <p className="text-lg font-bold text-gray-900 dark:text-white">
-                                            {member.name}
-                                        </p>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <div className="rounded-lg bg-gradient-to-br from-brand-50 to-white p-4 dark:from-brand-900/20 dark:to-gray-800">
-                                <div className="flex items-center gap-3">
-                                    <div className="rounded-lg bg-brand-100 p-2 dark:bg-brand-900/40">
-                                        <TrendingUp className="h-5 w-5 text-brand-600 dark:text-brand-400" />
-                                    </div>
-                                    <div>
-                                        <p className="text-sm text-gray-500 dark:text-gray-400">
-                                            Poin Tersedia
-                                        </p>
-                                        <p className="text-2xl font-bold text-brand-600 dark:text-brand-400">
-                                            {member.totalPoints.toLocaleString("id-ID")}
-                                        </p>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    )}
                 </div>
-
-                {/* Filter */}
-                {member && (
-                    <div className="mb-6 flex items-center gap-2">
-                        <button
-                            onClick={() => setFilter("all")}
-                            className={`rounded-lg px-4 py-2 text-sm font-medium ${filter === "all"
-                                ? "bg-brand-600 text-white dark:bg-brand-500"
-                                : "bg-white text-gray-700 hover:bg-gray-50 dark:bg-gray-900 dark:text-gray-300 dark:hover:bg-gray-800"
-                                }`}
-                        >
-                            Semua Reward
-                        </button>
-                        <button
-                            onClick={() => setFilter("affordable")}
-                            className={`rounded-lg px-4 py-2 text-sm font-medium ${filter === "affordable"
-                                ? "bg-brand-600 text-white dark:bg-brand-500"
-                                : "bg-white text-gray-700 hover:bg-gray-50 dark:bg-gray-900 dark:text-gray-300 dark:hover:bg-gray-800"
-                                }`}
-                        >
-                            Bisa Ditukar ({catalogs.filter((c) => c.pointsRequired <= member.totalPoints).length})
-                        </button>
-                    </div>
-                )}
-
-                {/* Catalog Grid */}
-                <RewardCatalogGrid
-                    catalogs={filteredCatalogs}
-                    member={member}
-                    onRedeemSuccess={() => {
-                        handleSearch(); // Refresh member data
-                        loadCatalogs(); // Refresh catalogs
-                    }}
-                />
             </div>
         </div>
     );
@@ -267,8 +221,8 @@ export default function MemberRewardsPage() {
         <Suspense fallback={
             <div className="min-h-screen flex items-center justify-center bg-gray-50 dark:bg-gray-900">
                 <div className="text-center">
-                    <div className="h-8 w-8 animate-spin rounded-full border-4 border-brand-600 border-t-transparent mx-auto mb-4"></div>
-                    <p className="text-gray-600 dark:text-gray-400">Memuat...</p>
+                    <div className="h-10 w-10 animate-spin rounded-full border-4 border-brand-600 border-t-transparent mx-auto mb-4"></div>
+                    <p className="text-gray-600 dark:text-gray-400">Memuat Katalog...</p>
                 </div>
             </div>
         }>

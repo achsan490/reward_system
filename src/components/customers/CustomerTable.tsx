@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import {
     ChevronUp,
     ChevronDown,
@@ -37,6 +37,11 @@ export default function CustomerTable({ customers }: CustomerTableProps) {
     const [selectedCustomerId, setSelectedCustomerId] = useState<string | null>(
         null
     );
+    const [origin, setOrigin] = useState("");
+
+    useEffect(() => {
+        setOrigin(window.location.origin);
+    }, []);
 
     const handleSort = (field: SortField) => {
         if (sortField === field) {
@@ -193,15 +198,22 @@ export default function CustomerTable({ customers }: CustomerTableProps) {
                                                         )
                                                     }
                                                     className="inline-flex items-center gap-1 rounded-lg bg-brand-50 px-3 py-1.5 text-sm font-medium text-brand-700 hover:bg-brand-100 dark:bg-brand-900/20 dark:text-brand-400 dark:hover:bg-brand-900/40"
+                                                    title="Lihat Detail"
                                                 >
                                                     <Eye className="h-4 w-4" />
-                                                    Detail
                                                 </button>
+                                                <WhatsAppButton
+                                                    phone={customer.phone}
+                                                    message={`Halo ${customer.name}, cek poin reward dan tukarkan hadiah Anda di sini: ${origin}/member/check?id=${customer.memberId}`}
+                                                    variant="compact"
+                                                    label="Kirim Akses"
+                                                    className="bg-gradient-to-r from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700"
+                                                />
                                                 <WhatsAppButton
                                                     phone={customer.phone}
                                                     message={`Halo ${customer.name}, kami dari tim reward ingin menyapa Anda. Anda memiliki ${customer.totalPoints} poin saat ini.`}
                                                     variant="compact"
-                                                    label="WA"
+                                                    label="Sapa"
                                                 />
                                             </div>
                                         </td>
@@ -244,6 +256,15 @@ export default function CustomerTable({ customers }: CustomerTableProps) {
                                 >
                                     <Eye className="h-4 w-4" />
                                 </button>
+                                <div className="flex gap-1">
+                                    <WhatsAppButton
+                                        phone={customer.phone}
+                                        message={`Halo ${customer.name}, cek poin reward & tukar hadiah di: ${origin}/member/check?id=${customer.memberId}`}
+                                        variant="compact"
+                                        label="Akses"
+                                        className="bg-blue-600 px-2 text-xs"
+                                    />
+                                </div>
                             </div>
 
                             {(customer.email || customer.phone) && (

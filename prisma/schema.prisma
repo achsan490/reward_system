@@ -136,6 +136,7 @@ model RewardRedemption {
   catalogId       String
   catalog         RewardCatalog @relation(fields: [catalogId], references: [id], onDelete: Cascade)
   pointsUsed      Float
+  claimCode       String        @default(cuid()) // Unique code for claiming
   status          String        // 'pending', 'approved', 'rejected', 'completed'
   notes           String?       @db.Text // Notes from member
   adminNotes      String?       @db.Text // Notes from admin

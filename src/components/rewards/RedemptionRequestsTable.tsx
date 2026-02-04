@@ -113,12 +113,32 @@ export default function RedemptionRequestsTable({
 
     return (
         <>
+            {/* Search */}
+            <div className="mb-4">
+                <input
+                    type="text"
+                    placeholder="Cari Member atau Kode Penukaran..."
+                    className="w-full rounded-lg border border-gray-300 px-4 py-2 text-sm focus:border-brand-500 focus:outline-none dark:border-gray-700 dark:bg-gray-900"
+                    onChange={(e) => {
+                        const term = e.target.value.toLowerCase();
+                        const rows = document.querySelectorAll('tbody tr');
+                        rows.forEach((row) => {
+                            const text = row.textContent?.toLowerCase() || '';
+                            (row as HTMLElement).style.display = text.includes(term) ? '' : 'none';
+                        });
+                    }}
+                />
+            </div>
+
             <div className="overflow-x-auto rounded-lg border border-gray-200 dark:border-gray-800">
                 <table className="min-w-full divide-y divide-gray-200 dark:divide-gray-800">
                     <thead className="bg-gray-50 dark:bg-gray-800">
                         <tr>
                             <th className="px-4 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500 dark:text-gray-400">
                                 Member
+                            </th>
+                            <th className="px-4 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500 dark:text-gray-400">
+                                Kode
                             </th>
                             <th className="px-4 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500 dark:text-gray-400">
                                 Reward
@@ -141,7 +161,7 @@ export default function RedemptionRequestsTable({
                         {redemptions.length === 0 ? (
                             <tr>
                                 <td
-                                    colSpan={6}
+                                    colSpan={7}
                                     className="px-4 py-8 text-center text-gray-500 dark:text-gray-400"
                                 >
                                     Belum ada permintaan penukaran
@@ -169,6 +189,11 @@ export default function RedemptionRequestsTable({
                                                 className="mt-1"
                                             />
                                         </div>
+                                    </td>
+                                    <td className="px-4 py-3">
+                                        <code className="rounded bg-gray-100 px-2 py-1 font-mono text-sm font-bold text-gray-900 dark:bg-gray-700 dark:text-white">
+                                            {(redemption.claimCode || redemption.id.slice(-8)).toUpperCase()}
+                                        </code>
                                     </td>
                                     <td className="px-4 py-3">
                                         <div>
