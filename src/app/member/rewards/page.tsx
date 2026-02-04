@@ -53,9 +53,24 @@ function MemberRewardsContent() {
         }
     };
 
+    const handleSearch = async () => {
+        let type: SearchType = "memberId";
+        const val = searchValue.trim();
+
+        // Auto-detect phone number
+        if (val.startsWith("08") || val.startsWith("62") || val.startsWith("+62")) {
+            type = "phone";
+        }
+
+        // If detection changes state, we might want to update it for UI consistency, 
+        // but for now just pass to search function.
+        setSearchType(type);
+        await handleSearchDirect(type, val);
+    };
+
     const handleSearchDirect = async (type: SearchType, value: string) => {
         if (!value.trim()) {
-            setError(type === "memberId" ? "Masukkan Member ID" : "Masukkan Nomor WhatsApp");
+            setError("Masukkan ID atau No. WA");
             return;
         }
 
@@ -77,10 +92,6 @@ function MemberRewardsContent() {
         } else {
             setError(result.error || "Member tidak ditemukan");
         }
-    };
-
-    const handleSearch = async () => {
-        await handleSearchDirect(searchType, searchValue);
     };
 
     const filteredCatalogs = filter === "affordable" && member
@@ -127,32 +138,42 @@ function MemberRewardsContent() {
                     <div className="lg:col-span-1 space-y-6">
                         {/* Search Card */}
                         <div className="bg-white rounded-2xl shadow-lg p-6 dark:bg-gray-800 dark:border dark:border-gray-700">
-                            <h3 className="text-sm uppercase tracking-wider text-gray-500 font-bold mb-4 dark:text-gray-400">Ganti Member</h3>
+                            <h3 className="text-sm uppercase tracking-wider text-gray-500 font-bold mb-4 dark:text-gray-400">Cari Member</h3>
 
-                            <div className="flex rounded-lg bg-gray-100 p-1 mb-4 dark:bg-gray-700">
-                                <button type="button" onClick={() => { setSearchType("memberId"); setSearchValue(""); setError(""); setMember(null); }} className={`flex-1 py-1.5 text-xs font-medium rounded-md transition-all ${searchType === "memberId" ? "bg-white shadow text-gray-900" : "text-gray-500 hover:text-gray-700 dark:text-gray-400"}`}>ID</button>
-                                <button type="button" onClick={() => { setSearchType("phone"); setSearchValue(""); setError(""); setMember(null); }} className={`flex-1 py-1.5 text-xs font-medium rounded-md transition-all ${searchType === "phone" ? "bg-white shadow text-gray-900" : "text-gray-500 hover:text-gray-700 dark:text-gray-400"}`}>WA</button>
-                            </div>
-
-                            <div className="space-y-3">
-                                <input
-                                    type="text"
-                                    value={searchValue}
-                                    onChange={(e) => setSearchValue(e.target.value)}
-                                    onKeyPress={(e) => e.key === "Enter" && handleSearch()}
-                                    placeholder={searchType === "memberId" ? "ID Member" : "No. WhatsApp"}
-                                    className="block w-full rounded-lg border-gray-300 bg-gray-50 text-sm focus:border-brand-500 focus:ring-brand-500 dark:bg-gray-900 dark:border-gray-600 dark:text-white"
-                                    disabled={loading}
-                                />
+                            <div className="space-y-4">
+                                <div className="relative">
+                                    <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                                        <Search className="h-5 w-5 text-gray-400" />
+                                    </div>
+                                    <input
+                                        type="text"
+                                        value={searchValue}
+                                        onChange={(e) => setSearchValue(e.target.value)}
+                                        onKeyPress={(e) => e.key === "Enter" && handleSearch()}
+                                        placeholder="Tulis ID atau No. WA..."
+                                        className="block w-full pl-10 pr-4 py-3 rounded-xl border-gray-200 bg-gray-50 text-base focus:border-brand-500 focus:ring-brand-500 transition-shadow dark:bg-gray-900 dark:border-gray-700 dark:text-white"
+                                        disabled={loading}
+                                    />
+                                </div>
                                 <button
                                     onClick={handleSearch}
                                     disabled={loading}
-                                    className="w-full flex justify-center items-center py-2.5 px-4 border border-transparent rounded-lg shadow-sm text-sm font-medium text-white bg-brand-600 hover:bg-brand-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-brand-500 disabled:opacity-50"
+                                    className="w-full py-3 px-4 bg-brand-600 hover:bg-brand-700 text-white font-medium rounded-xl shadow-md hover:shadow-lg transform transition-all active:scale-95 disabled:opacity-70 disabled:cursor-not-allowed flex justify-center items-center gap-2"
                                 >
-                                    {loading ? "..." : "Cari Member"}
+                                    {loading ? (
+                                        <div className="h-5 w-5 animate-spin rounded-full border-2 border-white border-t-transparent" />
+                                    ) : (
+                                        <>
+                                            Cari Data
+                                        </>
+                                    )}
                                 </button>
                             </div>
-                            {error && <p className="mt-2 text-xs text-red-600 dark:text-red-400">{error}</p>}
+                            {error && (
+                                <div className="mt-3 p-3 rounded-lg bg-red-50 text-red-600 text-sm flex items-center gap-2 dark:bg-red-900/20 dark:text-red-400">
+                                    <span className="font-bold">!</span> {error}
+                                </div>
+                            )}
                         </div>
 
                         {/* Member Info Card */}
