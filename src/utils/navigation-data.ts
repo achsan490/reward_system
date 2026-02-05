@@ -17,5 +17,5 @@ export const NAVIGATION_DATA: NavigationItem[] = [
     { name: "QR Generator", path: "/member-portal/qr-generator", section: "Portal Member" },
     { name: "Member Cards", path: "/member-portal/member-cards", section: "Portal Member" },
     { name: "Cek Poin Member", path: "/member/check", section: "Link Publik" },
-    { name: "Tukar Reward", path: "/member/rewards", section: "Link Publik" },
+
 ];
