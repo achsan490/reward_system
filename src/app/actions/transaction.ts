@@ -89,7 +89,6 @@ export async function uploadTransactions(formData: FormData) {
 
             await prisma.member.createMany({
                 data: newMembersData,
-                skipDuplicates: true,
             });
         }
 
