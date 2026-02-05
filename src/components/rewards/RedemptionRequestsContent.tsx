@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { Clock, CheckCircle, XCircle, Package, Trash2, AlertCircle } from "lucide-react";
-import { getAllRedemptions, getRedemptionStats, deleteAllCompletedRedemptions } from "@/app/actions/reward-redemption";
+import { getAllRedemptions, getRedemptionStats, deleteAllCompletedRedemptions, autoExpireRedemptions } from "@/app/actions/reward-redemption";
 import RedemptionRequestsTable from "./RedemptionRequestsTable";
 
 export default function RedemptionRequestsContent() {
@@ -13,6 +13,9 @@ export default function RedemptionRequestsContent() {
 
     const loadData = async () => {
         setLoading(true);
+        // Auto-expire old redemptions first (or in parallel)
+        await autoExpireRedemptions();
+
         const [redemptionsResult, statsResult] = await Promise.all([
             getAllRedemptions(statusFilter !== "all" ? { status: statusFilter } : undefined),
             getRedemptionStats(),

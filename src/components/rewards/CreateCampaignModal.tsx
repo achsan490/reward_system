@@ -18,13 +18,42 @@ export default function CreateCampaignModal({
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState("");
 
+    // Helper to get current month details
+    const getInitialDateData = () => {
+        const now = new Date();
+        const year = now.getFullYear();
+        const month = now.getMonth();
+        const firstDay = new Date(year, month, 1);
+        const lastDay = new Date(year, month + 1, 0);
+
+        // Format date helpers
+        const formatDate = (d: Date) => {
+            const offset = d.getTimezoneOffset();
+            const adjusted = new Date(d.getTime() - (offset * 60 * 1000));
+            return adjusted.toISOString().split('T')[0];
+        };
+
+        const monthNames = [
+            "Januari", "Februari", "Maret", "April", "Mei", "Juni",
+            "Juli", "Agustus", "September", "Oktober", "November", "Desember"
+        ];
+
+        return {
+            startDate: formatDate(firstDay),
+            endDate: formatDate(lastDay),
+            name: `Reward Bulanan ${monthNames[month]} ${year}`
+        };
+    };
+
+    const initialData = getInitialDateData();
+
     const [formData, setFormData] = useState({
-        name: "",
+        name: initialData.name,
         description: "",
         criteria: "top_points" as "top_points" | "top_spending" | "top_transactions",
         winnersCount: 10,
-        startDate: "",
-        endDate: "",
+        startDate: initialData.startDate,
+        endDate: initialData.endDate,
     });
 
     const handleSubmit = async (e: React.FormEvent) => {
@@ -238,75 +267,117 @@ export default function CreateCampaignModal({
                             </div>
                         </div>
 
-                        {/* Winners Count */}
-                        <div>
-                            <label
-                                htmlFor="winnersCount"
-                                className="mb-2 block text-sm font-medium text-gray-700 dark:text-gray-300"
-                            >
-                                Jumlah Pemenang *
-                            </label>
-                            <input
-                                type="number"
-                                id="winnersCount"
-                                required
-                                min="1"
-                                max="100"
-                                value={formData.winnersCount || ""}
-                                onChange={(e) => {
-                                    const value = e.target.value;
-                                    setFormData({
-                                        ...formData,
-                                        winnersCount: value === "" ? 0 : parseInt(value),
-                                    });
-                                }}
-                                className="w-full rounded-lg border border-gray-300 bg-white px-4 py-2.5 text-gray-900 focus:border-brand-500 focus:ring-2 focus:ring-brand-500/20 dark:border-gray-700 dark:bg-gray-800 dark:text-white dark:focus:border-brand-400"
-                            />
-                        </div>
-
-                        {/* Date Range */}
+                        {/* Month and Year Selection */}
                         <div className="grid gap-4 md:grid-cols-2">
                             <div>
-                                <label
-                                    htmlFor="startDate"
-                                    className="mb-2 block text-sm font-medium text-gray-700 dark:text-gray-300"
-                                >
-                                    Tanggal Mulai *
+                                <label className="mb-2 block text-sm font-medium text-gray-700 dark:text-gray-300">
+                                    Pilih Bulan
                                 </label>
+                                <select
+                                    className="w-full rounded-lg border border-gray-300 bg-white px-4 py-2.5 text-gray-900 focus:border-brand-500 focus:ring-2 focus:ring-brand-500/20 dark:border-gray-700 dark:bg-gray-800 dark:text-white dark:focus:border-brand-400"
+                                    onChange={(e) => {
+                                        const monthIndex = parseInt(e.target.value);
+                                        const currentYear = new Date(formData.startDate || new Date()).getFullYear();
+
+                                        // Update dates
+                                        const firstDay = new Date(currentYear, monthIndex, 1);
+                                        const lastDay = new Date(currentYear, monthIndex + 1, 0);
+
+                                        // Format date helpers
+                                        const formatDate = (d: Date) => {
+                                            const offset = d.getTimezoneOffset();
+                                            const adjusted = new Date(d.getTime() - (offset * 60 * 1000));
+                                            return adjusted.toISOString().split('T')[0];
+                                        };
+
+                                        const monthNames = [
+                                            "Januari", "Februari", "Maret", "April", "Mei", "Juni",
+                                            "Juli", "Agustus", "September", "Oktober", "November", "Desember"
+                                        ];
+
+                                        setFormData({
+                                            ...formData,
+                                            startDate: formatDate(firstDay),
+                                            endDate: formatDate(lastDay),
+                                            name: `Reward Bulanan ${monthNames[monthIndex]} ${currentYear}`
+                                        });
+                                    }}
+                                    defaultValue={new Date().getMonth()}
+                                >
+                                    {[
+                                        "Januari", "Februari", "Maret", "April", "Mei", "Juni",
+                                        "Juli", "Agustus", "September", "Oktober", "November", "Desember"
+                                    ].map((m, i) => (
+                                        <option key={i} value={i}>{m}</option>
+                                    ))}
+                                </select>
+                            </div>
+                            <div>
+                                <label className="mb-2 block text-sm font-medium text-gray-700 dark:text-gray-300">
+                                    Pilih Tahun
+                                </label>
+                                <select
+                                    className="w-full rounded-lg border border-gray-300 bg-white px-4 py-2.5 text-gray-900 focus:border-brand-500 focus:ring-2 focus:ring-brand-500/20 dark:border-gray-700 dark:bg-gray-800 dark:text-white dark:focus:border-brand-400"
+                                    onChange={(e) => {
+                                        const year = parseInt(e.target.value);
+                                        const currentMonth = new Date(formData.startDate || new Date()).getMonth();
+
+                                        // Update dates
+                                        const firstDay = new Date(year, currentMonth, 1);
+                                        const lastDay = new Date(year, currentMonth + 1, 0);
+
+                                        // Format date helpers
+                                        const formatDate = (d: Date) => {
+                                            const offset = d.getTimezoneOffset();
+                                            const adjusted = new Date(d.getTime() - (offset * 60 * 1000));
+                                            return adjusted.toISOString().split('T')[0];
+                                        };
+
+                                        const monthNames = [
+                                            "Januari", "Februari", "Maret", "April", "Mei", "Juni",
+                                            "Juli", "Agustus", "September", "Oktober", "November", "Desember"
+                                        ];
+
+                                        setFormData({
+                                            ...formData,
+                                            startDate: formatDate(firstDay),
+                                            endDate: formatDate(lastDay),
+                                            name: `Reward Bulanan ${monthNames[currentMonth]} ${year}`
+                                        });
+                                    }}
+                                    defaultValue={new Date().getFullYear()}
+                                >
+                                    {Array.from({ length: 2050 - 2024 + 1 }, (_, i) => 2024 + i).map((y) => (
+                                        <option key={y} value={y}>{y}</option>
+                                    ))}
+                                </select>
+                            </div>
+                        </div>
+
+                        {/* Hidden/Readonly Date Range for Form Submission */}
+                        <div className="grid gap-4 md:grid-cols-2 bg-gray-50 p-4 rounded-lg border border-gray-100 dark:bg-gray-800/50 dark:border-gray-700/50">
+                            <p className="md:col-span-2 text-xs text-gray-500 dark:text-gray-400 mb-[-10px]">
+                                Periode Transaksi Yang Dihitung (Otomatis):
+                            </p>
+                            <div>
                                 <input
                                     type="date"
                                     id="startDate"
                                     required
+                                    readOnly
                                     value={formData.startDate}
-                                    onChange={(e) =>
-                                        setFormData({
-                                            ...formData,
-                                            startDate: e.target.value,
-                                        })
-                                    }
-                                    className="w-full rounded-lg border border-gray-300 bg-white px-4 py-2.5 text-gray-900 focus:border-brand-500 focus:ring-2 focus:ring-brand-500/20 dark:border-gray-700 dark:bg-gray-800 dark:text-white dark:focus:border-brand-400"
+                                    className="w-full bg-transparent border-none p-0 text-sm font-medium text-gray-900 dark:text-white focus:ring-0 cursor-default"
                                 />
                             </div>
 
-                            <div>
-                                <label
-                                    htmlFor="endDate"
-                                    className="mb-2 block text-sm font-medium text-gray-700 dark:text-gray-300"
-                                >
-                                    Tanggal Selesai *
-                                </label>
+                            <div className="text-right md:text-left">
                                 <input
                                     type="date"
                                     id="endDate"
                                     required
+                                    readOnly
                                     value={formData.endDate}
-                                    onChange={(e) =>
-                                        setFormData({
-                                            ...formData,
-                                            endDate: e.target.value,
-                                        })
-                                    }
-                                    className="w-full rounded-lg border border-gray-300 bg-white px-4 py-2.5 text-gray-900 focus:border-brand-500 focus:ring-2 focus:ring-brand-500/20 dark:border-gray-700 dark:bg-gray-800 dark:text-white dark:focus:border-brand-400"
+                                    className="w-full bg-transparent border-none p-0 text-sm font-medium text-gray-900 dark:text-white focus:ring-0 cursor-default text-right md:text-left"
                                 />
                             </div>
                         </div>

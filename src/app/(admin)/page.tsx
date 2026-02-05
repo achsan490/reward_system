@@ -4,11 +4,14 @@ import {
   getDashboardStats,
   getRecentActivity,
 } from "@/app/actions/dashboard";
+import { getActiveCampaignStats } from "@/app/actions/dashboard-widgets";
 import DashboardStatsCards from "@/components/dashboard/DashboardStatsCards";
 import DashboardChart from "@/components/dashboard/DashboardChart";
 import RecentActivityList from "@/components/dashboard/RecentActivityList";
 import QuickActions from "@/components/dashboard/QuickActions";
 import ExpiringPointsAlert from "@/components/dashboard/ExpiringPointsAlert";
+import ActiveCampaignCard from "@/components/dashboard/ActiveCampaignCard";
+import HallOfFameCard from "@/components/dashboard/HallOfFameCard";
 
 export const metadata: Metadata = {
   title: "Dashboard | Reward System",
@@ -17,10 +20,11 @@ export const metadata: Metadata = {
 
 export default async function DashboardPage() {
   // Parallel data fetching for performance
-  const [statsResult, chartResult, activityResult] = await Promise.all([
+  const [statsResult, chartResult, activityResult, widgetsResult] = await Promise.all([
     getDashboardStats(),
     getDashboardChartData(),
     getRecentActivity(),
+    getActiveCampaignStats(),
   ]);
 
   const stats = statsResult.success
@@ -38,6 +42,7 @@ export default async function DashboardPage() {
 
   const chartData = chartResult.success ? chartResult.data! : [];
   const activities = activityResult.success ? activityResult.data! : [];
+  const widgetsData = widgetsResult.success ? widgetsResult.data! : { activeCampaign: null, lastWinners: [] };
 
   return (
     <div className="space-y-6">
@@ -50,14 +55,6 @@ export default async function DashboardPage() {
         </p>
       </div>
 
-      {/* Expiring Points Alert */}
-      {stats.pointsExpiringSoon > 0 && (
-        <ExpiringPointsAlert
-          pointsExpiringSoon={stats.pointsExpiringSoon}
-          membersWithExpiringPoints={stats.membersWithExpiringPoints}
-        />
-      )}
-
       {/* Key Metrics */}
       <DashboardStatsCards stats={stats} />
 
@@ -69,8 +66,14 @@ export default async function DashboardPage() {
 
         {/* Quick Actions & Side Widgets */}
         <div className="col-span-12 space-y-6 xl:col-span-4">
+          {/* Active Campaign Widget */}
+          <ActiveCampaignCard data={widgetsData.activeCampaign} />
+
+          {/* Hall of Fame Widget */}
+          <HallOfFameCard winners={widgetsData.lastWinners} />
+
+          {/* Quick Actions */}
           <QuickActions />
-          {/* Add more side widgets here if needed */}
         </div>
       </div>
 

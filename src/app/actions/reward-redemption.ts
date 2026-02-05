@@ -491,3 +491,43 @@ export async function deleteAllCompletedRedemptions() {
         };
     }
 }
+
+/**
+ * Automatically expire approved redemptions older than 30 days
+ * This should be called when loading redemption pages
+ */
+export async function autoExpireRedemptions() {
+    try {
+        const thirtyDaysAgo = new Date();
+        thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30);
+
+        // Find applicable redemptions
+        const expiredRedemptions = await prisma.rewardRedemption.updateMany({
+            where: {
+                status: "approved", // Only approved items can expire (pending relies on admin action)
+                processedAt: {
+                    lt: thirtyDaysAgo, // Older than 30 days
+                },
+            },
+            data: {
+                status: "expired",
+            },
+        });
+
+        if (expiredRedemptions.count > 0) {
+            revalidatePath("/redemption-requests");
+            revalidatePath("/member/my-redemptions");
+        }
+
+        return {
+            success: true,
+            count: expiredRedemptions.count,
+        };
+    } catch (error) {
+        console.error("Error auto-expiring redemptions:", error);
+        return {
+            success: false,
+            error: "Failed to auto-expire redemptions",
+        };
+    }
+}

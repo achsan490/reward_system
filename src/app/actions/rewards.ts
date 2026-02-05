@@ -146,76 +146,101 @@ export async function calculateWinners(campaignId: string) {
             where: { campaignId: campaignId },
         });
 
-        // Get members based on criteria within date range
-        let orderByField: "totalPoints" | "totalSpent" | "transactionCount" =
-            "totalPoints";
-
-        if (campaign.criteria === "top_spending") {
-            orderByField = "totalSpent";
-        } else if (campaign.criteria === "top_transactions") {
-            orderByField = "transactionCount";
-        }
-
-        // Build multi-level sorting to handle ties fairly
-        // Primary: Campaign criteria (points/spending/transactions)
-        // Tiebreaker 1: Transaction count (more active members get priority)
-        // Tiebreaker 2: Member registration date (first-come-first-served)
-        const orderByClause: any[] = [
-            { [orderByField]: "desc" }, // Primary criteria
-        ];
-
-        // Add tiebreaker only if primary criteria is not transactionCount
-        if (orderByField !== "transactionCount") {
-            orderByClause.push({ transactionCount: "desc" });
-        }
-
-        // Always add createdAt as final tiebreaker
-        orderByClause.push({ createdAt: "asc" });
-
-        console.log("🔍 Querying members with transactions in date range...");
-
-        // Get top members with multi-level sorting
-        const topMembers = await prisma.member.findMany({
+        // Calculate aggregates from transactions within the date range
+        // This ensures we only count points/spending/transactions from the campaign period
+        const transactionAggregates = await prisma.transaction.groupBy({
+            by: ["memberId"],
             where: {
-                transactions: {
-                    some: {
-                        transactionDate: {
-                            gte: campaign.startDate,
-                            lte: campaign.endDate,
-                        },
-                    },
+                transactionDate: {
+                    gte: campaign.startDate,
+                    lte: campaign.endDate,
                 },
             },
-            orderBy: orderByClause,
-            take: campaign.winnersCount,
+            _sum: {
+                pointsEarned: true,
+                amount: true,
+            },
+            _count: {
+                id: true,
+            },
+        });
+
+        if (transactionAggregates.length === 0) {
+            console.warn("⚠️ No transactions found in the specified date range!");
+            return {
+                success: true,
+                data: [],
+                message: `No transactions found between ${campaign.startDate.toISOString()} and ${campaign.endDate.toISOString()}`,
+            };
+        }
+
+        // Get member details for the aggregated results
+        const memberIds = transactionAggregates.map(t => t.memberId);
+        const members = await prisma.member.findMany({
+            where: {
+                id: { in: memberIds }
+            },
             select: {
                 id: true,
                 memberId: true,
                 name: true,
-                totalPoints: true,
-                totalSpent: true,
-                transactionCount: true,
-            },
+                createdAt: true
+            }
         });
 
-        console.log(`✅ Found ${topMembers.length} eligible members:`,
+        const memberMap = new Map(members.map(m => [m.id, m]));
+
+        // Combine aggregates with member details
+        const candidates = transactionAggregates.map(agg => {
+            const member = memberMap.get(agg.memberId);
+            return {
+                id: agg.memberId,
+                memberId: member?.memberId || "Unknown",
+                name: member?.name || "Unknown",
+                createdAt: member?.createdAt || new Date(),
+                totalPoints: agg._sum.pointsEarned || 0,
+                totalSpent: agg._sum.amount || 0,
+                transactionCount: agg._count.id || 0,
+            };
+        }).filter(c => c.name !== "Unknown"); // Filter out invalid members
+
+        // Sort candidates based on criteria
+        // Primary Sort
+        candidates.sort((a, b) => {
+            let diff = 0;
+            if (campaign.criteria === "top_spending") {
+                diff = b.totalSpent - a.totalSpent;
+            } else if (campaign.criteria === "top_transactions") {
+                diff = b.transactionCount - a.transactionCount;
+            } else {
+                // Default: top_points
+                diff = b.totalPoints - a.totalPoints;
+            }
+
+            // Tiebreaker 1: Transaction Count (if not primary)
+            if (diff === 0 && campaign.criteria !== "top_transactions") {
+                diff = b.transactionCount - a.transactionCount;
+            }
+
+            // Tiebreaker 2: Registration Date (earlier is better)
+            if (diff === 0) {
+                diff = a.createdAt.getTime() - b.createdAt.getTime();
+            }
+
+            return diff;
+        });
+
+        // Take top N winners
+        const topMembers = candidates.slice(0, campaign.winnersCount);
+
+        console.log(`✅ Found ${topMembers.length} eligible winners after filtering:`,
             topMembers.map(m => ({
-                memberId: m.memberId,
                 name: m.name,
                 points: m.totalPoints,
                 spent: m.totalSpent,
-                transactions: m.transactionCount
+                txs: m.transactionCount
             }))
         );
-
-        if (topMembers.length === 0) {
-            console.warn("⚠️ No members found with transactions in the specified date range!");
-            return {
-                success: true,
-                data: [],
-                message: `No members with transactions found between ${campaign.startDate.toISOString()} and ${campaign.endDate.toISOString()}`,
-            };
-        }
 
         // Create winner records
         const winners = await Promise.all(
