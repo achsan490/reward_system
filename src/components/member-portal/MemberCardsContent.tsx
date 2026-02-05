@@ -93,15 +93,22 @@ export default function MemberCardsContent() {
                             top: 50%;
                             transform: translate(-50%, -50%);
                             width: 100%;
-                            max-width: 500px; /* Optional: limit width for card size */
+                            max-width: 500px;
                             margin: 0;
                             padding: 0;
                             box-shadow: none;
-                            border: 1px solid #ccc;
+                            border: none;
+                            /* FORCE BACKGROUND COLORS & IMAGES TO PRINT */
+                            -webkit-print-color-adjust: exact !important;
+                            print-color-adjust: exact !important;
                         }
                         /* Hide the info box in print */
                         .print:hidden {
                             display: none !important;
+                        }
+                        /* Ensure the card container has no border/shadow interference */
+                        @page {
+                            margin: 0;
                         }
                     }
                 `}</style>
@@ -112,7 +119,7 @@ export default function MemberCardsContent() {
                 {cardData ? (
                     <div className="space-y-4">
                         {/* Member Card */}
-                        <div id="printable-card" className="overflow-hidden rounded-xl border-2 border-brand-200 bg-gradient-to-br from-brand-500 to-brand-700 p-6 text-white shadow-xl print:border-0">
+                        <div id="printable-card" className="overflow-hidden rounded-xl border-2 border-brand-200 bg-gradient-to-br from-brand-500 to-brand-700 p-6 text-white shadow-xl print:shadow-none print:border-0">
                             <div className="mb-4">
                                 <h4 className="text-sm font-medium opacity-90">REWARD MEMBER CARD</h4>
                             </div>
@@ -121,18 +128,18 @@ export default function MemberCardsContent() {
                                 <div className="flex-1">
                                     <div className="mb-3">
                                         <p className="text-xs opacity-75">Member ID</p>
-                                        <p className="text-lg font-bold text-white print:text-black">{cardData.member.memberId}</p>
+                                        <p className="text-lg font-bold">{cardData.member.memberId}</p>
                                     </div>
 
                                     <div className="mb-3">
                                         <p className="text-xs opacity-75">Name</p>
-                                        <p className="text-xl font-bold text-white print:text-black">{cardData.member.name}</p>
+                                        <p className="text-xl font-bold">{cardData.member.name}</p>
                                     </div>
 
                                     <div className="grid grid-cols-2 gap-3">
                                         <div>
                                             <p className="text-xs opacity-75">Points</p>
-                                            <p className="font-semibold text-white print:text-black">{cardData.member.totalPoints.toLocaleString("id-ID")}</p>
+                                            <p className="font-semibold">{cardData.member.totalPoints.toLocaleString("id-ID")}</p>
                                         </div>
                                         <div>
                                             <p className="text-xs opacity-75">Since</p>
