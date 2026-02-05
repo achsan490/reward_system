@@ -3,7 +3,7 @@
 import { useState, useEffect, Suspense } from "react";
 import { useSearchParams } from "next/navigation";
 import { Search, Package, Clock, CheckCircle, XCircle, User, Phone, ArrowLeft, QrCode, Copy, Check } from "lucide-react";
-import { getMemberRedemptions } from "@/app/actions/reward-redemption";
+import { getMemberRedemptions, autoExpireRedemptions } from "@/app/actions/reward-redemption";
 import { getMemberByMemberId, getMemberByPhone } from "@/app/actions/member-portal";
 
 type SearchType = "memberId" | "phone";
@@ -51,6 +51,9 @@ function MyRedemptionsContent() {
         setError("");
         setMember(null);
         setRedemptions([]);
+
+        // Auto-expire old redemptions check
+        await autoExpireRedemptions();
 
         let memberResult;
         if (type === "memberId") {
@@ -116,6 +119,14 @@ function MyRedemptionsContent() {
                     icon: <CheckCircle className="h-5 w-5" />,
                     label: "Selesai (Sudah Diambil)"
                 };
+            case "expired":
+                return {
+                    bg: "bg-gray-100 dark:bg-gray-800",
+                    border: "border-gray-300 dark:border-gray-600",
+                    text: "text-gray-500 dark:text-gray-400",
+                    icon: <Clock className="h-5 w-5" />,
+                    label: "Kadaluarsa (Tidak Diambil)"
+                };
             default:
                 return {
                     bg: "bg-gray-50 dark:bg-gray-800",
@@ -169,8 +180,8 @@ function MyRedemptionsContent() {
                                         setError("");
                                     }}
                                     className={`flex-1 py-2.5 text-sm font-medium rounded-md transition-all ${searchType === "memberId"
-                                            ? "bg-white text-brand-600 shadow-sm dark:bg-gray-800 dark:text-brand-400"
-                                            : "text-gray-500 hover:text-gray-700 dark:text-gray-400"
+                                        ? "bg-white text-brand-600 shadow-sm dark:bg-gray-800 dark:text-brand-400"
+                                        : "text-gray-500 hover:text-gray-700 dark:text-gray-400"
                                         }`}
                                 >
                                     Member ID
@@ -182,8 +193,8 @@ function MyRedemptionsContent() {
                                         setError("");
                                     }}
                                     className={`flex-1 py-2.5 text-sm font-medium rounded-md transition-all ${searchType === "phone"
-                                            ? "bg-white text-brand-600 shadow-sm dark:bg-gray-800 dark:text-brand-400"
-                                            : "text-gray-500 hover:text-gray-700 dark:text-gray-400"
+                                        ? "bg-white text-brand-600 shadow-sm dark:bg-gray-800 dark:text-brand-400"
+                                        : "text-gray-500 hover:text-gray-700 dark:text-gray-400"
                                         }`}
                                 >
                                     WhatsApp
@@ -297,7 +308,7 @@ function MyRedemptionsContent() {
                                                 <span>{styles.label}</span>
                                             </div>
                                             <span className="text-xs text-gray-500 dark:text-gray-400 font-medium">
-                                                {new Date(redemption.redeemedAt).toLocaleDateString("id-ID", {
+                                                {new Date(redemption.redeemedAt || redemption.createdAt).toLocaleDateString("id-ID", {
                                                     day: 'numeric', month: 'long', year: 'numeric'
                                                 })}
                                             </span>
