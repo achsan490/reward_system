@@ -34,52 +34,52 @@ export default function RecentActivityList({ activities }: RecentActivityListPro
             <h3 className="mb-4 text-lg font-semibold text-gray-900 dark:text-white">
                 Aktivitas Terbaru
             </h3>
-            <div className="flow-root">
-                <ul role="list" className="-mb-8">
-                    {activities.map((activity, activityIdx) => (
-                        <li key={activity.id}>
-                            <div className="relative pb-8">
-                                {activityIdx !== activities.length - 1 ? (
-                                    <span
-                                        className="absolute left-4 top-4 -ml-px h-full w-0.5 bg-gray-200 dark:bg-gray-800"
-                                        aria-hidden="true"
-                                    />
-                                ) : null}
-                                <div className="relative flex space-x-3">
-                                    <>
-                                        {activity.type === "transaction" ? (
-                                            <div className="flex h-8 w-8 items-center justify-center rounded-full bg-green-100 ring-8 ring-white dark:bg-green-900/30 dark:ring-gray-900">
-                                                <DollarSign className="h-4 w-4 text-green-600 dark:text-green-400" />
-                                            </div>
-                                        ) : (
-                                            <div className="flex h-8 w-8 items-center justify-center rounded-full bg-yellow-100 ring-8 ring-white dark:bg-yellow-900/30 dark:ring-gray-900">
-                                                <Trophy className="h-4 w-4 text-yellow-600 dark:text-yellow-400" />
-                                            </div>
-                                        )}
-                                        <div className="flex min-w-0 flex-1 justify-between space-x-4 pt-1.5">
-                                            <div>
-                                                <p className="text-sm text-gray-500 dark:text-gray-400">
-                                                    <span className="font-medium text-gray-900 dark:text-white">
-                                                        {activity.title}
-                                                    </span>{" "}
-                                                    - {activity.description}
-                                                </p>
-                                            </div>
-                                            <div className="whitespace-nowrap text-right text-sm text-gray-500 dark:text-gray-400">
-                                                <time dateTime={activity.date.toString()}>
-                                                    {new Date(activity.date).toLocaleDateString("id-ID", {
-                                                        day: "numeric",
-                                                        month: "short",
-                                                    })}
-                                                </time>
-                                            </div>
-                                        </div>
-                                    </>
-                                </div>
-                            </div>
-                        </li>
-                    ))}
-                </ul>
+            <div className="flex flex-col gap-4">
+                {activities.map((activity) => (
+                    <div
+                        key={activity.id}
+                        className="flex items-center gap-4 rounded-lg border border-gray-100 bg-gray-50/50 p-3 transition-colors hover:bg-gray-100 dark:border-gray-800 dark:bg-white/5 dark:hover:bg-white/10"
+                    >
+                        {/* Icon */}
+                        <div className={`flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-full ${activity.type === "transaction"
+                                ? "bg-green-100 text-green-600 dark:bg-green-900/30 dark:text-green-400"
+                                : "bg-yellow-100 text-yellow-600 dark:bg-yellow-900/30 dark:text-yellow-400"
+                            }`}>
+                            {activity.type === "transaction" ? (
+                                <DollarSign className="h-5 w-5" />
+                            ) : (
+                                <Trophy className="h-5 w-5" />
+                            )}
+                        </div>
+
+                        {/* Content */}
+                        <div className="flex-1 min-w-0">
+                            <p className="truncate text-sm font-medium text-gray-900 dark:text-white">
+                                {activity.title}
+                            </p>
+                            <p className="truncate text-xs text-gray-500 dark:text-gray-400">
+                                {activity.description}
+                            </p>
+                        </div>
+
+                        {/* Date & Amount */}
+                        <div className="text-right flex-shrink-0">
+                            <p className="text-sm font-semibold text-gray-900 dark:text-white">
+                                {activity.type === "transaction" ? "+" : ""}
+                                {activity.amount > 0 ? activity.amount.toLocaleString("id-ID") : ""}
+                                {activity.type === "transaction" ? "" : " Poin"}
+                            </p>
+                            <p className="text-xs text-gray-500 dark:text-gray-400">
+                                {new Date(activity.date).toLocaleDateString("id-ID", {
+                                    day: "numeric",
+                                    month: "short",
+                                    hour: "2-digit",
+                                    minute: "2-digit"
+                                })}
+                            </p>
+                        </div>
+                    </div>
+                ))}
             </div>
         </div>
     );
