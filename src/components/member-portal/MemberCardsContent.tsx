@@ -79,6 +79,32 @@ export default function MemberCardsContent() {
 
             {/* Card Preview */}
             <div className="rounded-lg border border-gray-200 bg-white p-6 shadow-sm dark:border-gray-800 dark:bg-gray-900">
+                <style jsx global>{`
+                    @media print {
+                        body * {
+                            visibility: hidden;
+                        }
+                        #printable-card, #printable-card * {
+                            visibility: visible;
+                        }
+                        #printable-card {
+                            position: fixed;
+                            left: 50%;
+                            top: 50%;
+                            transform: translate(-50%, -50%);
+                            width: 100%;
+                            max-width: 500px; /* Optional: limit width for card size */
+                            margin: 0;
+                            padding: 0;
+                            box-shadow: none;
+                            border: 1px solid #ccc;
+                        }
+                        /* Hide the info box in print */
+                        .print:hidden {
+                            display: none !important;
+                        }
+                    }
+                `}</style>
                 <h3 className="mb-4 text-lg font-semibold text-gray-900 dark:text-white">
                     Preview Card
                 </h3>
@@ -86,7 +112,7 @@ export default function MemberCardsContent() {
                 {cardData ? (
                     <div className="space-y-4">
                         {/* Member Card */}
-                        <div className="overflow-hidden rounded-xl border-2 border-brand-200 bg-gradient-to-br from-brand-500 to-brand-700 p-6 text-white shadow-xl">
+                        <div id="printable-card" className="overflow-hidden rounded-xl border-2 border-brand-200 bg-gradient-to-br from-brand-500 to-brand-700 p-6 text-white shadow-xl print:border-0">
                             <div className="mb-4">
                                 <h4 className="text-sm font-medium opacity-90">REWARD MEMBER CARD</h4>
                             </div>
@@ -95,18 +121,18 @@ export default function MemberCardsContent() {
                                 <div className="flex-1">
                                     <div className="mb-3">
                                         <p className="text-xs opacity-75">Member ID</p>
-                                        <p className="text-lg font-bold">{cardData.member.memberId}</p>
+                                        <p className="text-lg font-bold text-white print:text-black">{cardData.member.memberId}</p>
                                     </div>
 
                                     <div className="mb-3">
                                         <p className="text-xs opacity-75">Name</p>
-                                        <p className="text-xl font-bold">{cardData.member.name}</p>
+                                        <p className="text-xl font-bold text-white print:text-black">{cardData.member.name}</p>
                                     </div>
 
                                     <div className="grid grid-cols-2 gap-3">
                                         <div>
                                             <p className="text-xs opacity-75">Points</p>
-                                            <p className="font-semibold">{cardData.member.totalPoints.toLocaleString("id-ID")}</p>
+                                            <p className="font-semibold text-white print:text-black">{cardData.member.totalPoints.toLocaleString("id-ID")}</p>
                                         </div>
                                         <div>
                                             <p className="text-xs opacity-75">Since</p>
@@ -128,7 +154,7 @@ export default function MemberCardsContent() {
                             </div>
                         </div>
 
-                        <div className="rounded-lg bg-blue-50 p-4 dark:bg-blue-900/20">
+                        <div className="rounded-lg bg-blue-50 p-4 dark:bg-blue-900/20 print:hidden">
                             <p className="text-sm text-blue-800 dark:text-blue-400">
                                 💡 Kartu ini bisa di-print dan diberikan kepada member. QR code bisa di-scan untuk cek poin!
                             </p>
