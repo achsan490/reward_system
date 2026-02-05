@@ -43,6 +43,7 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
                         name: admin.name,
                     };
                 } catch (error) {
+                    console.error("Login authorization error:", error);
                     return null;
                 }
             },
