@@ -406,6 +406,7 @@ export async function getRedemptionStats() {
             approvedRedemptions,
             completedRedemptions,
             rejectedRedemptions,
+            expiredRedemptions,
             totalPointsRedeemed,
         ] = await Promise.all([
             prisma.rewardRedemption.count(),
@@ -413,6 +414,7 @@ export async function getRedemptionStats() {
             prisma.rewardRedemption.count({ where: { status: "approved" } }),
             prisma.rewardRedemption.count({ where: { status: "completed" } }),
             prisma.rewardRedemption.count({ where: { status: "rejected" } }),
+            prisma.rewardRedemption.count({ where: { status: "expired" } }),
             prisma.rewardRedemption.aggregate({
                 _sum: { pointsUsed: true },
                 where: { status: { in: ["approved", "completed"] } },
@@ -427,6 +429,7 @@ export async function getRedemptionStats() {
                 approvedRedemptions,
                 completedRedemptions,
                 rejectedRedemptions,
+                expiredRedemptions: expiredRedemptions || 0,
                 totalPointsRedeemed: totalPointsRedeemed._sum.pointsUsed || 0,
             },
         };

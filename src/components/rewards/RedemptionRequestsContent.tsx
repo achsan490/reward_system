@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { Clock, CheckCircle, XCircle, Package, Trash2 } from "lucide-react";
+import { Clock, CheckCircle, XCircle, Package, Trash2, AlertCircle } from "lucide-react";
 import { getAllRedemptions, getRedemptionStats, deleteAllCompletedRedemptions } from "@/app/actions/reward-redemption";
 import RedemptionRequestsTable from "./RedemptionRequestsTable";
 
@@ -35,7 +35,7 @@ export default function RedemptionRequestsContent() {
         <div className="space-y-6">
             {/* Stats Cards */}
             {stats && (
-                <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
+                <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-5">
                     <div className="rounded-lg border border-gray-200 bg-white p-4 dark:border-gray-800 dark:bg-gray-900">
                         <div className="flex items-center gap-3">
                             <div className="rounded-lg bg-orange-100 p-2 dark:bg-orange-900/40">
@@ -84,14 +84,31 @@ export default function RedemptionRequestsContent() {
                         </div>
                     </div>
 
+                    {/* Expired Status Card */}
                     <div className="rounded-lg border border-gray-200 bg-white p-4 dark:border-gray-800 dark:bg-gray-900">
                         <div className="flex items-center gap-3">
-                            <div className="rounded-lg bg-purple-100 p-2 dark:bg-purple-900/40">
-                                <XCircle className="h-5 w-5 text-purple-600 dark:text-purple-400" />
+                            <div className="rounded-lg bg-red-100 p-2 dark:bg-red-900/40">
+                                <AlertCircle className="h-5 w-5 text-red-600 dark:text-red-400" />
                             </div>
                             <div>
                                 <p className="text-sm text-gray-500 dark:text-gray-400">
-                                    Total Points Used
+                                    Expired
+                                </p>
+                                <p className="text-2xl font-bold text-gray-900 dark:text-white">
+                                    {stats.expiredRedemptions || 0}
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div className="rounded-lg border border-gray-200 bg-white p-4 dark:border-gray-800 dark:bg-gray-900">
+                        <div className="flex items-center gap-3">
+                            <div className="rounded-lg bg-purple-100 p-2 dark:bg-purple-900/40">
+                                <Package className="h-5 w-5 text-purple-600 dark:text-purple-400" />
+                            </div>
+                            <div>
+                                <p className="text-sm text-gray-500 dark:text-gray-400">
+                                    Points Used
                                 </p>
                                 <p className="text-2xl font-bold text-gray-900 dark:text-white">
                                     {stats.totalPointsRedeemed.toLocaleString("id-ID")}
@@ -117,6 +134,7 @@ export default function RedemptionRequestsContent() {
                     <option value="approved">Approved</option>
                     <option value="completed">Completed</option>
                     <option value="rejected">Rejected</option>
+                    <option value="expired">Expired</option>
                 </select>
 
                 <div className="flex-1"></div>
