@@ -195,8 +195,8 @@ export default function RedemptionRequestsTable({
                                             <code className="rounded bg-gray-100 px-2 py-1 font-mono text-sm font-bold text-gray-900 dark:bg-gray-700 dark:text-white">
                                                 {(redemption.claimCode || redemption.id.slice(-8)).toUpperCase()}
                                             </code>
-                                            {redemption.status === 'approved' && redemption.processedAt && (
-                                                <span className="text-[10px] text-red-500 font-medium whitespace-nowrap">
+                                            {(redemption.status === 'approved' || redemption.status === 'expired') && redemption.processedAt && (
+                                                <span className={`text-[10px] font-medium whitespace-nowrap ${redemption.status === 'expired' ? 'text-gray-500' : 'text-red-500'}`}>
                                                     Exp: {new Date(new Date(redemption.processedAt).getTime() + 30 * 24 * 60 * 60 * 1000).toLocaleDateString("id-ID", { day: 'numeric', month: 'short' })}
                                                 </span>
                                             )}
