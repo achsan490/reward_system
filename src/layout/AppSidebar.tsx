@@ -80,7 +80,6 @@ const othersItems: NavItem[] = [
     name: "Link Publik",
     subItems: [
       { name: "Cek Poin Member", path: "/member/check", pro: false },
-      { name: "Tukar Reward", path: "/member/rewards", pro: false, new: true },
     ],
   },
 ];
