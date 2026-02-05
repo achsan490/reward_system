@@ -368,6 +368,11 @@ function MyRedemptionsContent() {
                                                                     {copiedId === redemption.id ? <Check className="h-5 w-5 text-green-500" /> : <Copy className="h-5 w-5" />}
                                                                 </button>
                                                             </div>
+                                                            {redemption.status === 'approved' && redemption.processedAt && (
+                                                                <p className="mt-2 text-xs text-red-600 dark:text-red-400 font-medium bg-red-50 dark:bg-red-900/20 px-2 py-1 rounded-md inline-block border border-red-100 dark:border-red-800">
+                                                                    Berlaku s/d: {new Date(new Date(redemption.processedAt).getTime() + 30 * 24 * 60 * 60 * 1000).toLocaleDateString("id-ID", { day: 'numeric', month: 'long', year: 'numeric' })}
+                                                                </p>
+                                                            )}
                                                         </div>
 
                                                         <div className="flex-shrink-0 bg-white p-2 rounded-lg border border-gray-100 shadow-sm dark:bg-gray-700 dark:border-gray-600">

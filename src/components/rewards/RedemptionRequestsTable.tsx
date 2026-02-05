@@ -191,9 +191,16 @@ export default function RedemptionRequestsTable({
                                         </div>
                                     </td>
                                     <td className="px-4 py-3">
-                                        <code className="rounded bg-gray-100 px-2 py-1 font-mono text-sm font-bold text-gray-900 dark:bg-gray-700 dark:text-white">
-                                            {(redemption.claimCode || redemption.id.slice(-8)).toUpperCase()}
-                                        </code>
+                                        <div className="flex flex-col gap-1 items-start">
+                                            <code className="rounded bg-gray-100 px-2 py-1 font-mono text-sm font-bold text-gray-900 dark:bg-gray-700 dark:text-white">
+                                                {(redemption.claimCode || redemption.id.slice(-8)).toUpperCase()}
+                                            </code>
+                                            {redemption.status === 'approved' && redemption.processedAt && (
+                                                <span className="text-[10px] text-red-500 font-medium whitespace-nowrap">
+                                                    Exp: {new Date(new Date(redemption.processedAt).getTime() + 30 * 24 * 60 * 60 * 1000).toLocaleDateString("id-ID", { day: 'numeric', month: 'short' })}
+                                                </span>
+                                            )}
+                                        </div>
                                     </td>
                                     <td className="px-4 py-3">
                                         <div>
