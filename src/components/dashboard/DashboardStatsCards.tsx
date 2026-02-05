@@ -47,16 +47,7 @@ export default function DashboardStatsCards({ stats }: DashboardStatsCardsProps)
         },
     ];
 
-    // Add expiring points card if there are expiring points
-    if (stats.pointsExpiringSoon && stats.pointsExpiringSoon > 0) {
-        cards.push({
-            title: "Poin Akan Kadaluarsa",
-            value: stats.pointsExpiringSoon.toLocaleString("id-ID"),
-            icon: AlertCircle,
-            color: "text-red-600 dark:text-red-400",
-            bgColor: "bg-red-100 dark:bg-red-900/20",
-        });
-    }
+
 
     return (
         <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-4">
