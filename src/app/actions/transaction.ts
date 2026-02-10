@@ -228,29 +228,29 @@ export async function getTopMembers(limit: number = 10) {
  */
 export async function getTransactionStats() {
     try {
-        const [totalTransactions, totalMembers, totalAmount, totalPoints] =
-            await Promise.all([
-                prisma.transaction.count(),
-                prisma.member.count(),
-                prisma.transaction.aggregate({
-                    _sum: {
-                        amount: true,
-                    },
-                }),
-                prisma.member.aggregate({
-                    _sum: {
-                        totalPoints: true,
-                    },
-                }),
-            ]);
+        // Run queries sequentially to spare connection pool
+        const totalTransactions = await prisma.transaction.count();
+        const totalMembers = await prisma.member.count();
+
+        const totalAmountAgg = await prisma.transaction.aggregate({
+            _sum: {
+                amount: true,
+            },
+        });
+
+        const totalPointsAgg = await prisma.member.aggregate({
+            _sum: {
+                totalPoints: true,
+            },
+        });
 
         return {
             success: true,
             data: {
                 totalTransactions,
                 totalMembers,
-                totalAmount: totalAmount._sum.amount || 0,
-                totalPoints: totalPoints._sum.totalPoints || 0,
+                totalAmount: totalAmountAgg._sum.amount || 0,
+                totalPoints: totalPointsAgg._sum.totalPoints || 0,
             },
         };
     } catch (error) {
@@ -266,24 +266,24 @@ export async function getTransactions(page: number = 1, limit: number = 20) {
     try {
         const skip = (page - 1) * limit;
 
-        const [transactions, total] = await Promise.all([
-            prisma.transaction.findMany({
-                skip,
-                take: limit,
-                orderBy: {
-                    transactionDate: "desc",
-                },
-                include: {
-                    member: {
-                        select: {
-                            memberId: true,
-                            name: true,
-                        },
+        // Run sequentially to spare connection pool
+        const transactions = await prisma.transaction.findMany({
+            skip,
+            take: limit,
+            orderBy: {
+                transactionDate: "desc",
+            },
+            include: {
+                member: {
+                    select: {
+                        memberId: true,
+                        name: true,
                     },
                 },
-            }),
-            prisma.transaction.count(),
-        ]);
+            },
+        });
+
+        const total = await prisma.transaction.count();
 
         return {
             success: true,
