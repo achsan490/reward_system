@@ -18,6 +18,8 @@ export const metadata: Metadata = {
   description: "Overview sistem reward dan statistik",
 };
 
+export const dynamic = "force-dynamic";
+
 export default async function DashboardPage() {
   // Parallel data fetching for performance
   const [statsResult, chartResult, activityResult, widgetsResult] = await Promise.all([

@@ -1,0 +1,118 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<mxfile host="app.diagrams.net" modified="2024-05-20T12:00:00.000Z" agent="5.0 (Windows NT 10.0; Win64; x64)" etag="sequence-diagram" version="21.6.8" type="device">
+  <diagram id="SequenceDiagram" name="Sequence Diagram Redeem">
+    <mxGraphModel dx="1422" dy="762" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="850" pageHeight="1100" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+
+        <!-- Actors and Lifelines -->
+        <mxCell id="Member" value="Member" style="shape=umlLifeline;perimeter=lifelinePerimeter;whiteSpace=wrap;html=1;container=1;collapsible=0;recursiveResize=0;outlineConnect=0;" vertex="1" parent="1">
+          <mxGeometry x="80" y="40" width="100" height="520" as="geometry" />
+        </mxCell>
+        <mxCell id="Act1" value="" style="html=1;points=[];perimeter=orthogonalPerimeter;" vertex="1" parent="Member">
+          <mxGeometry x="45" y="70" width="10" height="400" as="geometry" />
+        </mxCell>
+
+        <mxCell id="Page" value="Halaman Reward" style="shape=umlLifeline;perimeter=lifelinePerimeter;whiteSpace=wrap;html=1;container=1;collapsible=0;recursiveResize=0;outlineConnect=0;" vertex="1" parent="1">
+          <mxGeometry x="240" y="40" width="120" height="520" as="geometry" />
+        </mxCell>
+        <mxCell id="Act2" value="" style="html=1;points=[];perimeter=orthogonalPerimeter;" vertex="1" parent="Page">
+          <mxGeometry x="55" y="80" width="10" height="380" as="geometry" />
+        </mxCell>
+
+        <mxCell id="Controller" value="Server Action&#10;(RewardController)" style="shape=umlLifeline;perimeter=lifelinePerimeter;whiteSpace=wrap;html=1;container=1;collapsible=0;recursiveResize=0;outlineConnect=0;" vertex="1" parent="1">
+          <mxGeometry x="420" y="40" width="120" height="520" as="geometry" />
+        </mxCell>
+        <mxCell id="Act3" value="" style="html=1;points=[];perimeter=orthogonalPerimeter;" vertex="1" parent="Controller">
+          <mxGeometry x="55" y="100" width="10" height="340" as="geometry" />
+        </mxCell>
+
+        <mxCell id="DB" value="Database&#10;(Prisma)" style="shape=umlLifeline;perimeter=lifelinePerimeter;whiteSpace=wrap;html=1;container=1;collapsible=0;recursiveResize=0;outlineConnect=0;" vertex="1" parent="1">
+          <mxGeometry x="600" y="40" width="100" height="520" as="geometry" />
+        </mxCell>
+        <mxCell id="Act4" value="" style="html=1;points=[];perimeter=orthogonalPerimeter;" vertex="1" parent="DB">
+          <mxGeometry x="45" y="120" width="10" height="300" as="geometry" />
+        </mxCell>
+
+        <!-- Messages -->
+        <!-- 1. Click Redeem -->
+        <mxCell id="Msg1" value="Klik Tombol Tukar (Redeem)" style="html=1;verticalAlign=bottom;endArrow=block;entryX=0;entryY=0;" edge="1" parent="1" source="Act1" target="Act2">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="135" y="120" as="sourcePoint" />
+          </mxGeometry>
+        </mxCell>
+
+        <!-- 2. Call Server Action -->
+        <mxCell id="Msg2" value="Request Penukaran(id_hadiah)" style="html=1;verticalAlign=bottom;endArrow=block;entryX=0;entryY=0;" edge="1" parent="1" source="Act2" target="Act3">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="305" y="140" as="sourcePoint" />
+          </mxGeometry>
+        </mxCell>
+
+        <!-- 3. Check Points -->
+        <mxCell id="Msg3" value="GetMemberPoints(id_member)" style="html=1;verticalAlign=bottom;endArrow=block;entryX=0;entryY=0;" edge="1" parent="1" source="Act3" target="Act4">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="485" y="160" as="sourcePoint" />
+          </mxGeometry>
+        </mxCell>
+
+        <!-- 4. Return Points -->
+        <mxCell id="Msg4" value="Return Data Member &amp; Poin" style="html=1;verticalAlign=bottom;endArrow=open;dashed=1;endSize=8;exitX=0;exitY=0.2;" edge="1" parent="1" source="Act4" target="Act3">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="645" y="190" as="sourcePoint" />
+            <mxPoint x="485" y="190" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+
+        <!-- 5. Validate (Self Call) -->
+        <mxCell id="Msg5" value="Validasi (Poin &gt; Harga)" style="html=1;verticalAlign=bottom;endArrow=block;rounded=0;" edge="1" parent="1" source="Act3" target="Act3">
+          <mxGeometry width="80" relative="1" as="geometry">
+            <mxPoint x="490" y="240" as="sourcePoint" />
+            <mxPoint x="490" y="270" as="targetPoint" />
+            <Array as="points">
+               <mxPoint x="530" y="240" />
+               <mxPoint x="530" y="270" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+
+        <!-- 6. Create Redemption -->
+        <mxCell id="Msg6" value="Simpan Data Transaksi (Redeem)" style="html=1;verticalAlign=bottom;endArrow=block;entryX=0;entryY=0.6;" edge="1" parent="1" source="Act3" target="Act4">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="485" y="300" as="sourcePoint" />
+          </mxGeometry>
+        </mxCell>
+
+        <!-- 7. Deduct Points -->
+        <mxCell id="Msg7" value="Update Poin Member (-)" style="html=1;verticalAlign=bottom;endArrow=block;entryX=0;entryY=0.8;" edge="1" parent="1" source="Act3" target="Act4">
+          <mxGeometry relative="1" as="geometry">
+             <mxPoint x="485" y="340" as="sourcePoint" />
+          </mxGeometry>
+        </mxCell>
+
+        <!-- 8. Return Success -->
+        <mxCell id="Msg8" value="Return Success" style="html=1;verticalAlign=bottom;endArrow=open;dashed=1;endSize=8;exitX=0;exitY=1;" edge="1" parent="1" source="Act4" target="Act3">
+          <mxGeometry relative="1" as="geometry">
+             <mxPoint x="645" y="380" as="sourcePoint" />
+          </mxGeometry>
+        </mxCell>
+
+        <!-- 9. Response to Page -->
+        <mxCell id="Msg9" value="Tampilkan Notifikasi Sukses" style="html=1;verticalAlign=bottom;endArrow=open;dashed=1;endSize=8;exitX=0;exitY=1;" edge="1" parent="1" source="Act3" target="Act2">
+          <mxGeometry relative="1" as="geometry">
+             <mxPoint x="475" y="420" as="sourcePoint" />
+          </mxGeometry>
+        </mxCell>
+
+        <!-- 10. Update View -->
+        <mxCell id="Msg10" value="Lihat Status: Menunggu" style="html=1;verticalAlign=bottom;endArrow=open;dashed=1;endSize=8;exitX=0;exitY=1;" edge="1" parent="1" source="Act2" target="Act1">
+          <mxGeometry relative="1" as="geometry">
+             <mxPoint x="295" y="450" as="sourcePoint" />
+          </mxGeometry>
+        </mxCell>
+
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>

@@ -1,5 +1,6 @@
 import { NextResponse } from 'next/server'
 import { prisma } from '@/lib/prisma'
+import { revalidatePath } from 'next/cache'
 
 /**
  * API Endpoint untuk menghapus data Reward System
@@ -37,6 +38,10 @@ export async function POST() {
 
         await prisma.member.deleteMany()
         console.log('✅ Members dihapus')
+
+        // Force revalidation of all paths
+        revalidatePath('/', 'layout')
+        console.log('🔄 Cache revalidated')
 
         return NextResponse.json({
             success: true,

@@ -11,6 +11,8 @@ export const metadata: Metadata = {
     description: "Kelola pengaturan sistem reward",
 };
 
+export const dynamic = "force-dynamic";
+
 export default async function SettingsPage() {
     const [rateResult, expirationResult] = await Promise.all([
         getPointConversionRate(),

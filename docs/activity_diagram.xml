@@ -1,0 +1,133 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<mxfile host="app.diagrams.net" modified="2024-05-20T12:00:00.000Z" agent="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36" etag="activity-diagram" version="24.4.0" type="device">
+  <diagram id="ActivityDiagram" name="Activity Diagram Redemption">
+    <mxGraphModel dx="1434" dy="738" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="850" pageHeight="1100" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        
+        <!-- Swimlanes -->
+        <mxCell id="Swimlane_Member" value="Member" style="swimlane;html=1;childLayout=stackLayout;resizeParent=1;resizeParentMax=0;startSize=20;horizontal=1;horizontalStack=0;" vertex="1" parent="1">
+          <mxGeometry x="40" y="40" width="280" height="760" as="geometry" />
+        </mxCell>
+        <mxCell id="Swimlane_System" value="Sistem" style="swimlane;html=1;startSize=20;" vertex="1" parent="1">
+          <mxGeometry x="320" y="40" width="280" height="760" as="geometry" />
+        </mxCell>
+        <mxCell id="Swimlane_Admin" value="Admin" style="swimlane;html=1;startSize=20;" vertex="1" parent="1">
+          <mxGeometry x="600" y="40" width="280" height="760" as="geometry" />
+        </mxCell>
+
+        <!-- Nodes Member -->
+        <mxCell id="Start" value="" style="ellipse;html=1;shape=startState;fillColor=#000000;strokeColor=#ff0000;" vertex="1" parent="Swimlane_Member">
+          <mxGeometry x="120" y="40" width="30" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="Act_Login" value="Login ke Aplikasi" style="rounded=1;whiteSpace=wrap;html=1;" vertex="1" parent="Swimlane_Member">
+          <mxGeometry x="80" y="100" width="120" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="Act_ViewCatalog" value="Melihat Katalog Hadiah" style="rounded=1;whiteSpace=wrap;html=1;" vertex="1" parent="Swimlane_Member">
+          <mxGeometry x="80" y="180" width="120" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="Act_SelectReward" value="Pilih Hadiah &amp; Tukar" style="rounded=1;whiteSpace=wrap;html=1;" vertex="1" parent="Swimlane_Member">
+          <mxGeometry x="80" y="260" width="120" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="Act_ReceiveNotif" value="Terima Notifikasi" style="rounded=1;whiteSpace=wrap;html=1;" vertex="1" parent="Swimlane_Member">
+          <mxGeometry x="80" y="660" width="120" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="End" value="" style="ellipse;html=1;shape=endState;fillColor=#000000;strokeColor=#ff0000;" vertex="1" parent="Swimlane_Member">
+          <mxGeometry x="125" y="720" width="30" height="30" as="geometry" />
+        </mxCell>
+
+        <!-- Nodes System -->
+        <mxCell id="Act_CheckPoints" value="Cek Poin Cukup?" style="rhombus;whiteSpace=wrap;html=1;" vertex="1" parent="Swimlane_System">
+          <mxGeometry x="100" y="250" width="100" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="Act_ErrorMsg" value="Tampilkan Pesan Eror" style="rounded=1;whiteSpace=wrap;html=1;" vertex="1" parent="Swimlane_System">
+          <mxGeometry x="160" y="180" width="110" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="Act_DeductPoints" value="Potong Poin &amp; Buat Request" style="rounded=1;whiteSpace=wrap;html=1;" vertex="1" parent="Swimlane_System">
+          <mxGeometry x="80" y="340" width="140" height="50" as="geometry" />
+        </mxCell>
+        <mxCell id="Act_UpdateStatus" value="Update Status: Selesai" style="rounded=1;whiteSpace=wrap;html=1;" vertex="1" parent="Swimlane_System">
+          <mxGeometry x="20" y="580" width="140" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="Act_RefundPoints" value="Refund Poin &amp; Update Status: Ditolak" style="rounded=1;whiteSpace=wrap;html=1;" vertex="1" parent="Swimlane_System">
+          <mxGeometry x="170" y="580" width="100" height="50" as="geometry" />
+        </mxCell>
+
+        <!-- Nodes Admin -->
+        <mxCell id="Act_ViewRequest" value="Lihat Request Penukaran" style="rounded=1;whiteSpace=wrap;html=1;" vertex="1" parent="Swimlane_Admin">
+          <mxGeometry x="80" y="345" width="140" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="Act_Validate" value="Validasi Pengambilan" style="rhombus;whiteSpace=wrap;html=1;" vertex="1" parent="Swimlane_Admin">
+          <mxGeometry x="90" y="440" width="120" height="80" as="geometry" />
+        </mxCell>
+        <mxCell id="Act_Process" value="Proses Penyerahan Hadiah" style="rounded=1;whiteSpace=wrap;html=1;" vertex="1" parent="Swimlane_Admin">
+          <mxGeometry x="10" y="520" width="120" height="50" as="geometry" />
+        </mxCell>
+
+        <!-- Edges -->
+        <mxCell id="Edge1" style="edgeStyle=orthogonalEdgeStyle;html=1;entryX=0.5;entryY=0;" edge="1" parent="1" source="Start" target="Act_Login">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="Edge2" style="edgeStyle=orthogonalEdgeStyle;html=1;entryX=0.5;entryY=0;" edge="1" parent="1" source="Act_Login" target="Act_ViewCatalog">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="Edge3" style="edgeStyle=orthogonalEdgeStyle;html=1;entryX=0.5;entryY=0;" edge="1" parent="1" source="Act_ViewCatalog" target="Act_SelectReward">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="Edge4" style="edgeStyle=orthogonalEdgeStyle;html=1;entryX=0;entryY=0.5;" edge="1" parent="1" source="Act_SelectReward" target="Act_CheckPoints">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="Edge5_No" value="Tidak" style="edgeStyle=orthogonalEdgeStyle;html=1;entryX=0.5;entryY=1;" edge="1" parent="1" source="Act_CheckPoints" target="Act_ErrorMsg">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="Edge_Error_Back" style="edgeStyle=orthogonalEdgeStyle;html=1;entryX=1;entryY=0.5;" edge="1" parent="1" source="Act_ErrorMsg" target="Act_ViewCatalog">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="535" y="240" />
+              <mxPoint x="200" y="240" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="Edge5_Yes" value="Ya" style="edgeStyle=orthogonalEdgeStyle;html=1;entryX=0.5;entryY=0;" edge="1" parent="1" source="Act_CheckPoints" target="Act_DeductPoints">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="Edge6" style="edgeStyle=orthogonalEdgeStyle;html=1;entryX=0;entryY=0.5;" edge="1" parent="1" source="Act_DeductPoints" target="Act_ViewRequest">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="Edge7" style="edgeStyle=orthogonalEdgeStyle;html=1;entryX=0.5;entryY=0;" edge="1" parent="1" source="Act_ViewRequest" target="Act_Validate">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="Edge8_Approve" value="Setujui" style="edgeStyle=orthogonalEdgeStyle;html=1;entryX=0.5;entryY=0;" edge="1" parent="1" source="Act_Validate" target="Act_Process">
+          <mxGeometry relative="1" as="geometry">
+           <Array as="points">
+              <mxPoint x="750" y="520" />
+              <mxPoint x="670" y="520" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+         <mxCell id="Edge9_Process" style="edgeStyle=orthogonalEdgeStyle;html=1;entryX=0.5;entryY=0;" edge="1" parent="1" source="Act_Process" target="Act_UpdateStatus">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+               <mxPoint x="670" y="560" />
+               <mxPoint x="410" y="560" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="Edge8_Reject" value="Tolak" style="edgeStyle=orthogonalEdgeStyle;html=1;entryX=0.5;entryY=0;" edge="1" parent="1" source="Act_Validate" target="Act_RefundPoints">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="Edge10" style="edgeStyle=orthogonalEdgeStyle;html=1;entryX=0.5;entryY=0;" edge="1" parent="1" source="Act_UpdateStatus" target="Act_ReceiveNotif">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="Edge11" style="edgeStyle=orthogonalEdgeStyle;html=1;entryX=0.5;entryY=0;" edge="1" parent="1" source="Act_RefundPoints" target="Act_ReceiveNotif">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="Edge12" style="edgeStyle=orthogonalEdgeStyle;html=1;entryX=0.5;entryY=0;" edge="1" parent="1" source="Act_ReceiveNotif" target="End">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>

@@ -2,11 +2,13 @@
 
 import { prisma } from "@/lib/prisma";
 import { getExpirationStats } from "./point-expiration";
+import { unstable_noStore as noStore } from "next/cache";
 
 /**
  * Get aggregated dashboard statistics
  */
 export async function getDashboardStats() {
+    noStore();
     try {
         const [
             totalMembers,
@@ -66,6 +68,7 @@ export async function getDashboardStats() {
  * Get chart data aggregated by month (Last 6 months)
  */
 export async function getDashboardChartData() {
+    noStore();
     try {
         const sixMonthsAgo = new Date();
         sixMonthsAgo.setMonth(sixMonthsAgo.getMonth() - 6);
@@ -120,6 +123,7 @@ export async function getDashboardChartData() {
  * Get recent activity (Mixed Transactions & Reward Winners)
  */
 export async function getRecentActivity() {
+    noStore();
     try {
         const [recentTransactions, recentWinners] = await Promise.all([
             prisma.transaction.findMany({

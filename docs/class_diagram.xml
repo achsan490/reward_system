@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<mxfile host="app.diagrams.net" modified="2024-05-20T12:00:00.000Z" agent="5.0 (Windows NT 10.0; Win64; x64)" etag="class-diagram" version="21.6.8" type="device">
+  <diagram id="ClassDiagram" name="Class Diagram">
+    <mxGraphModel dx="1422" dy="762" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="850" pageHeight="1100" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+
+        <!-- Class: Member -->
+        <mxCell id="Member" value="Member" style="swimlane;fontStyle=1;align=center;verticalAlign=top;childLayout=stackLayout;horizontal=1;startSize=26;horizontalStack=0;resizeParent=1;resizeParentMax=0;resizeLast=0;collapsible=1;marginBottom=0;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="40" y="240" width="200" height="190" as="geometry" />
+        </mxCell>
+        <mxCell id="Mem_Attr" value="- id: String&#10;- name: String&#10;- email: String&#10;- phone: String&#10;- totalPoints: Float&#10;- totalSpent: Float" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;" vertex="1" parent="Member">
+          <mxGeometry y="26" width="200" height="104" as="geometry" />
+        </mxCell>
+        <mxCell id="Mem_Op" value="" style="line;strokeWidth=1;fillColor=none;align=left;verticalAlign=middle;spacingTop=-1;spacingLeft=3;spacingRight=3;rotatable=0;labelPosition=right;points=[];portConstraint=eastwest;" vertex="1" parent="Member">
+          <mxGeometry y="130" width="200" height="8" as="geometry" />
+        </mxCell>
+        <mxCell id="Mem_Meth" value="+ getBalance(): Float&#10;- updatePoints(amount): void&#10;+ redeem(rewardId): bool" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;" vertex="1" parent="Member">
+          <mxGeometry y="138" width="200" height="52" as="geometry" />
+        </mxCell>
+
+        <!-- Class: Transaction -->
+        <mxCell id="Transaction" value="Transaction" style="swimlane;fontStyle=1;align=center;verticalAlign=top;childLayout=stackLayout;horizontal=1;startSize=26;horizontalStack=0;resizeParent=1;resizeParentMax=0;resizeLast=0;collapsible=1;marginBottom=0;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="360" y="240" width="180" height="140" as="geometry" />
+        </mxCell>
+        <mxCell id="Trans_Attr" value="- id: String&#10;- amount: Float&#10;- pointsEarned: Float&#10;- date: DateTime" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;" vertex="1" parent="Transaction">
+          <mxGeometry y="26" width="180" height="74" as="geometry" />
+        </mxCell>
+        <mxCell id="Trans_Op" value="" style="line;strokeWidth=1;fillColor=none;align=left;verticalAlign=middle;spacingTop=-1;spacingLeft=3;spacingRight=3;rotatable=0;labelPosition=right;points=[];portConstraint=eastwest;" vertex="1" parent="Transaction">
+          <mxGeometry y="100" width="180" height="8" as="geometry" />
+        </mxCell>
+         <mxCell id="Trans_Meth" value="+ calculatePoints(): Float" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;" vertex="1" parent="Transaction">
+          <mxGeometry y="108" width="180" height="26" as="geometry" />
+        </mxCell>
+
+        <!-- Class: RewardCatalog -->
+        <mxCell id="Catalog" value="RewardCatalog" style="swimlane;fontStyle=1;align=center;verticalAlign=top;childLayout=stackLayout;horizontal=1;startSize=26;horizontalStack=0;resizeParent=1;resizeParentMax=0;resizeLast=0;collapsible=1;marginBottom=0;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="40" y="520" width="200" height="140" as="geometry" />
+        </mxCell>
+        <mxCell id="Cat_Attr" value="- id: String&#10;- name: String&#10;- pointsRequired: Float&#10;- stock: Integer" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;" vertex="1" parent="Catalog">
+          <mxGeometry y="26" width="200" height="74" as="geometry" />
+        </mxCell>
+        <mxCell id="Cat_Op" value="" style="line;strokeWidth=1;fillColor=none;align=left;verticalAlign=middle;spacingTop=-1;spacingLeft=3;spacingRight=3;rotatable=0;labelPosition=right;points=[];portConstraint=eastwest;" vertex="1" parent="Catalog">
+          <mxGeometry y="100" width="200" height="8" as="geometry" />
+        </mxCell>
+        <mxCell id="Cat_Meth" value="+ checkStock(): bool&#10;- decreaseStock(): void" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;" vertex="1" parent="Catalog">
+          <mxGeometry y="108" width="200" height="40" as="geometry" />
+        </mxCell>
+
+        <!-- Class: Redemption -->
+        <mxCell id="Redemption" value="Redemption" style="swimlane;fontStyle=1;align=center;verticalAlign=top;childLayout=stackLayout;horizontal=1;startSize=26;horizontalStack=0;resizeParent=1;resizeParentMax=0;resizeLast=0;collapsible=1;marginBottom=0;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="360" y="520" width="180" height="140" as="geometry" />
+        </mxCell>
+        <mxCell id="Red_Attr" value="- id: String&#10;- pointsUsed: Float&#10;- status: String&#10;- date: DateTime" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;" vertex="1" parent="Redemption">
+          <mxGeometry y="26" width="180" height="74" as="geometry" />
+        </mxCell>
+        <mxCell id="Red_Op" value="" style="line;strokeWidth=1;fillColor=none;align=left;verticalAlign=middle;spacingTop=-1;spacingLeft=3;spacingRight=3;rotatable=0;labelPosition=right;points=[];portConstraint=eastwest;" vertex="1" parent="Redemption">
+          <mxGeometry y="100" width="180" height="8" as="geometry" />
+        </mxCell>
+        <mxCell id="Red_Meth" value="+ process(): void&#10;+ approve(): void" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;" vertex="1" parent="Redemption">
+          <mxGeometry y="108" width="180" height="30" as="geometry" />
+        </mxCell>
+
+        <!-- Relationships -->
+        <!-- Member - Transaction (1:N) -->
+        <mxCell id="Rel1" value="1..*" style="endArrow=diamondThin;endFill=1;endSize=24;html=1;entryX=1;entryY=0.5;exitX=0;exitY=0.5;" edge="1" parent="1" source="Transaction" target="Member">
+          <mxGeometry width="160" relative="1" as="geometry">
+            <mxPoint x="320" y="320" as="sourcePoint" />
+            <mxPoint x="250" y="320" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        
+        <!-- Member - Redemption (1:N) -->
+        <mxCell id="Rel2" value="1..*" style="endArrow=diamondThin;endFill=1;endSize=24;html=1;entryX=0.5;entryY=1;exitX=0;exitY=0.5;" edge="1" parent="1" source="Redemption" target="Member">
+           <mxGeometry width="160" relative="1" as="geometry">
+             <Array as="points">
+                <mxPoint x="140" y="590" />
+             </Array>
+           </mxGeometry>
+        </mxCell>
+        
+        <!-- Redemption - Catalog (N:1) -->
+        <mxCell id="Rel3" value="1" style="endArrow=open;html=1;endSize=12;startArrow=diamondThin;startSize=14;startFill=0;edgeStyle=orthogonalEdgeStyle;entryX=1;entryY=0.5;exitX=0;exitY=0.5;" edge="1" parent="1" source="Redemption" target="Catalog">
+            <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>
