@@ -288,26 +288,32 @@ export async function saveStoreTransactions(transactions: any[]) {
         }
 
         // 4. Execute Member Updates (Batched Parallel)
-        const mbUpdates = Array.from(memberStatsUpdates.entries()).map(([id, stats]) => {
-            const data: any = {
-                totalPoints: { increment: stats.points },
-                totalSpent: { increment: stats.spent },
-                transactionCount: { increment: stats.count },
-            };
-            if (stats.phone) {
-                data.phone = stats.phone;
-            }
-            return prisma.member.update({
-                where: { id },
-                data: data,
-            });
-        });
+        // 4. Execute Member Updates (Batched Sequential)
+        const memberUpdateEntries = Array.from(memberStatsUpdates.entries());
+        const BATCH_SIZE = 10; // Small batch size to prevent connection pool exhaustion
 
-        // Process updates in chunks
-        const chunkSize = 50;
-        for (let i = 0; i < mbUpdates.length; i += chunkSize) {
-            await Promise.all(mbUpdates.slice(i, i + chunkSize));
+        for (let i = 0; i < memberUpdateEntries.length; i += BATCH_SIZE) {
+            const batch = memberUpdateEntries.slice(i, i + BATCH_SIZE);
+
+            await Promise.all(batch.map(([id, stats]) => {
+                const data: any = {
+                    totalPoints: { increment: stats.points || 0 }, // Ensure no undefined increment
+                    totalSpent: { increment: stats.spent || 0 },
+                    transactionCount: { increment: stats.count || 0 },
+                };
+
+                if (stats.phone) {
+                    data.phone = stats.phone;
+                }
+
+                return prisma.member.update({
+                    where: { id },
+                    data: data,
+                });
+            }));
         }
+
+
 
         revalidatePath("/transactions");
         revalidatePath("/customers");

@@ -1,4 +1,4 @@
-import { useEffect } from 'react';
+import { useEffect, useRef } from 'react';
 import flatpickr from 'flatpickr';
 import 'flatpickr/dist/flatpickr.css';
 import Label from './Label';
@@ -23,24 +23,58 @@ export default function DatePicker({
   defaultDate,
   placeholder,
 }: PropsType) {
+  const flatpickrRef = useRef<flatpickr.Instance | null>(null);
+  const onChangeRef = useRef(onChange);
+
+  // Update ref when onChange prop changes
   useEffect(() => {
-    const flatPickr = flatpickr(`#${id}`, {
+    onChangeRef.current = onChange;
+  }, [onChange]);
+
+  // Initialize Flatpickr (Run once)
+  useEffect(() => {
+    const element = document.getElementById(id);
+    if (!element) return;
+
+    const calendar = flatpickr(element, {
       mode: mode || "single",
       static: true,
       monthSelectorType: "static",
       dateFormat: "Y-m-d",
       altInput: true,
       altFormat: "d/m/Y",
-      defaultDate,
-      onChange,
+      defaultDate: defaultDate,
+      onChange: (...args) => {
+        const handler = onChangeRef.current;
+        if (Array.isArray(handler)) {
+          handler.forEach((h) => h(...args));
+        } else if (typeof handler === "function") {
+          handler(...args);
+        }
+      },
+      // Prevent flatpickr from opening native mobile datepicker on strict inputs
+      disableMobile: true,
     });
 
+    flatpickrRef.current = calendar as flatpickr.Instance;
+
     return () => {
-      if (!Array.isArray(flatPickr)) {
-        flatPickr.destroy();
+      // Safely destroy
+      if (flatpickrRef.current) {
+        flatpickrRef.current.destroy();
+        flatpickrRef.current = null;
       }
     };
-  }, [mode, onChange, id, defaultDate]);
+  }, [mode, id]); // Intentionally removed defaultsDate and onChange to prevent re-init
+
+  // Watch for external date changes (Sync prop -> internal state)
+  useEffect(() => {
+    if (flatpickrRef.current && defaultDate) {
+      // Only update if the date is actually different to avoid loop
+      // date-fns/flatpickr comparison might be needed but simple setDate is usually safe
+      flatpickrRef.current.setDate(defaultDate, false); // false = do not trigger onChange
+    }
+  }, [defaultDate]);
 
   return (
     <div>
