@@ -21,13 +21,11 @@ export const metadata: Metadata = {
 export const dynamic = "force-dynamic";
 
 export default async function DashboardPage() {
-  // Parallel data fetching for performance
-  const [statsResult, chartResult, activityResult, widgetsResult] = await Promise.all([
-    getDashboardStats(),
-    getDashboardChartData(),
-    getRecentActivity(),
-    getActiveCampaignStats(),
-  ]);
+  // Sequential data fetching to prevent DB connection timeout
+  const statsResult = await getDashboardStats();
+  const chartResult = await getDashboardChartData();
+  const activityResult = await getRecentActivity();
+  const widgetsResult = await getActiveCampaignStats();
 
   const stats = statsResult.success
     ? statsResult.data!

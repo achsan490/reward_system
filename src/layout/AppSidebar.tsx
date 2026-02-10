@@ -47,8 +47,9 @@ const navItems: NavItem[] = [
     name: "Reward System",
     subItems: [
       { name: "Penentuan Reward", path: "/reward-determination", pro: false },
-      { name: "Reward Catalog", path: "/reward-catalog", pro: false, new: true },
-      { name: "Redemption Requests", path: "/redemption-requests", pro: false, new: true },
+      { name: "Reward Period", path: "/reward-determination/active", pro: false },
+      { name: "Reward Catalog", path: "/reward-catalog", pro: false },
+      { name: "Redemption Requests", path: "/redemption-requests", pro: false },
     ],
   },
   {

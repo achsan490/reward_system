@@ -23,13 +23,6 @@ export async function getRewardCampaigns(params?: {
             orderBy: {
                 createdAt: "desc",
             },
-            include: {
-                _count: {
-                    select: {
-                        rewards: true,
-                    },
-                },
-            },
         });
 
         return { success: true, data: campaigns };
@@ -243,20 +236,40 @@ export async function calculateWinners(campaignId: string) {
         );
 
         // Create winner records
-        const winners = await Promise.all(
-            topMembers.map((member, index) =>
-                prisma.rewardWinner.create({
-                    data: {
-                        campaignId: campaignId,
-                        memberId: member.id,
-                        rank: index + 1,
-                        pointsAtWin: member.totalPoints,
-                        spentAtWin: member.totalSpent,
-                        transactionsAtWin: member.transactionCount,
+        // Create winner records using createMany for better performance
+        const winnersData = topMembers.map((member, index) => ({
+            campaignId: campaignId,
+            memberId: member.id,
+            rank: index + 1,
+            pointsAtWin: member.totalPoints,
+            spentAtWin: member.totalSpent,
+            transactionsAtWin: member.transactionCount,
+        }));
+
+        if (winnersData.length > 0) {
+            await prisma.rewardWinner.createMany({
+                data: winnersData,
+            });
+        }
+
+        // Fetch the created winners to return them
+        const winners = await prisma.rewardWinner.findMany({
+            where: { campaignId: campaignId },
+            include: {
+                member: {
+                    select: {
+                        id: true,
+                        memberId: true,
+                        name: true,
+                        email: true,
+                        phone: true,
                     },
-                })
-            )
-        );
+                },
+            },
+            orderBy: {
+                rank: "asc",
+            },
+        });
 
         console.log(`🏆 Successfully created ${winners.length} winners!`);
 
@@ -310,17 +323,14 @@ export async function markRewardClaimed(
  */
 export async function getRewardStatistics() {
     try {
-        const [totalCampaigns, activeCampaigns, totalWinners, claimedRewards] =
-            await Promise.all([
-                prisma.rewardCampaign.count(),
-                prisma.rewardCampaign.count({
-                    where: { status: "active" },
-                }),
-                prisma.rewardWinner.count(),
-                prisma.rewardWinner.count({
-                    where: { rewardClaimed: true },
-                }),
-            ]);
+        const totalCampaigns = await prisma.rewardCampaign.count();
+        const activeCampaigns = await prisma.rewardCampaign.count({
+            where: { status: "active" },
+        });
+        const totalWinners = await prisma.rewardWinner.count();
+        const claimedRewards = await prisma.rewardWinner.count({
+            where: { rewardClaimed: true },
+        });
 
         return {
             success: true,
@@ -604,6 +614,47 @@ export async function notifyWinners(campaignId: string) {
             success: false,
             error: error instanceof Error ? error.message : "Unknown error",
         };
+    }
+}
+
+/**
+ * Get active reward campaign with winners
+ */
+export async function getActiveRewardCampaign() {
+    try {
+        const campaign = await prisma.rewardCampaign.findFirst({
+            where: { status: "active" },
+            include: {
+                rewards: {
+                    include: {
+                        member: {
+                            select: {
+                                id: true,
+                                memberId: true,
+                                name: true,
+                                email: true,
+                                phone: true,
+                            },
+                        },
+                    },
+                    orderBy: {
+                        rank: "asc",
+                    },
+                },
+            },
+            orderBy: {
+                createdAt: "desc",
+            },
+        });
+
+        if (!campaign) {
+            return { success: false, error: "No active campaign found" };
+        }
+
+        return { success: true, data: campaign };
+    } catch (error) {
+        console.error("Error getting active campaign:", error);
+        return { success: false, error: "Failed to fetch active campaign details" };
     }
 }
 

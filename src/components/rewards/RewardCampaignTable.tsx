@@ -16,9 +16,6 @@ interface Campaign {
     endDate: Date;
     status: string;
     createdAt: Date;
-    _count: {
-        rewards: number;
-    };
 }
 
 interface RewardCampaignTableProps {
@@ -135,9 +132,6 @@ export default function RewardCampaignTable({
                             Kriteria
                         </th>
                         <th className="px-4 py-3 text-center text-xs font-medium uppercase tracking-wider text-gray-500 dark:text-gray-400">
-                            Pemenang
-                        </th>
-                        <th className="px-4 py-3 text-center text-xs font-medium uppercase tracking-wider text-gray-500 dark:text-gray-400">
                             Status
                         </th>
                         <th className="px-4 py-3 text-right text-xs font-medium uppercase tracking-wider text-gray-500 dark:text-gray-400">
@@ -176,15 +170,6 @@ export default function RewardCampaignTable({
                             </td>
                             <td className="whitespace-nowrap px-4 py-4 text-sm text-gray-900 dark:text-white">
                                 {getCriteriaLabel(campaign.criteria)}
-                            </td>
-                            <td className="whitespace-nowrap px-4 py-4 text-center text-sm">
-                                <span className="font-semibold text-brand-600 dark:text-brand-400">
-                                    {campaign._count.rewards}
-                                </span>
-                                <span className="text-gray-500 dark:text-gray-400">
-                                    {" "}
-                                    / {campaign.winnersCount}
-                                </span>
                             </td>
                             <td className="whitespace-nowrap px-4 py-4 text-center">
                                 {getStatusBadge(campaign.status)}

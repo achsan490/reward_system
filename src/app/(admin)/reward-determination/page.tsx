@@ -1,6 +1,5 @@
 import { Metadata } from "next";
 import {
-    getRewardCampaigns,
     getRewardStatistics,
 } from "@/app/actions/rewards";
 import {
@@ -8,28 +7,18 @@ import {
     getTransactionStats,
 } from "@/app/actions/transaction";
 import RewardStats from "@/components/rewards/RewardStats";
-import RewardCampaignTable from "@/components/rewards/RewardCampaignTable";
 import RecentWinnersCard from "@/components/rewards/RecentWinnersCard";
-import CreateCampaignButton from "@/components/rewards/CreateCampaignButton";
 
 export const metadata: Metadata = {
     title: "Penentuan Reward | Reward System",
-    description: "Kelola dan tentukan pemenang reward berdasarkan data transaksi",
+    description: "Statistik dan preview pemenang reward",
 };
 
 export default async function RewardDeterminationPage() {
-    // Fetch data
-    const [campaignsResult, rewardStatsResult, topMembersResult, transactionStatsResult] =
-        await Promise.all([
-            getRewardCampaigns(),
-            getRewardStatistics(),
-            getTopMembers(5),
-            getTransactionStats(),
-        ]);
-
-    const campaigns = campaignsResult.success
-        ? campaignsResult.data ?? []
-        : [];
+    // Fetch data sequentially
+    const rewardStatsResult = await getRewardStatistics();
+    const topMembersResult = await getTopMembers(5);
+    const transactionStatsResult = await getTransactionStats();
 
     const rewardStats =
         rewardStatsResult.success && rewardStatsResult.data
@@ -78,17 +67,13 @@ export default async function RewardDeterminationPage() {
     return (
         <div className="space-y-6">
             {/* Header */}
-            <div className="flex items-center justify-between">
-                <div>
-                    <h1 className="text-2xl font-bold text-gray-900 dark:text-white">
-                        Penentuan Reward
-                    </h1>
-                    <p className="mt-1 text-sm text-gray-500 dark:text-gray-400">
-                        Kelola campaign reward dan tentukan pemenang berdasarkan
-                        kriteria tertentu
-                    </p>
-                </div>
-                <CreateCampaignButton />
+            <div>
+                <h1 className="text-2xl font-bold text-gray-900 dark:text-white">
+                    Penentuan Reward
+                </h1>
+                <p className="mt-1 text-sm text-gray-500 dark:text-gray-400">
+                    Ringkasan performa dan kandidat pemenang reward
+                </p>
             </div>
 
             {/* Statistics */}
@@ -96,14 +81,6 @@ export default async function RewardDeterminationPage() {
 
             {/* Recent Top Members Preview */}
             <RecentWinnersCard members={topMembers} />
-
-            {/* Campaigns Table */}
-            <div>
-                <h2 className="mb-4 text-lg font-semibold text-gray-900 dark:text-white">
-                    Daftar Campaign Reward
-                </h2>
-                <RewardCampaignTable campaigns={campaigns} />
-            </div>
         </div>
     );
 }
