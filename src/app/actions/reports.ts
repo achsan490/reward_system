@@ -2,6 +2,7 @@
 
 import { prisma } from "@/lib/prisma";
 import { getPointExpirationSettings } from "./point-expiration";
+import { unstable_noStore as noStore } from "next/cache";
 
 /**
  * Get expiration report with statistics and timeline
@@ -10,6 +11,7 @@ export async function getExpirationReport(dateRange?: {
     startDate?: Date;
     endDate?: Date;
 }) {
+    noStore();
     try {
         const settings = await getPointExpirationSettings();
         if (!settings.success || !settings.data?.enabled) {
@@ -182,6 +184,7 @@ export async function getTransactionAnalysis(dateRange?: {
     startDate?: Date;
     endDate?: Date;
 }) {
+    noStore();
     try {
         const startDate = dateRange?.startDate || new Date(Date.now() - 90 * 24 * 60 * 60 * 1000);
         const endDate = dateRange?.endDate || new Date();
@@ -290,6 +293,7 @@ export async function getTransactionAnalysis(dateRange?: {
  * Get point analysis and distribution
  */
 export async function getPointAnalysis() {
+    noStore();
     try {
         // Get all members with points
         const members = await prisma.member.findMany({

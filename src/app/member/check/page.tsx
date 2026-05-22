@@ -82,8 +82,8 @@ function MemberCheckContent() {
                     </p>
                 </div>
 
-                {/* Search Card */}
-                {!memberData && (
+                {/* Search Card - Only show if not auto-submitted via QR and no member data yet */}
+                {!memberData && !searchParams.get("id") && !searchParams.get("phone") && (
                     <div className="bg-white rounded-2xl shadow-xl p-8 transform transition-all hover:scale-[1.01] dark:bg-gray-800 dark:border dark:border-gray-700 animate-slideUp">
                         <div className="mb-6 flex p-1 bg-gray-100 rounded-xl dark:bg-gray-700">
                             <button
@@ -297,13 +297,15 @@ function MemberCheckContent() {
                             </div>
                         </div>
 
-                        {/* Back Button (Logout) */}
-                        <button
-                            onClick={() => setMemberData(null)}
-                            className="w-full py-4 text-sm font-medium text-gray-500 hover:text-gray-700 transition-colors dark:text-gray-400 dark:hover:text-gray-200"
-                        >
-                            ← Kembali ke Pencarian
-                        </button>
+                        {/* Back Button (Logout) - Hide if accessed via QR to prevent manual searching */}
+                        {!searchParams.get("id") && !searchParams.get("phone") && (
+                            <button
+                                onClick={() => setMemberData(null)}
+                                className="w-full py-4 text-sm font-medium text-gray-500 hover:text-gray-700 transition-colors dark:text-gray-400 dark:hover:text-gray-200"
+                            >
+                                ← Kembali ke Pencarian
+                            </button>
+                        )}
 
                     </div>
                 )}

@@ -107,59 +107,50 @@ async function main() {
     const endDate = new Date()
     const transactions: any[] = []
 
-    let currentDate = new Date(startDate)
+    for (const member of members) {
+        let currentDate = new Date(startDate)
+        let memberTotalAmount = 0
+        const MAX_AMOUNT = 5000000 // 5 Juta Rupiah
 
-    while (currentDate <= endDate) {
-        const isWeekend = currentDate.getDay() === 0 || currentDate.getDay() === 6
-
-        // Weekend: 30-50 transactions, Weekday: 15-25 transactions
-        const dailyCount = isWeekend
-            ? Math.floor(Math.random() * 21) + 30
-            : Math.floor(Math.random() * 11) + 15
-
-        for (let i = 0; i < dailyCount; i++) {
-            // Select member based on segment probability
-            const rand = Math.random()
-            let selectedMember
-
-            if (rand < 0.4) {
-                // 40% chance: VIP members (they shop more frequently)
-                selectedMember = members.filter(m => m.segment === 'VIP')[Math.floor(Math.random() * members.filter(m => m.segment === 'VIP').length)]
-            } else if (rand < 0.85) {
-                // 45% chance: Regular members
-                selectedMember = members.filter(m => m.segment === 'REGULAR')[Math.floor(Math.random() * members.filter(m => m.segment === 'REGULAR').length)]
+        while (currentDate <= endDate && memberTotalAmount < MAX_AMOUNT) {
+            // Determine shopping frequency based on segment
+            let chance = 0
+            if (member.segment === 'VIP') {
+                chance = 0.15 // ~4-5 times a month
+            } else if (member.segment === 'REGULAR') {
+                chance = 0.04 // ~1 time a month
             } else {
-                // 15% chance: Occasional members
-                selectedMember = members.filter(m => m.segment === 'OCCASIONAL')[Math.floor(Math.random() * members.filter(m => m.segment === 'OCCASIONAL').length)]
+                chance = 0.005 // ~once every 6 months
             }
 
-            if (!selectedMember) {
-                selectedMember = members[Math.floor(Math.random() * members.length)]
+            if (Math.random() < chance) {
+                const hour = 8 + Math.floor(Math.random() * 12)
+                const txDate = new Date(currentDate)
+                txDate.setHours(hour, Math.floor(Math.random() * 60), Math.floor(Math.random() * 60))
+
+                const { items, total } = generateTransactionItems()
+
+                // Ensure we don't exceed the 5M cap with this transaction
+                if (memberTotalAmount + total <= MAX_AMOUNT) {
+                    transactions.push({
+                        transactionId: `TRX-${randomUUID().substring(0, 8).toUpperCase()}`,
+                        memberId: member.id,
+                        memberName: member.name,
+                        transactionDate: txDate,
+                        amount: total,
+                        phone: member.phone,
+                        items: JSON.stringify(items),
+                        cashierName: cashiers[Math.floor(Math.random() * cashiers.length)]
+                    })
+                    memberTotalAmount += total
+                } else {
+                    // If this transaction would push them over, we can either skip it 
+                    // or cap it at exactly 5M (but let's just stop for realism)
+                    break 
+                }
             }
-
-            // Peak hours: 10-12 and 17-20
-            const hour = Math.random() < 0.6
-                ? (Math.random() < 0.5 ? 10 + Math.floor(Math.random() * 2) : 17 + Math.floor(Math.random() * 3))
-                : 8 + Math.floor(Math.random() * 12)
-
-            const txDate = new Date(currentDate)
-            txDate.setHours(hour, Math.floor(Math.random() * 60), Math.floor(Math.random() * 60))
-
-            const { items, total } = generateTransactionItems()
-
-            transactions.push({
-                transactionId: `TRX-${randomUUID().substring(0, 8).toUpperCase()}`,
-                memberId: selectedMember.id,
-                memberName: selectedMember.name,
-                transactionDate: txDate,
-                amount: total,
-                phone: selectedMember.phone,
-                items: JSON.stringify(items),
-                cashierName: cashiers[Math.floor(Math.random() * cashiers.length)]
-            })
+            currentDate.setDate(currentDate.getDate() + 1)
         }
-
-        currentDate.setDate(currentDate.getDate() + 1)
     }
 
     // Batch insert

@@ -7,6 +7,8 @@ export const metadata: Metadata = {
     description: "Laporan dan analisis poin yang kadaluarsa",
 };
 
+export const dynamic = "force-dynamic";
+
 export default async function ExpirationReportPage() {
     const reportResult = await getExpirationReport();
 

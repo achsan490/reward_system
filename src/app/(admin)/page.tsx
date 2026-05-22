@@ -21,11 +21,13 @@ export const metadata: Metadata = {
 export const dynamic = "force-dynamic";
 
 export default async function DashboardPage() {
-  // Sequential data fetching to prevent DB connection timeout
-  const statsResult = await getDashboardStats();
-  const chartResult = await getDashboardChartData();
-  const activityResult = await getRecentActivity();
-  const widgetsResult = await getActiveCampaignStats();
+  // Parallel data fetching for massive performance improvement on Vercel
+  const [statsResult, chartResult, activityResult, widgetsResult] = await Promise.all([
+    getDashboardStats(),
+    getDashboardChartData(),
+    getRecentActivity(),
+    getActiveCampaignStats()
+  ]);
 
   const stats = statsResult.success
     ? statsResult.data!
