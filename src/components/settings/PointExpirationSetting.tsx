@@ -3,7 +3,6 @@
 import { useState } from "react";
 import {
     updatePointExpirationSettings,
-    getPointExpirationSettings,
     applyExpirationToTransactions,
 } from "@/app/actions/point-expiration";
 import { Calendar, AlertTriangle, Save, RefreshCw } from "lucide-react";
@@ -42,7 +41,7 @@ export default function PointExpirationSetting({
         if (result.success) {
             setMessage({
                 type: "success",
-                text: "Pengaturan berhasil diupdate! Klik 'Terapkan ke Transaksi' untuk menerapkan ke data yang sudah ada.",
+                text: "Pengaturan berhasil diupdate! Klik 'Terapkan Kadaluarsa Tiket Sekarang' untuk memproses tiket lama.",
             });
         } else {
             setMessage({ type: "error", text: result.error || "Gagal update pengaturan" });
@@ -52,7 +51,7 @@ export default function PointExpirationSetting({
     const handleApply = async () => {
         if (
             !confirm(
-                "Apakah Anda yakin ingin menerapkan tanggal kadaluarsa ke semua transaksi yang ada? Ini akan menghitung ulang tanggal kadaluarsa berdasarkan pengaturan baru."
+                "Apakah Anda yakin ingin menerapkan batas waktu kadaluarsa ke semua tiket penukaran yang ada? Ini akan menyinkronkan status tiket yang melewati batas waktu menjadi expired."
             )
         ) {
             return;
@@ -68,14 +67,14 @@ export default function PointExpirationSetting({
         if (result.success) {
             setMessage({
                 type: "success",
-                text: result.message || "Tanggal kadaluarsa berhasil diterapkan!",
+                text: result.message || "Batas kadaluarsa tiket berhasil diterapkan!",
             });
             // Refresh page to show updated data
             window.location.reload();
         } else {
             setMessage({
                 type: "error",
-                text: result.error || "Gagal menerapkan tanggal kadaluarsa",
+                text: result.error || "Gagal menerapkan batas kadaluarsa tiket",
             });
         }
     };
@@ -85,13 +84,13 @@ export default function PointExpirationSetting({
             <div className="mb-4 flex items-center gap-2">
                 <Calendar className="h-5 w-5 text-brand-500" />
                 <h3 className="text-lg font-semibold text-gray-900 dark:text-white">
-                    Kadaluarsa Poin
+                    Kadaluarsa Tiket Penukaran
                 </h3>
             </div>
 
             <p className="mb-6 text-sm text-gray-600 dark:text-gray-400">
-                Atur berapa lama poin reward berlaku sebelum kadaluarsa. Poin yang
-                kadaluarsa akan otomatis hangus.
+                Atur batas waktu (hari) bagi member untuk mengambil reward atau menggunakan voucher setelah disetujui oleh admin. 
+                Jika batas waktu terlewati, tiket penukaran akan otomatis hangus (expired).
             </p>
 
             <div className="space-y-4">
@@ -99,10 +98,10 @@ export default function PointExpirationSetting({
                 <div className="flex items-center justify-between rounded-lg border border-gray-200 bg-gray-50 p-4 dark:border-gray-700 dark:bg-gray-800">
                     <div>
                         <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">
-                            Aktifkan Kadaluarsa Poin
+                            Aktifkan Kadaluarsa Tiket Penukaran
                         </label>
                         <p className="mt-1 text-xs text-gray-500 dark:text-gray-400">
-                            Poin akan otomatis hangus setelah periode tertentu
+                            Voucher / barang yang tidak diambil dalam batas waktu akan otomatis hangus
                         </p>
                     </div>
                     <button
@@ -122,7 +121,7 @@ export default function PointExpirationSetting({
                 {/* Days Input */}
                 <div>
                     <label className="mb-2 block text-sm font-medium text-gray-700 dark:text-gray-300">
-                        Periode Kadaluarsa (Hari)
+                        Masa Berlaku Klaim Tiket (Hari)
                     </label>
                     <input
                         type="number"
@@ -134,7 +133,7 @@ export default function PointExpirationSetting({
                         step="1"
                     />
                     <p className="mt-2 text-sm text-gray-500 dark:text-gray-400">
-                        Contoh: Poin dari transaksi 1 Jan akan kadaluarsa pada{" "}
+                        Contoh: Tiket penukaran yang disetujui hari ini akan kadaluarsa pada{" "}
                         {new Date(
                             new Date().setDate(new Date().getDate() + days)
                         ).toLocaleDateString("id-ID", {
@@ -142,7 +141,7 @@ export default function PointExpirationSetting({
                             month: "long",
                             day: "numeric",
                         })}{" "}
-                        ({days} hari dari sekarang)
+                        ({days} hari dari sekarang) jika tidak segera diambil.
                     </p>
                 </div>
 
@@ -166,8 +165,8 @@ export default function PointExpirationSetting({
                             className={`h-4 w-4 ${applying ? "animate-spin" : ""}`}
                         />
                         {applying
-                            ? "Menerapkan..."
-                            : "Terapkan ke Transaksi Lama"}
+                            ? "Memproses..."
+                            : "Terapkan Kadaluarsa Tiket Sekarang"}
                     </button>
                 </div>
 
@@ -191,20 +190,16 @@ export default function PointExpirationSetting({
                     </h4>
                     <ul className="space-y-1 text-sm text-yellow-800 dark:text-yellow-300">
                         <li>
-                            • Pengaturan baru hanya berlaku untuk transaksi baru yang
-                            diupload
+                            • Pengaturan baru hanya berlaku untuk tiket penukaran yang disetujui setelah ini
                         </li>
                         <li>
-                            • Gunakan tombol "Terapkan ke Transaksi Lama" untuk menerapkan
-                            ke data yang sudah ada
+                            • Gunakan tombol "Terapkan Kadaluarsa Tiket Sekarang" untuk memproses tiket lama yang sudah melewati batas waktu secara manual
                         </li>
                         <li>
-                            • Poin yang sudah kadaluarsa akan otomatis hangus dan dikurangi
-                            dari total poin member
+                            • Tiket yang sudah kadaluarsa akan berubah status menjadi "expired" (hangus) dan poin yang sudah terpotong tidak dikembalikan
                         </li>
                         <li>
-                            • Member akan melihat peringatan di dashboard jika poin mereka
-                            akan segera kadaluarsa
+                            • Member akan melihat batas tanggal pengambilan tiket digital mereka di portal member
                         </li>
                     </ul>
                 </div>

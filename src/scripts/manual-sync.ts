@@ -70,11 +70,8 @@ async function syncAll() {
 
         const points = Math.floor(txn.amount / conversionRate)
         
-        let expiryDate = null
-        if (expirationEnabled) {
-            expiryDate = new Date(txn.transactionDate)
-            expiryDate.setDate(expiryDate.getDate() + expirationDays)
-        }
+        // Expiry date disabled: points do not expire
+        const expiryDate = null;
 
         transactionsToInsert.push({
             memberId: memberCuid,

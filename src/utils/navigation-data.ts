@@ -12,7 +12,7 @@ export const NAVIGATION_DATA: NavigationItem[] = [
     { name: "Reward Catalog", path: "/reward-catalog", section: "Reward System" },
     { name: "Redemption Requests", path: "/redemption-requests", section: "Reward System" },
     { name: "Pengaturan Sistem", path: "/settings", section: "Menu" },
-    { name: "Laporan Kadaluarsa", path: "/reports/expiration", section: "Laporan & Analitik" },
+    { name: "Laporan Tiket Kadaluarsa", path: "/reports/expiration", section: "Laporan & Analitik" },
     { name: "Analisis Transaksi", path: "/reports/transactions", section: "Laporan & Analitik" },
     { name: "QR Generator", path: "/member-portal/qr-generator", section: "Portal Member" },
     { name: "Member Cards", path: "/member-portal/member-cards", section: "Portal Member" },

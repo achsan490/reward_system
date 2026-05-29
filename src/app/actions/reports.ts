@@ -30,38 +30,50 @@ export async function getExpirationReport(dateRange?: {
             };
         }
 
+        const { days: expirationDays } = settings.data;
         const now = new Date();
         const thirtyDaysFromNow = new Date(now.getTime() + 30 * 24 * 60 * 60 * 1000);
 
-        // Get expired transactions
-        const expiredTransactions = await prisma.transaction.findMany({
+        // Get expired redemptions
+        // In the database: redemptions expire after approved (which is set at processedAt)
+        // If status is 'expired', it is already expired.
+        // We filter by dateRange on processedAt (approximate date of expiry = processedAt + expirationDays)
+        const expiredRedemptions = await prisma.rewardRedemption.findMany({
             where: {
-                pointsExpired: true,
+                status: "expired",
                 ...(dateRange?.startDate && {
-                    pointsExpiryDate: { gte: dateRange.startDate },
+                    processedAt: { gte: new Date(dateRange.startDate.getTime() - expirationDays * 24 * 60 * 60 * 1000) },
                 }),
                 ...(dateRange?.endDate && {
-                    pointsExpiryDate: { lte: dateRange.endDate },
+                    processedAt: { lte: new Date(dateRange.endDate.getTime() - expirationDays * 24 * 60 * 60 * 1000) },
                 }),
             },
             select: {
-                pointsEarned: true,
-                pointsExpiryDate: true,
+                pointsUsed: true,
+                processedAt: true,
             },
         });
 
-        // Get expiring soon transactions
-        const expiringSoonTransactions = await prisma.transaction.findMany({
+        // Get expiring soon redemptions (status === 'approved' and expiry in [now, now + 30 days])
+        // processedAt + expirationDays >= now  =>  processedAt >= now - expirationDays
+        // processedAt + expirationDays <= now + 30 days  =>  processedAt <= now + 30 days - expirationDays
+        const minProcessedAtExpiring = new Date(now);
+        minProcessedAtExpiring.setDate(now.getDate() - expirationDays);
+
+        const maxProcessedAtExpiring = new Date(now);
+        maxProcessedAtExpiring.setDate(now.getDate() + 30 - expirationDays);
+
+        const expiringSoonRedemptions = await prisma.rewardRedemption.findMany({
             where: {
-                pointsExpired: false,
-                pointsExpiryDate: {
-                    gte: now,
-                    lte: thirtyDaysFromNow,
+                status: "approved",
+                processedAt: {
+                    gte: minProcessedAtExpiring,
+                    lte: maxProcessedAtExpiring,
                 },
             },
             select: {
-                pointsEarned: true,
-                pointsExpiryDate: true,
+                pointsUsed: true,
+                processedAt: true,
                 member: {
                     select: {
                         id: true,
@@ -75,35 +87,36 @@ export async function getExpirationReport(dateRange?: {
         });
 
         // Calculate summary
-        const totalExpired = expiredTransactions.reduce(
-            (sum, t) => sum + t.pointsEarned,
+        const totalExpired = expiredRedemptions.reduce(
+            (sum, r) => sum + r.pointsUsed,
             0
         );
-        const totalExpiringSoon = expiringSoonTransactions.reduce(
-            (sum, t) => sum + t.pointsEarned,
+        const totalExpiringSoon = expiringSoonRedemptions.reduce(
+            (sum, r) => sum + r.pointsUsed,
             0
         );
 
         // Group by member for member list
         const memberMap = new Map();
-        for (const txn of expiringSoonTransactions) {
-            const memberId = txn.member.id;
+        for (const redemption of expiringSoonRedemptions) {
+            if (!redemption.processedAt) continue;
+            const memberId = redemption.member.id;
+            const expiryDate = new Date(redemption.processedAt);
+            expiryDate.setDate(expiryDate.getDate() + expirationDays);
+
             if (!memberMap.has(memberId)) {
                 memberMap.set(memberId, {
-                    member: txn.member,
+                    member: redemption.member,
                     expiringPoints: 0,
-                    earliestExpiryDate: txn.pointsExpiryDate,
+                    earliestExpiryDate: expiryDate,
                     transactionCount: 0,
                 });
             }
             const data = memberMap.get(memberId);
-            data.expiringPoints += txn.pointsEarned;
+            data.expiringPoints += redemption.pointsUsed;
             data.transactionCount += 1;
-            if (
-                txn.pointsExpiryDate &&
-                txn.pointsExpiryDate < data.earliestExpiryDate
-            ) {
-                data.earliestExpiryDate = txn.pointsExpiryDate;
+            if (expiryDate < data.earliestExpiryDate) {
+                data.earliestExpiryDate = expiryDate;
             }
         }
 
@@ -111,29 +124,33 @@ export async function getExpirationReport(dateRange?: {
             (a, b) => b.expiringPoints - a.expiringPoints
         );
 
-        // Generate timeline (last 6 months)
+        // Generate timeline (last 6 months of expired redemptions)
         const sixMonthsAgo = new Date();
         sixMonthsAgo.setMonth(sixMonthsAgo.getMonth() - 6);
 
-        const timelineTransactions = await prisma.transaction.findMany({
+        const timelineRedemptions = await prisma.rewardRedemption.findMany({
             where: {
-                pointsExpiryDate: {
+                processedAt: {
                     gte: sixMonthsAgo,
                 },
+                status: { in: ["approved", "expired"] }
             },
             select: {
-                pointsEarned: true,
-                pointsExpiryDate: true,
-                pointsExpired: true,
+                pointsUsed: true,
+                processedAt: true,
+                status: true,
             },
         });
 
-        // Group by month
+        // Group by month based on when they expired (or will expire)
         const timelineMap = new Map<string, { expired: number; expiring: number }>();
-        for (const txn of timelineTransactions) {
-            if (!txn.pointsExpiryDate) continue;
+        for (const r of timelineRedemptions) {
+            if (!r.processedAt) continue;
 
-            const monthKey = txn.pointsExpiryDate.toLocaleString("default", {
+            const expiryDate = new Date(r.processedAt);
+            expiryDate.setDate(expiryDate.getDate() + expirationDays);
+
+            const monthKey = expiryDate.toLocaleString("default", {
                 month: "short",
                 year: "2-digit",
             });
@@ -143,10 +160,10 @@ export async function getExpirationReport(dateRange?: {
             }
 
             const data = timelineMap.get(monthKey)!;
-            if (txn.pointsExpired) {
-                data.expired += txn.pointsEarned;
-            } else {
-                data.expiring += txn.pointsEarned;
+            if (r.status === "expired") {
+                data.expired += r.pointsUsed;
+            } else if (r.status === "approved") {
+                data.expiring += r.pointsUsed;
             }
         }
 
@@ -309,19 +326,19 @@ export async function getPointAnalysis() {
             },
         });
 
-        const totalPointsExpired = await prisma.transaction.aggregate({
+        const totalPointsExpired = await prisma.rewardRedemption.aggregate({
             where: {
-                pointsExpired: true,
+                status: "expired",
             },
             _sum: {
-                pointsEarned: true,
+                pointsUsed: true,
             },
         });
 
         const totalActivePoints = members.reduce((sum, m) => sum + m.totalPoints, 0);
 
         const pointsIssued = totalPointsIssued._sum.pointsEarned || 0;
-        const pointsExpired = totalPointsExpired._sum.pointsEarned || 0;
+        const pointsExpired = totalPointsExpired._sum.pointsUsed || 0;
         const pointsRedeemed = pointsIssued - totalActivePoints - pointsExpired;
 
         const conversionRate =

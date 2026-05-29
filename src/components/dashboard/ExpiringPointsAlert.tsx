@@ -52,7 +52,7 @@ export default function ExpiringPointsAlert({
                                 : "text-yellow-900 dark:text-yellow-300"
                             }`}
                     >
-                        {isUrgent ? "⚠️ Peringatan Urgent!" : "📢 Peringatan Poin Kadaluarsa"}
+                        {isUrgent ? "⚠️ Peringatan Urgent!" : "📢 Peringatan Tiket Kadaluarsa"}
                     </h3>
                     <p
                         className={`mt-1 text-sm ${isUrgent
@@ -67,7 +67,7 @@ export default function ExpiringPointsAlert({
                         <span className="font-semibold">
                             {pointsExpiringSoon.toLocaleString("id-ID")} poin
                         </span>{" "}
-                        yang akan kadaluarsa dalam 30 hari ke depan.
+                        pada tiket penukaran mereka yang akan kadaluarsa dalam 30 hari ke depan.
                     </p>
                     <p
                         className={`mt-2 text-sm ${isUrgent
@@ -75,20 +75,19 @@ export default function ExpiringPointsAlert({
                                 : "text-yellow-700 dark:text-yellow-400"
                             }`}
                     >
-                        Segera hubungi member untuk mengingatkan mereka menukarkan poin
-                        sebelum hangus!
+                        Segera hubungi member untuk mengingatkan mereka agar mengambil reward di toko sebelum tiket kadaluarsa!
                     </p>
 
                     <div className="mt-3 flex flex-wrap gap-2">
                         <Link
-                            href="/customers"
+                            href="/reports/expiration"
                             className={`inline-flex items-center gap-2 rounded-lg px-3 py-1.5 text-sm font-medium transition-colors ${isUrgent
                                     ? "bg-red-600 text-white hover:bg-red-700 dark:bg-red-500 dark:hover:bg-red-600"
                                     : "bg-yellow-600 text-white hover:bg-yellow-700 dark:bg-yellow-500 dark:hover:bg-yellow-600"
                                 }`}
                         >
                             <Users className="h-4 w-4" />
-                            Lihat Member
+                            Lihat Laporan Tiket
                         </Link>
                     </div>
                 </div>

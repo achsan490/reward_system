@@ -64,7 +64,7 @@ const othersItems: NavItem[] = [
     icon: <PieChart className="w-5 h-5" />,
     name: "Laporan & Analitik",
     subItems: [
-      { name: "Laporan Kadaluarsa", path: "/reports/expiration", pro: false },
+      { name: "Laporan Tiket Kadaluarsa", path: "/reports/expiration", pro: false },
       { name: "Analisis Transaksi", path: "/reports/transactions", pro: false },
     ],
   },

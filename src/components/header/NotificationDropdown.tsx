@@ -101,7 +101,7 @@ export default function NotificationDropdown() {
             <div className="flex flex-col items-center justify-center py-10 text-center">
               <AlertCircle className="mb-2 h-10 w-10 text-gray-300" />
               <p className="text-sm text-gray-500 dark:text-gray-400">
-                Tidak ada poin yang akan kadaluarsa
+                Tidak ada tiket penukaran yang hampir kadaluarsa
               </p>
             </div>
           )}
@@ -119,7 +119,7 @@ export default function NotificationDropdown() {
                       {item.member.name}
                     </p>
                     <p className="text-xs text-gray-500 dark:text-gray-400">
-                      Ada {item.totalExpiringPoints} poin akan hangus pada {formatDateShortID(item.earliestExpiryDate)}
+                      Tiket {item.expiringTransactions[0]?.rewardName || "Reward"} ({item.totalExpiringPoints} poin) akan hangus pada {formatDateShortID(item.earliestExpiryDate)}
                     </p>
 
                     <div className="mt-2 flex items-center gap-1 text-[10px] text-gray-500">
@@ -132,7 +132,7 @@ export default function NotificationDropdown() {
                 <div className="mt-1 flex justify-end">
                   <WhatsAppButton
                     phone={item.member.phone}
-                    message={`Halo ${item.member.name}, kami ingin mengingatkan bahwa ada ${item.totalExpiringPoints} poin Anda yang akan kadaluarsa pada ${formatDateShortID(item.earliestExpiryDate)}. Yuk tukarkan sekarang!`}
+                    message={`Halo ${item.member.name}, kami ingin mengingatkan bahwa tiket penukaran reward Anda (${item.expiringTransactions[0]?.rewardName || "Reward"}) dengan kode klaim ${item.expiringTransactions[0]?.claimCode || ""} akan segera kadaluarsa pada ${formatDateShortID(item.earliestExpiryDate)}. Yuk segera diambil di toko sebelum hangus!`}
                     variant="compact"
                     label="Kirim WA"
                   />

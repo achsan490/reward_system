@@ -35,7 +35,7 @@ export default function ExpirationReportContent({ data }: { data: ExpirationRepo
                     <div className="flex items-center justify-between">
                         <div>
                             <p className="text-sm font-medium text-gray-500 dark:text-gray-400">
-                                Poin Sudah Hangus
+                                Poin Tiket Hangus
                             </p>
                             <h3 className="mt-1 text-2xl font-bold text-red-600 dark:text-red-400">
                                 {data.summary.totalExpired.toLocaleString("id-ID")}
@@ -51,7 +51,7 @@ export default function ExpirationReportContent({ data }: { data: ExpirationRepo
                     <div className="flex items-center justify-between">
                         <div>
                             <p className="text-sm font-medium text-gray-500 dark:text-gray-400">
-                                Akan Kadaluarsa (30 hari)
+                                Tiket Akan Kadaluarsa (30 hari)
                             </p>
                             <h3 className="mt-1 text-2xl font-bold text-yellow-600 dark:text-yellow-400">
                                 {data.summary.totalExpiringSoon.toLocaleString("id-ID")}
@@ -83,7 +83,7 @@ export default function ExpirationReportContent({ data }: { data: ExpirationRepo
                     <div className="flex items-center justify-between">
                         <div>
                             <p className="text-sm font-medium text-gray-500 dark:text-gray-400">
-                                Total Nilai Hangus
+                                Total Poin Hangus
                             </p>
                             <h3 className="mt-1 text-2xl font-bold text-gray-900 dark:text-white">
                                 {data.summary.totalValueLost.toLocaleString("id-ID")}
@@ -99,12 +99,12 @@ export default function ExpirationReportContent({ data }: { data: ExpirationRepo
             {/* Member List */}
             <div className="rounded-lg border border-gray-200 bg-white p-6 shadow-sm dark:border-gray-800 dark:bg-gray-900">
                 <h3 className="mb-4 text-lg font-semibold text-gray-900 dark:text-white">
-                    Member dengan Poin Akan Kadaluarsa
+                    Tiket Kadaluarsa
                 </h3>
 
                 {data.memberList.length === 0 ? (
                     <p className="text-center text-gray-500 dark:text-gray-400">
-                        Tidak ada poin yang akan kadaluarsa dalam 30 hari ke depan
+                        Tidak ada tiket penukaran yang hampir kadaluarsa dalam 30 hari ke depan
                     </p>
                 ) : (
                     <div className="overflow-x-auto">
@@ -115,10 +115,10 @@ export default function ExpirationReportContent({ data }: { data: ExpirationRepo
                                         Member
                                     </th>
                                     <th className="px-4 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500 dark:text-gray-400">
-                                        Poin Kadaluarsa
+                                        Poin Terikat
                                     </th>
                                     <th className="px-4 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500 dark:text-gray-400">
-                                        Tanggal
+                                        Tanggal Kadaluarsa
                                     </th>
                                     <th className="px-4 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500 dark:text-gray-400">
                                         Sisa Hari
@@ -151,7 +151,7 @@ export default function ExpirationReportContent({ data }: { data: ExpirationRepo
                                                 </div>
                                             </td>
                                             <td className="px-4 py-3 font-semibold text-red-600 dark:text-red-400">
-                                                {item.expiringPoints.toLocaleString("id-ID")}
+                                                {item.expiringPoints.toLocaleString("id-ID")} pts
                                             </td>
                                             <td className="px-4 py-3 text-sm text-gray-900 dark:text-white">
                                                 {formatDateShortID(item.earliestExpiryDate)}
@@ -169,7 +169,7 @@ export default function ExpirationReportContent({ data }: { data: ExpirationRepo
                                             <td className="px-4 py-3">
                                                 <WhatsAppButton
                                                     phone={item.member.phone}
-                                                    message={`Halo ${item.member.name}, kami ingin mengingatkan bahwa ada ${item.expiringPoints} poin Anda yang akan kadaluarsa pada ${formatDateShortID(item.earliestExpiryDate)}. Yuk tukarkan sekarang!`}
+                                                    message={`Halo ${item.member.name}, kami ingin mengingatkan bahwa tiket penukaran reward Anda dengan total nilai ${item.expiringPoints} poin akan segera kadaluarsa pada ${formatDateShortID(item.earliestExpiryDate)}. Yuk segera diambil di toko sebelum hangus!`}
                                                     variant="compact"
                                                     label="Kirim WA"
                                                 />

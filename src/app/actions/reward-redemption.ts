@@ -498,15 +498,28 @@ export async function deleteAllCompletedRedemptions() {
  */
 export async function autoExpireRedemptions() {
     try {
-        const thirtyDaysAgo = new Date();
-        thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30);
+        const settings = await prisma.systemSetting.findUnique({
+            where: { key: "point_expiration_enabled" },
+        });
+        const enabled = settings?.value === "true";
+        if (!enabled) {
+            return { success: true, count: 0 };
+        }
+
+        const daysSetting = await prisma.systemSetting.findUnique({
+            where: { key: "point_expiration_days" },
+        });
+        const expirationDays = daysSetting ? parseInt(daysSetting.value) : 30;
+
+        const expiryThreshold = new Date();
+        expiryThreshold.setDate(expiryThreshold.getDate() - expirationDays);
 
         // Find applicable redemptions
         const expiredRedemptions = await prisma.rewardRedemption.updateMany({
             where: {
                 status: "approved", // Only approved items can expire (pending relies on admin action)
                 processedAt: {
-                    lt: thirtyDaysAgo, // Older than 30 days
+                    lt: expiryThreshold,
                 },
             },
             data: {
@@ -517,6 +530,7 @@ export async function autoExpireRedemptions() {
         if (expiredRedemptions.count > 0) {
             revalidatePath("/redemption-requests");
             revalidatePath("/member/my-redemptions");
+            revalidatePath("/");
         }
 
         return {

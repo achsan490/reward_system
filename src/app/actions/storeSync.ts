@@ -127,14 +127,8 @@ export async function fetchStoreTransactions(
         const transformedData = filteredStoreData.map((row) => {
             const pointsEarned = calculatePoints(row.amount, conversionRate);
 
-            // Calculate expiry date if enabled
-            let pointsExpiryDate: Date | null = null;
-            if (expirationEnabled) {
-                pointsExpiryDate = new Date(row.transactionDate);
-                pointsExpiryDate.setDate(
-                    pointsExpiryDate.getDate() + expirationDays
-                );
-            }
+            // Calculate expiry date (Disabled: points do not expire)
+            const pointsExpiryDate = null;
 
             // Check if transaction exists using Set (O(1) lookup)
             const key = `${row.memberId}-${new Date(row.transactionDate).getTime()}-${row.amount}`;

@@ -116,16 +116,9 @@ export async function uploadTransactions(formData: FormData) {
             // Calculate points
             const pointsEarned = calculatePoints(txn.amount, conversionRate);
 
-            // Calculate expiry
+            // Calculate expiry (Disabled: points do not expire)
             const transactionDate = new Date(txn.transactionDate);
-            let pointsExpiryDate: Date | null = null;
-
-            if (expirationEnabled) {
-                pointsExpiryDate = new Date(transactionDate);
-                pointsExpiryDate.setDate(
-                    pointsExpiryDate.getDate() + expirationDays
-                );
-            }
+            const pointsExpiryDate = null;
 
             // Add to transaction batch
             transactionData.push({

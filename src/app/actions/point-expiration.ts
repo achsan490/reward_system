@@ -90,60 +90,11 @@ export async function updatePointExpirationSettings(
  * Apply expiration dates to all existing transactions
  */
 export async function applyExpirationToTransactions() {
-    try {
-        const settings = await getPointExpirationSettings();
-        if (!settings.success || !settings.data) {
-            return { success: false, error: "Failed to get settings" };
-        }
-
-        const { enabled, days } = settings.data;
-
-        if (!enabled) {
-            return {
-                success: false,
-                error: "Point expiration is not enabled",
-            };
-        }
-
-        // Get all transactions without expiry date
-        const transactions = await prisma.transaction.findMany({
-            where: {
-                pointsExpiryDate: null,
-            },
-        });
-
-        // Update each transaction with expiry date
-        for (const txn of transactions) {
-            const expiryDate = calculateExpiryDate(txn.transactionDate, days);
-
-            await prisma.transaction.update({
-                where: { id: txn.id },
-                data: {
-                    pointsExpiryDate: expiryDate,
-                    pointsExpired: isExpired(expiryDate),
-                },
-            });
-        }
-
-        revalidatePath("/settings");
-        revalidatePath("/transactions");
-        revalidatePath("/customers");
-
-        return {
-            success: true,
-            message: `Applied expiration dates to ${transactions.length} transactions`,
-        };
-    } catch (error) {
-        console.error("Error applying expiration to transactions:", error);
-        return {
-            success: false,
-            error: error instanceof Error ? error.message : "Unknown error",
-        };
-    }
+    return expirePoints();
 }
 
 /**
- * Get members with expiring points
+ * Get members with expiring redemption tickets (not points!)
  */
 export async function getMembersWithExpiringPoints(thresholdDays: number = 30) {
     try {
@@ -152,17 +103,26 @@ export async function getMembersWithExpiringPoints(thresholdDays: number = 30) {
             return { success: true, data: [] };
         }
 
-        const thresholdDate = new Date();
-        thresholdDate.setDate(thresholdDate.getDate() + thresholdDays);
+        const { days: expirationDays } = settings.data;
+        const now = new Date();
+        
+        // Expiry Date = processedAt + expirationDays.
+        // Expiring soon: expiry date between now and (now + thresholdDays)
+        // processedAt + expirationDays >= now  =>  processedAt >= now - expirationDays
+        // processedAt + expirationDays <= now + thresholdDays  =>  processedAt <= now + thresholdDays - expirationDays
+        const minProcessedAt = new Date(now);
+        minProcessedAt.setDate(now.getDate() - expirationDays);
 
-        // Get transactions with points expiring within threshold
-        const expiringTransactions = await prisma.transaction.findMany({
+        const maxProcessedAt = new Date(now);
+        maxProcessedAt.setDate(now.getDate() + thresholdDays - expirationDays);
+
+        const expiringRedemptions = await prisma.rewardRedemption.findMany({
             where: {
-                pointsExpiryDate: {
-                    lte: thresholdDate,
-                    gte: new Date(),
+                status: "approved",
+                processedAt: {
+                    gte: minProcessedAt,
+                    lte: maxProcessedAt,
                 },
-                pointsExpired: false,
             },
             include: {
                 member: {
@@ -174,59 +134,66 @@ export async function getMembersWithExpiringPoints(thresholdDays: number = 30) {
                         email: true,
                     },
                 },
+                catalog: {
+                    select: {
+                        name: true,
+                    },
+                },
             },
             orderBy: {
-                pointsExpiryDate: "asc",
+                processedAt: "asc",
             },
         });
 
-        // Group by member and calculate totals
+        // Group by member
         const memberMap = new Map();
 
-        for (const txn of expiringTransactions) {
-            const memberId = txn.member.id;
+        for (const redemption of expiringRedemptions) {
+            if (!redemption.processedAt) continue;
+            
+            const memberId = redemption.member.id;
+            const expiryDate = new Date(redemption.processedAt);
+            expiryDate.setDate(expiryDate.getDate() + expirationDays);
 
             if (!memberMap.has(memberId)) {
                 memberMap.set(memberId, {
-                    member: txn.member,
+                    member: redemption.member,
                     totalExpiringPoints: 0,
-                    earliestExpiryDate: txn.pointsExpiryDate,
-                    expiringTransactions: [],
+                    earliestExpiryDate: expiryDate,
+                    expiringTransactions: [], // Keep array to avoid breaking typings
                 });
             }
 
             const memberData = memberMap.get(memberId);
-            memberData.totalExpiringPoints += txn.pointsEarned;
+            memberData.totalExpiringPoints += redemption.pointsUsed;
             memberData.expiringTransactions.push({
-                id: txn.id,
-                transactionDate: txn.transactionDate,
-                amount: txn.amount,
-                pointsEarned: txn.pointsEarned,
-                pointsExpiryDate: txn.pointsExpiryDate,
+                id: redemption.id,
+                transactionDate: redemption.redeemedAt, // date of request
+                amount: 0,
+                pointsEarned: redemption.pointsUsed,
+                pointsExpiryDate: expiryDate,
+                rewardName: redemption.catalog.name,
+                claimCode: redemption.claimCode.toUpperCase(),
             });
 
-            if (
-                txn.pointsExpiryDate &&
-                txn.pointsExpiryDate < memberData.earliestExpiryDate
-            ) {
-                memberData.earliestExpiryDate = txn.pointsExpiryDate;
+            if (expiryDate < memberData.earliestExpiryDate) {
+                memberData.earliestExpiryDate = expiryDate;
             }
         }
 
         const result = Array.from(memberMap.values());
-
         return { success: true, data: result };
     } catch (error) {
-        console.error("Error getting members with expiring points:", error);
+        console.error("Error getting members with expiring redemptions:", error);
         return {
             success: false,
-            error: "Failed to fetch expiring points",
+            error: "Failed to fetch expiring redemptions",
         };
     }
 }
 
 /**
- * Expire points that have passed their expiry date
+ * Expire redemptions that have passed their claim validity date
  */
 export async function expirePoints() {
     try {
@@ -234,68 +201,45 @@ export async function expirePoints() {
         if (!settings.success || !settings.data?.enabled) {
             return {
                 success: false,
-                error: "Point expiration is not enabled",
+                error: "Redemption expiration is not enabled",
             };
         }
 
+        const { days: expirationDays } = settings.data;
         const now = new Date();
+        const expiryThreshold = new Date(now);
+        expiryThreshold.setDate(now.getDate() - expirationDays);
 
-        // Find all transactions with expired points
-        const expiredTransactions = await prisma.transaction.findMany({
+        // Find applicable redemptions
+        const expiredRedemptions = await prisma.rewardRedemption.updateMany({
             where: {
-                pointsExpiryDate: {
-                    lt: now,
+                status: "approved",
+                processedAt: {
+                    lt: expiryThreshold,
                 },
-                pointsExpired: false,
             },
-            include: {
-                member: true,
+            data: {
+                status: "expired",
             },
         });
 
-        let totalPointsExpired = 0;
-        const memberUpdates = new Map<string, number>();
-
-        // Mark transactions as expired and calculate member point deductions
-        for (const txn of expiredTransactions) {
-            await prisma.transaction.update({
-                where: { id: txn.id },
-                data: { pointsExpired: true },
-            });
-
-            totalPointsExpired += txn.pointsEarned;
-
-            const currentDeduction = memberUpdates.get(txn.memberId) || 0;
-            memberUpdates.set(txn.memberId, currentDeduction + txn.pointsEarned);
+        if (expiredRedemptions.count > 0) {
+            revalidatePath("/redemption-requests");
+            revalidatePath("/member/my-redemptions");
+            revalidatePath("/");
         }
-
-        // Update member total points
-        for (const [memberId, pointsToDeduct] of memberUpdates.entries()) {
-            await prisma.member.update({
-                where: { id: memberId },
-                data: {
-                    totalPoints: {
-                        decrement: pointsToDeduct,
-                    },
-                },
-            });
-        }
-
-        revalidatePath("/");
-        revalidatePath("/transactions");
-        revalidatePath("/customers");
 
         return {
             success: true,
-            message: `Expired ${totalPointsExpired} points from ${expiredTransactions.length} transactions`,
+            message: `Berhasil memperbarui ${expiredRedemptions.count} tiket penukaran kadaluarsa.`,
             data: {
-                transactionsExpired: expiredTransactions.length,
-                totalPointsExpired,
-                membersAffected: memberUpdates.size,
+                transactionsExpired: expiredRedemptions.count,
+                totalPointsExpired: 0,
+                membersAffected: 0,
             },
         };
     } catch (error) {
-        console.error("Error expiring points:", error);
+        console.error("Error running expirePoints wrapper:", error);
         return {
             success: false,
             error: error instanceof Error ? error.message : "Unknown error",
@@ -304,7 +248,7 @@ export async function expirePoints() {
 }
 
 /**
- * Get expiring points for a specific member
+ * Get expiring redemptions for a specific member
  */
 export async function getMemberExpiringPoints(memberId: string) {
     try {
@@ -313,20 +257,49 @@ export async function getMemberExpiringPoints(memberId: string) {
             return { success: true, data: null };
         }
 
-        const transactions = await prisma.transaction.findMany({
+        const { days: expirationDays } = settings.data;
+        const now = new Date();
+        
+        // Find approved redemptions that have not expired yet
+        const minProcessedAt = new Date(now);
+        minProcessedAt.setDate(now.getDate() - expirationDays);
+
+        const redemptions = await prisma.rewardRedemption.findMany({
             where: {
                 memberId,
-                pointsExpiryDate: {
-                    gte: new Date(),
+                status: "approved",
+                processedAt: {
+                    gte: minProcessedAt,
                 },
-                pointsExpired: false,
+            },
+            include: {
+                catalog: {
+                    select: {
+                        name: true,
+                    },
+                },
             },
             orderBy: {
-                pointsExpiryDate: "asc",
+                processedAt: "asc",
             },
         });
 
-        const totalExpiringPoints = transactions.reduce(
+        const formattedTransactions = redemptions.map((r) => {
+            const expiryDate = new Date(r.processedAt!);
+            expiryDate.setDate(expiryDate.getDate() + expirationDays);
+
+            return {
+                id: r.id,
+                transactionDate: r.redeemedAt,
+                amount: 0,
+                pointsEarned: r.pointsUsed,
+                pointsExpiryDate: expiryDate,
+                pointsExpired: false,
+                description: `Klaim Reward: ${r.catalog.name} (Kode: ${r.claimCode.toUpperCase()})`,
+            };
+        });
+
+        const totalExpiringPoints = formattedTransactions.reduce(
             (sum, txn) => sum + txn.pointsEarned,
             0
         );
@@ -334,19 +307,19 @@ export async function getMemberExpiringPoints(memberId: string) {
         return {
             success: true,
             data: {
-                transactions,
+                transactions: formattedTransactions,
                 totalExpiringPoints,
                 earliestExpiryDate:
-                    transactions.length > 0
-                        ? transactions[0].pointsExpiryDate
+                    formattedTransactions.length > 0
+                        ? formattedTransactions[0].pointsExpiryDate
                         : null,
             },
         };
     } catch (error) {
-        console.error("Error getting member expiring points:", error);
+        console.error("Error getting member expiring redemptions:", error);
         return {
             success: false,
-            error: "Failed to fetch member expiring points",
+            error: "Failed to fetch member expiring redemptions",
         };
     }
 }
@@ -369,53 +342,53 @@ export async function getExpirationStats() {
             };
         }
 
-        const [expiringSoon, expired] = await Promise.all([
-            // Points expiring in next 30 days
-            prisma.transaction.aggregate({
-                where: {
-                    pointsExpiryDate: {
-                        lte: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000),
-                        gte: new Date(),
-                    },
-                    pointsExpired: false,
-                },
-                _sum: {
-                    pointsEarned: true,
-                },
-            }),
-            // Total expired points
-            prisma.transaction.aggregate({
-                where: {
-                    pointsExpired: true,
-                },
-                _sum: {
-                    pointsEarned: true,
-                },
-            }),
-        ]);
+        const { days: expirationDays } = settings.data;
+        const now = new Date();
+        const thirtyDaysFromNow = new Date(now.getTime() + 30 * 24 * 60 * 60 * 1000);
 
-        // Count unique members with expiring points
-        const membersWithExpiring = await prisma.transaction.findMany({
+        // Expiring soon (approved, expires within next 30 days)
+        // processedAt + expirationDays >= now
+        // processedAt + expirationDays <= now + 30 days
+        const minProcessedAtExpiring = new Date(now);
+        minProcessedAtExpiring.setDate(now.getDate() - expirationDays);
+
+        const maxProcessedAtExpiring = new Date(now);
+        maxProcessedAtExpiring.setDate(now.getDate() + 30 - expirationDays);
+
+        const expiringSoonRedemptions = await prisma.rewardRedemption.findMany({
             where: {
-                pointsExpiryDate: {
-                    lte: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000),
-                    gte: new Date(),
+                status: "approved",
+                processedAt: {
+                    gte: minProcessedAtExpiring,
+                    lte: maxProcessedAtExpiring,
                 },
-                pointsExpired: false,
             },
             select: {
+                pointsUsed: true,
                 memberId: true,
             },
-            distinct: ["memberId"],
+        });
+
+        const pointsExpiringSoon = expiringSoonRedemptions.reduce((sum, r) => sum + r.pointsUsed, 0);
+        const membersWithExpiringPoints = [...new Set(expiringSoonRedemptions.map(r => r.memberId))].length;
+
+        // Total expired redemptions (status === "expired")
+        const expiredRedemptionsAgg = await prisma.rewardRedemption.aggregate({
+            where: {
+                status: "expired",
+            },
+            _sum: {
+                pointsUsed: true,
+            },
         });
 
         return {
             success: true,
             data: {
                 enabled: true,
-                pointsExpiringSoon: expiringSoon._sum.pointsEarned || 0,
-                membersWithExpiringPoints: membersWithExpiring.length,
-                pointsExpiredTotal: expired._sum.pointsEarned || 0,
+                pointsExpiringSoon,
+                membersWithExpiringPoints,
+                pointsExpiredTotal: expiredRedemptionsAgg._sum.pointsUsed || 0,
             },
         };
     } catch (error) {
