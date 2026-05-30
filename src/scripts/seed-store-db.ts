@@ -99,8 +99,8 @@ async function main() {
     await prisma.storeTransactionSource.deleteMany()
     console.log('✅ Cleared existing store transactions.')
 
-    // Generate 80 members
-    const members = generateMembers(80)
+    // Generate 400 members
+    const members = generateMembers(400)
     console.log(`✅ Generated ${members.length} members`)
 
     const startDate = new Date('2023-10-01')
