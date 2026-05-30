@@ -89,11 +89,43 @@ export async function getMemberByPhone(phone: string) {
             };
         }
 
-        // Normalize phone number (remove spaces, dashes, etc.)
-        const normalizedPhone = phone.trim().replace(/[\s\-\(\)]/g, "");
+        // Clean all non-digits to analyze format
+        const digits = phone.replace(/\D/g, "");
+        
+        // Generate possible formats to search in database
+        const formats = [phone.trim()];
+        
+        // Add basic normalized format (only remove spaces, dashes, parentheses)
+        const basicNormalized = phone.trim().replace(/[\s\-\(\)]/g, "");
+        formats.push(basicNormalized);
+        
+        if (digits.length >= 8) {
+            if (digits.startsWith("62")) {
+                const local = "0" + digits.substring(2);
+                formats.push(local);
+                formats.push(digits);
+                formats.push("+" + digits);
+            } else if (digits.startsWith("0")) {
+                const international = "62" + digits.substring(1);
+                formats.push(digits);
+                formats.push(international);
+                formats.push("+" + international);
+            } else if (digits.startsWith("8")) {
+                formats.push("0" + digits);
+                formats.push("62" + digits);
+                formats.push("+62" + digits);
+            }
+        }
+        
+        // Remove duplicates and empty strings
+        const uniqueFormats = Array.from(new Set(formats.filter(Boolean)));
 
         const member = await prisma.member.findFirst({
-            where: { phone: normalizedPhone },
+            where: {
+                phone: {
+                    in: uniqueFormats
+                }
+            },
             select: {
                 id: true,
                 memberId: true,
