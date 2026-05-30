@@ -6,20 +6,38 @@ export async function getActiveCampaignStats() {
     try {
         const now = new Date();
 
-        // 1. Get Active Campaign (Current)
-        const activeCampaign = await prisma.rewardCampaign.findFirst({
-            where: {
-                status: "active",
-                startDate: { lte: now },
-                endDate: { gte: now },
-            },
-            include: {
-                _count: {
-                    select: { rewards: true }
+        // 1. Get Active Campaign and Last Completed Campaign in parallel
+        const [activeCampaign, lastCampaign] = await Promise.all([
+            prisma.rewardCampaign.findFirst({
+                where: {
+                    status: "active",
+                    startDate: { lte: now },
+                    endDate: { gte: now },
+                },
+                include: {
+                    _count: {
+                        select: { rewards: true }
+                    }
+                },
+                orderBy: { endDate: 'asc' } // The one ending soonest
+            }),
+            prisma.rewardCampaign.findFirst({
+                where: {
+                    status: { in: ['completed', 'active'] }, // Include active if date passed but status not updated
+                    endDate: { lt: now }
+                },
+                orderBy: { endDate: 'desc' },
+                include: {
+                    rewards: {
+                        take: 3,
+                        orderBy: { rank: 'asc' },
+                        include: {
+                            member: { select: { name: true, email: true } }
+                        }
+                    }
                 }
-            },
-            orderBy: { endDate: 'asc' } // The one ending soonest
-        });
+            })
+        ]);
 
         // If active campaign exists, calculate current leader (prediction)
         let currentLeader = null;
@@ -78,24 +96,6 @@ export async function getActiveCampaignStats() {
                 }
             }
         }
-
-        // 2. Get Last Completed Campaign (Hall of Fame)
-        const lastCampaign = await prisma.rewardCampaign.findFirst({
-            where: {
-                status: { in: ['completed', 'active'] }, // Include active if date passed but status not updated
-                endDate: { lt: now }
-            },
-            orderBy: { endDate: 'desc' },
-            include: {
-                rewards: {
-                    take: 3,
-                    orderBy: { rank: 'asc' },
-                    include: {
-                        member: { select: { name: true, email: true } }
-                    }
-                }
-            }
-        });
 
         return {
             success: true,

@@ -355,32 +355,33 @@ export async function getExpirationStats() {
         const maxProcessedAtExpiring = new Date(now);
         maxProcessedAtExpiring.setDate(now.getDate() + 30 - expirationDays);
 
-        const expiringSoonRedemptions = await prisma.rewardRedemption.findMany({
-            where: {
-                status: "approved",
-                processedAt: {
-                    gte: minProcessedAtExpiring,
-                    lte: maxProcessedAtExpiring,
+        // Run queries in parallel
+        const [expiringSoonRedemptions, expiredRedemptionsAgg] = await Promise.all([
+            prisma.rewardRedemption.findMany({
+                where: {
+                    status: "approved",
+                    processedAt: {
+                        gte: minProcessedAtExpiring,
+                        lte: maxProcessedAtExpiring,
+                    },
                 },
-            },
-            select: {
-                pointsUsed: true,
-                memberId: true,
-            },
-        });
+                select: {
+                    pointsUsed: true,
+                    memberId: true,
+                },
+            }),
+            prisma.rewardRedemption.aggregate({
+                where: {
+                    status: "expired",
+                },
+                _sum: {
+                    pointsUsed: true,
+                },
+            })
+        ]);
 
         const pointsExpiringSoon = expiringSoonRedemptions.reduce((sum, r) => sum + r.pointsUsed, 0);
         const membersWithExpiringPoints = [...new Set(expiringSoonRedemptions.map(r => r.memberId))].length;
-
-        // Total expired redemptions (status === "expired")
-        const expiredRedemptionsAgg = await prisma.rewardRedemption.aggregate({
-            where: {
-                status: "expired",
-            },
-            _sum: {
-                pointsUsed: true,
-            },
-        });
 
         return {
             success: true,

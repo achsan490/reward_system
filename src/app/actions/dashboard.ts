@@ -10,25 +10,31 @@ import { unstable_noStore as noStore } from "next/cache";
 export async function getDashboardStats() {
     noStore();
     try {
-        // Run queries sequentially to spare connection pool
-        const totalMembers = await prisma.member.count();
-        const totalActiveCampaigns = await prisma.rewardCampaign.count({
-            where: { status: "active" },
-        });
-        const totalRewardsClaimed = await prisma.rewardWinner.count({
-            where: { rewardClaimed: true },
-        });
-        const totalTransactions = await prisma.transaction.count();
-
-        const transactionAggregates = await prisma.transaction.aggregate({
-            _sum: {
-                amount: true,
-                pointsEarned: true,
-            },
-        });
-
-        // Optimization: Run this last or parallel if absolutely necessary, but keep sequential for safety now
-        const expirationStats = await getExpirationStats();
+        // Run queries in parallel for massive performance improvement on Vercel/Supabase
+        const [
+            totalMembers,
+            totalActiveCampaigns,
+            totalRewardsClaimed,
+            totalTransactions,
+            transactionAggregates,
+            expirationStats
+        ] = await Promise.all([
+            prisma.member.count(),
+            prisma.rewardCampaign.count({
+                where: { status: "active" },
+            }),
+            prisma.rewardWinner.count({
+                where: { rewardClaimed: true },
+            }),
+            prisma.transaction.count(),
+            prisma.transaction.aggregate({
+                _sum: {
+                    amount: true,
+                    pointsEarned: true,
+                },
+            }),
+            getExpirationStats()
+        ]);
 
         const expirationData = expirationStats.success
             ? expirationStats.data
@@ -120,21 +126,22 @@ export async function getDashboardChartData() {
 export async function getRecentActivity() {
     noStore();
     try {
-        // Run sequentially
-        const recentTransactions = await prisma.transaction.findMany({
-            take: 5,
-            orderBy: { createdAt: "desc" },
-            include: { member: { select: { name: true } } },
-        });
-
-        const recentWinners = await prisma.rewardWinner.findMany({
-            take: 5,
-            orderBy: { createdAt: "desc" },
-            include: {
-                member: { select: { name: true } },
-                campaign: { select: { name: true } },
-            },
-        });
+        // Run queries in parallel
+        const [recentTransactions, recentWinners] = await Promise.all([
+            prisma.transaction.findMany({
+                take: 5,
+                orderBy: { createdAt: "desc" },
+                include: { member: { select: { name: true } } },
+            }),
+            prisma.rewardWinner.findMany({
+                take: 5,
+                orderBy: { createdAt: "desc" },
+                include: {
+                    member: { select: { name: true } },
+                    campaign: { select: { name: true } },
+                },
+            })
+        ]);
 
         // Transform and merge
         const activities = [
