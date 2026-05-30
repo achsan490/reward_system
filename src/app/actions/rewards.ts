@@ -99,6 +99,7 @@ export async function createRewardCampaign(data: {
         await calculateWinners(campaign.id);
 
         revalidatePath("/reward-determination");
+        revalidatePath("/reward-determination/active");
         return {
             success: true,
             data: campaign,
@@ -274,6 +275,8 @@ export async function calculateWinners(campaignId: string) {
         console.log(`🏆 Successfully created ${winners.length} winners!`);
 
         revalidatePath("/reward-determination");
+        revalidatePath("/reward-determination/active");
+        revalidatePath(`/reward-determination/${campaignId}`);
         return {
             success: true,
             data: winners,
@@ -307,6 +310,8 @@ export async function markRewardClaimed(
         });
 
         revalidatePath("/reward-determination");
+        revalidatePath("/reward-determination/active");
+        revalidatePath(`/reward-determination/${winner.campaignId}`);
         return {
             success: true,
             data: winner,
@@ -361,6 +366,8 @@ export async function updateCampaignStatus(
         });
 
         revalidatePath("/reward-determination");
+        revalidatePath("/reward-determination/active");
+        revalidatePath(`/reward-determination/${campaignId}`);
         return {
             success: true,
             data: campaign,
@@ -382,6 +389,8 @@ export async function deleteRewardCampaign(campaignId: string) {
         });
 
         revalidatePath("/reward-determination");
+        revalidatePath("/reward-determination/active");
+        revalidatePath(`/reward-determination/${campaignId}`);
         return { success: true, message: "Campaign deleted successfully" };
     } catch (error) {
         console.error("Error deleting campaign:", error);

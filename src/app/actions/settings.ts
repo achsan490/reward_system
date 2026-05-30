@@ -128,6 +128,7 @@ export async function resetTransactionData() {
         revalidatePath("/settings");
         revalidatePath("/transactions");
         revalidatePath("/reward-determination");
+        revalidatePath("/reward-determination/active");
 
         return { success: true, message: "All transaction data has been reset successfully" };
     } catch (error) {
