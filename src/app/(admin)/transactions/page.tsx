@@ -13,6 +13,8 @@ export const metadata: Metadata = {
     description: "Upload dan kelola data transaksi member",
 };
 
+export const dynamic = "force-dynamic";
+
 export default async function TransactionsPage() {
     // Fetch data
     const [topMembersResult, statsResult, transactionsResult] =

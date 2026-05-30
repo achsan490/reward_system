@@ -14,6 +14,8 @@ export const metadata: Metadata = {
     description: "Statistik dan preview pemenang reward",
 };
 
+export const dynamic = "force-dynamic";
+
 export default async function RewardDeterminationPage() {
     // Fetch data sequentially
     const rewardStatsResult = await getRewardStatistics();

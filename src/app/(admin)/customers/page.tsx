@@ -8,6 +8,8 @@ export const metadata: Metadata = {
     description: "Kelola data pelanggan dan poin reward",
 };
 
+export const dynamic = "force-dynamic";
+
 export default async function CustomersPage() {
     const [customersResult, statsResult] = await Promise.all([
         getCustomers(),

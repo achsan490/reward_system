@@ -8,6 +8,8 @@ export const metadata: Metadata = {
     description: "Kelola periode reward dan tentukan pemenang",
 };
 
+export const dynamic = "force-dynamic";
+
 export default async function ActiveCampaignPage() {
     // Only fetch campaigns
     const campaignsResult = await getRewardCampaigns();
