@@ -1,51 +1,124 @@
 "use client";
-import React from "react";
+import React, { useState } from "react";
 import { useModal } from "../../hooks/useModal";
 import { Modal } from "../ui/modal";
 import Button from "../ui/button/Button";
 import Input from "../form/input/InputField";
 import Label from "../form/Label";
 import Image from "next/image";
+import { updateProfile } from "@/app/actions/profile";
+import { useRouter } from "next/navigation";
 
+export interface UserProfile {
+  id: string;
+  email: string;
+  name: string;
+  phone?: string | null;
+  bio?: string | null;
+  facebook?: string | null;
+  twitter?: string | null;
+  linkedin?: string | null;
+  instagram?: string | null;
+  country?: string | null;
+  cityState?: string | null;
+  postalCode?: string | null;
+  taxId?: string | null;
+}
 
-export default function UserMetaCard() {
+export default function UserMetaCard({ profile }: { profile: UserProfile }) {
   const { isOpen, openModal, closeModal } = useModal();
-  const handleSave = () => {
-    // Handle save logic here
-    console.log("Saving changes...");
-    closeModal();
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+  const router = useRouter();
+
+  // Split name for First Name and Last Name inputs
+  const nameParts = profile.name ? profile.name.trim().split(/\s+/) : ["", ""];
+  const firstName = nameParts[0] || "";
+  const lastName = nameParts.slice(1).join(" ") || "";
+
+  const handleSave = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    setLoading(true);
+    setError(null);
+
+    const formData = new FormData(e.currentTarget);
+    const formFirstName = (formData.get("firstName") as string) || "";
+    const formLastName = (formData.get("lastName") as string) || "";
+    const email = formData.get("email") as string;
+    const phone = formData.get("phone") as string;
+    const bio = formData.get("bio") as string;
+    const facebook = formData.get("facebook") as string;
+    const twitter = formData.get("twitter") as string;
+    const linkedin = formData.get("linkedin") as string;
+    const instagram = formData.get("instagram") as string;
+
+    const fullName = `${formFirstName.trim()} ${formLastName.trim()}`.trim() || profile.name;
+
+    try {
+      const res = await updateProfile({
+        name: fullName,
+        email,
+        phone,
+        bio,
+        facebook,
+        twitter,
+        linkedin,
+        instagram,
+      });
+
+      if (res.success) {
+        closeModal();
+        router.refresh();
+      } else {
+        setError(res.error || "Failed to update profile");
+      }
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "An unexpected error occurred");
+    } finally {
+      setLoading(false);
+    }
   };
+
+  const locationText =
+    profile.cityState && profile.country
+      ? `${profile.cityState}, ${profile.country}`
+      : profile.cityState || profile.country || "Indonesia";
+
   return (
     <>
-      <div className="p-5 border border-gray-200 rounded-2xl dark:border-gray-800 lg:p-6">
+      <div className="p-5 border border-gray-200 rounded-2xl dark:border-gray-800 lg:p-6 bg-white dark:bg-white/[0.03]">
         <div className="flex flex-col gap-5 xl:flex-row xl:items-center xl:justify-between">
           <div className="flex flex-col items-center w-full gap-6 xl:flex-row">
-            <div className="w-20 h-20 overflow-hidden border border-gray-200 rounded-full dark:border-gray-800">
+            <div className="w-20 h-20 overflow-hidden border border-gray-200 rounded-full dark:border-gray-800 bg-gray-100 flex items-center justify-center relative">
               <Image
                 width={80}
                 height={80}
-                src="/images/user/owner.jpg"
+                src="/images/user/profile-admin.png"
                 alt="user"
+                className="object-cover"
               />
             </div>
             <div className="order-3 xl:order-2">
               <h4 className="mb-2 text-lg font-semibold text-center text-gray-800 dark:text-white/90 xl:text-left">
-                Musharof Chowdhury
+                {profile.name}
               </h4>
               <div className="flex flex-col items-center gap-1 text-center xl:flex-row xl:gap-3 xl:text-left">
                 <p className="text-sm text-gray-500 dark:text-gray-400">
-                  Team Manager
+                  {profile.bio || "Administrator"}
                 </p>
                 <div className="hidden h-3.5 w-px bg-gray-300 dark:bg-gray-700 xl:block"></div>
                 <p className="text-sm text-gray-500 dark:text-gray-400">
-                  Arizona, United States
+                  {locationText}
                 </p>
               </div>
             </div>
             <div className="flex items-center order-2 gap-2 grow xl:order-3 xl:justify-end">
-              <a        
-        target="_blank"
-        rel="noreferrer" href='https://www.facebook.com/PimjoHQ' className="flex h-11 w-11 items-center justify-center gap-2 rounded-full border border-gray-300 bg-white text-sm font-medium text-gray-700 shadow-theme-xs hover:bg-gray-50 hover:text-gray-800 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:hover:bg-white/[0.03] dark:hover:text-gray-200">
+              <a
+                target="_blank"
+                rel="noreferrer"
+                href={profile.facebook || "https://www.facebook.com/"}
+                className="flex h-11 w-11 items-center justify-center gap-2 rounded-full border border-gray-300 bg-white text-sm font-medium text-gray-700 shadow-theme-xs hover:bg-gray-50 hover:text-gray-800 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:hover:bg-white/[0.03] dark:hover:text-gray-200"
+              >
                 <svg
                   className="fill-current"
                   width="20"
@@ -61,8 +134,12 @@ export default function UserMetaCard() {
                 </svg>
               </a>
 
-              <a href='https://x.com/PimjoHQ' target="_blank"
-        rel="noreferrer"  className="flex h-11 w-11 items-center justify-center gap-2 rounded-full border border-gray-300 bg-white text-sm font-medium text-gray-700 shadow-theme-xs hover:bg-gray-50 hover:text-gray-800 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:hover:bg-white/[0.03] dark:hover:text-gray-200">
+              <a
+                href={profile.twitter || "https://x.com/"}
+                target="_blank"
+                rel="noreferrer"
+                className="flex h-11 w-11 items-center justify-center gap-2 rounded-full border border-gray-300 bg-white text-sm font-medium text-gray-700 shadow-theme-xs hover:bg-gray-50 hover:text-gray-800 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:hover:bg-white/[0.03] dark:hover:text-gray-200"
+              >
                 <svg
                   className="fill-current"
                   width="20"
@@ -78,8 +155,12 @@ export default function UserMetaCard() {
                 </svg>
               </a>
 
-              <a href="https://www.linkedin.com/company/pimjo" target="_blank"
-        rel="noreferrer" className="flex h-11 w-11 items-center justify-center gap-2 rounded-full border border-gray-300 bg-white text-sm font-medium text-gray-700 shadow-theme-xs hover:bg-gray-50 hover:text-gray-800 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:hover:bg-white/[0.03] dark:hover:text-gray-200">
+              <a
+                href={profile.linkedin || "https://www.linkedin.com/"}
+                target="_blank"
+                rel="noreferrer"
+                className="flex h-11 w-11 items-center justify-center gap-2 rounded-full border border-gray-300 bg-white text-sm font-medium text-gray-700 shadow-theme-xs hover:bg-gray-50 hover:text-gray-800 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:hover:bg-white/[0.03] dark:hover:text-gray-200"
+              >
                 <svg
                   className="fill-current"
                   width="20"
@@ -95,8 +176,12 @@ export default function UserMetaCard() {
                 </svg>
               </a>
 
-              <a href='https://instagram.com/PimjoHQ' target="_blank"
-        rel="noreferrer" className="flex h-11 w-11 items-center justify-center gap-2 rounded-full border border-gray-300 bg-white text-sm font-medium text-gray-700 shadow-theme-xs hover:bg-gray-50 hover:text-gray-800 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:hover:bg-white/[0.03] dark:hover:text-gray-200">
+              <a
+                href={profile.instagram || "https://instagram.com/"}
+                target="_blank"
+                rel="noreferrer"
+                className="flex h-11 w-11 items-center justify-center gap-2 rounded-full border border-gray-300 bg-white text-sm font-medium text-gray-700 shadow-theme-xs hover:bg-gray-50 hover:text-gray-800 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:hover:bg-white/[0.03] dark:hover:text-gray-200"
+              >
                 <svg
                   className="fill-current"
                   width="20"
@@ -146,7 +231,12 @@ export default function UserMetaCard() {
               Update your details to keep your profile up-to-date.
             </p>
           </div>
-          <form className="flex flex-col">
+          {error && (
+            <div className="mx-2 mb-4 p-3 text-sm text-red-600 bg-red-50 border border-red-200 rounded-lg dark:bg-red-950/20 dark:border-red-900/50 dark:text-red-400">
+              {error}
+            </div>
+          )}
+          <form onSubmit={handleSave} className="flex flex-col">
             <div className="custom-scrollbar h-[450px] overflow-y-auto px-2 pb-3">
               <div>
                 <h5 className="mb-5 text-lg font-medium text-gray-800 dark:text-white/90 lg:mb-6">
@@ -158,20 +248,29 @@ export default function UserMetaCard() {
                     <Label>Facebook</Label>
                     <Input
                       type="text"
-                      defaultValue="https://www.facebook.com/PimjoHQ"
+                      name="facebook"
+                      defaultValue={profile.facebook || ""}
+                      placeholder="https://www.facebook.com/username"
                     />
                   </div>
 
                   <div>
                     <Label>X.com</Label>
-                    <Input type="text" defaultValue="https://x.com/PimjoHQ" />
+                    <Input
+                      type="text"
+                      name="twitter"
+                      defaultValue={profile.twitter || ""}
+                      placeholder="https://x.com/username"
+                    />
                   </div>
 
                   <div>
                     <Label>Linkedin</Label>
                     <Input
                       type="text"
-                      defaultValue="https://www.linkedin.com/company/pimjo"
+                      name="linkedin"
+                      defaultValue={profile.linkedin || ""}
+                      placeholder="https://www.linkedin.com/in/username"
                     />
                   </div>
 
@@ -179,7 +278,9 @@ export default function UserMetaCard() {
                     <Label>Instagram</Label>
                     <Input
                       type="text"
-                      defaultValue="https://instagram.com/PimjoHQ"
+                      name="instagram"
+                      defaultValue={profile.instagram || ""}
+                      placeholder="https://instagram.com/username"
                     />
                   </div>
                 </div>
@@ -192,37 +293,67 @@ export default function UserMetaCard() {
                 <div className="grid grid-cols-1 gap-x-6 gap-y-5 lg:grid-cols-2">
                   <div className="col-span-2 lg:col-span-1">
                     <Label>First Name</Label>
-                    <Input type="text" defaultValue="Musharof" />
+                    <Input
+                      type="text"
+                      name="firstName"
+                      defaultValue={firstName}
+                      required
+                    />
                   </div>
 
                   <div className="col-span-2 lg:col-span-1">
                     <Label>Last Name</Label>
-                    <Input type="text" defaultValue="Chowdhury" />
+                    <Input
+                      type="text"
+                      name="lastName"
+                      defaultValue={lastName}
+                    />
                   </div>
 
                   <div className="col-span-2 lg:col-span-1">
                     <Label>Email Address</Label>
-                    <Input type="text" defaultValue="randomuser@pimjo.com" />
+                    <Input
+                      type="email"
+                      name="email"
+                      defaultValue={profile.email}
+                      required
+                    />
                   </div>
 
                   <div className="col-span-2 lg:col-span-1">
                     <Label>Phone</Label>
-                    <Input type="text" defaultValue="+09 363 398 46" />
+                    <Input
+                      type="text"
+                      name="phone"
+                      defaultValue={profile.phone || ""}
+                      placeholder="+62..."
+                    />
                   </div>
 
                   <div className="col-span-2">
                     <Label>Bio</Label>
-                    <Input type="text" defaultValue="Team Manager" />
+                    <Input
+                      type="text"
+                      name="bio"
+                      defaultValue={profile.bio || ""}
+                      placeholder="Bio / Role"
+                    />
                   </div>
                 </div>
               </div>
             </div>
             <div className="flex items-center gap-3 px-2 mt-6 lg:justify-end">
-              <Button size="sm" variant="outline" onClick={closeModal}>
+              <Button
+                type="button"
+                size="sm"
+                variant="outline"
+                onClick={closeModal}
+                disabled={loading}
+              >
                 Close
               </Button>
-              <Button size="sm" onClick={handleSave}>
-                Save Changes
+              <Button type="submit" size="sm" disabled={loading}>
+                {loading ? "Saving..." : "Save Changes"}
               </Button>
             </div>
           </form>
