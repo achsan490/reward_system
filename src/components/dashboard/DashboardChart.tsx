@@ -170,7 +170,7 @@ export default function DashboardChart({ data }: DashboardChartProps) {
         tooltip: {
             shared: true,
             intersect: false,
-            theme: "dark",
+            theme: "light",
             style: {
                 fontSize: "13px",
                 fontFamily: "'Inter', sans-serif",
