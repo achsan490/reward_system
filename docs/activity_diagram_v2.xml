@@ -1,0 +1,368 @@
+<mxfile host="app.diagrams.net" agent="Antigravity">
+  <diagram id="ActivityDiagram" name="Activity Diagram - Penukaran Reward">
+    <mxGraphModel dx="1222" dy="900" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1169" pageHeight="1654" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+
+        <!-- SWIMLANES -->
+        <mxCell id="swim_member" value="Member" style="shape=table;startSize=30;container=1;collapsible=0;childLayout=tableLayout;fixedRows=1;rowLines=0;fontStyle=1;align=center;resizeLast=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=12;html=1;whiteSpace=wrap;swimlaneHead=1;" vertex="1" parent="1">
+          <mxGeometry x="40" y="30" width="370" height="1560" as="geometry" />
+        </mxCell>
+
+        <mxCell id="swim_sistem" value="Sistem" style="shape=table;startSize=30;container=1;collapsible=0;childLayout=tableLayout;fixedRows=1;rowLines=0;fontStyle=1;align=center;resizeLast=1;fillColor=#d5e8d4;strokeColor=#82b366;fontSize=12;html=1;whiteSpace=wrap;swimlaneHead=1;" vertex="1" parent="1">
+          <mxGeometry x="410" y="30" width="370" height="1560" as="geometry" />
+        </mxCell>
+
+        <mxCell id="swim_admin" value="Admin" style="shape=table;startSize=30;container=1;collapsible=0;childLayout=tableLayout;fixedRows=1;rowLines=0;fontStyle=1;align=center;resizeLast=1;fillColor=#fff2cc;strokeColor=#d6b656;fontSize=12;html=1;whiteSpace=wrap;swimlaneHead=1;" vertex="1" parent="1">
+          <mxGeometry x="780" y="30" width="320" height="1560" as="geometry" />
+        </mxCell>
+
+        <!-- START NODE -->
+        <mxCell id="a_start" value="" style="ellipse;html=1;shape=mxgraph.flowchart.start_2;fillColor=#000000;fontSize=14;fontColor=#ffffff;" vertex="1" parent="1">
+          <mxGeometry x="210" y="60" width="30" height="30" as="geometry" />
+        </mxCell>
+
+        <!-- MEMBER: Akses Portal -->
+        <mxCell id="a_akses" value="Mengakses Portal&#xa;Cek Poin" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=11;arcSize=25;" vertex="1" parent="1">
+          <mxGeometry x="150" y="120" width="150" height="45" as="geometry" />
+        </mxCell>
+
+        <!-- MEMBER: Input ID -->
+        <mxCell id="a_input" value="Memasukkan ID Member&#xa;/ No. WhatsApp" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=11;arcSize=25;" vertex="1" parent="1">
+          <mxGeometry x="140" y="200" width="170" height="45" as="geometry" />
+        </mxCell>
+
+        <!-- SISTEM: Validasi Member -->
+        <mxCell id="a_validasi" value="Mencari Data Member&#xa;di Database" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;fontSize=11;arcSize=25;" vertex="1" parent="1">
+          <mxGeometry x="520" y="200" width="160" height="45" as="geometry" />
+        </mxCell>
+
+        <!-- DECISION: Ditemukan? -->
+        <mxCell id="a_dec1" value="" style="rhombus;whiteSpace=wrap;html=1;fillColor=#f5f5f5;strokeColor=#666666;" vertex="1" parent="1">
+          <mxGeometry x="580" y="280" width="40" height="40" as="geometry" />
+        </mxCell>
+
+        <!-- SISTEM: Tampilkan Error -->
+        <mxCell id="a_error1" value="Tampilkan Pesan&#xa;Tidak Ditemukan" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f8cecc;strokeColor=#b85450;fontSize=10;arcSize=25;" vertex="1" parent="1">
+          <mxGeometry x="500" y="360" width="140" height="40" as="geometry" />
+        </mxCell>
+
+        <!-- SISTEM: Tampilkan Info -->
+        <mxCell id="a_info" value="Tampilkan Info Member:&#xa;Nama, Poin, Belanja,&#xa;Riwayat Transaksi" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;fontSize=11;arcSize=25;" vertex="1" parent="1">
+          <mxGeometry x="510" y="430" width="180" height="55" as="geometry" />
+        </mxCell>
+
+        <!-- MEMBER: Lihat Info -->
+        <mxCell id="a_lihat" value="Melihat Informasi&#xa;Poin yang Dimiliki" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=11;arcSize=25;" vertex="1" parent="1">
+          <mxGeometry x="145" y="440" width="160" height="45" as="geometry" />
+        </mxCell>
+
+        <!-- DECISION: Tukar? -->
+        <mxCell id="a_dec2" value="" style="rhombus;whiteSpace=wrap;html=1;fillColor=#f5f5f5;strokeColor=#666666;" vertex="1" parent="1">
+          <mxGeometry x="205" y="520" width="40" height="40" as="geometry" />
+        </mxCell>
+
+        <!-- SISTEM: Tampilkan Katalog -->
+        <mxCell id="a_katalog" value="Menampilkan Katalog&#xa;Reward Tersedia" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;fontSize=11;arcSize=25;" vertex="1" parent="1">
+          <mxGeometry x="515" y="590" width="170" height="45" as="geometry" />
+        </mxCell>
+
+        <!-- MEMBER: Pilih Reward -->
+        <mxCell id="a_pilih" value="Memilih Reward&#xa;dari Katalog" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=11;arcSize=25;" vertex="1" parent="1">
+          <mxGeometry x="155" y="660" width="140" height="45" as="geometry" />
+        </mxCell>
+
+        <!-- SISTEM: Cek Poin -->
+        <mxCell id="a_cek_poin" value="Cek Saldo Poin&#xa;Member" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;fontSize=11;arcSize=25;" vertex="1" parent="1">
+          <mxGeometry x="530" y="660" width="140" height="45" as="geometry" />
+        </mxCell>
+
+        <!-- DECISION: Cukup? -->
+        <mxCell id="a_dec3" value="" style="rhombus;whiteSpace=wrap;html=1;fillColor=#f5f5f5;strokeColor=#666666;" vertex="1" parent="1">
+          <mxGeometry x="580" y="740" width="40" height="40" as="geometry" />
+        </mxCell>
+
+        <!-- SISTEM: Poin Kurang -->
+        <mxCell id="a_kurang" value="Tampilkan Pesan&#xa;Poin Tidak Cukup" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f8cecc;strokeColor=#b85450;fontSize=10;arcSize=25;" vertex="1" parent="1">
+          <mxGeometry x="680" y="740" width="130" height="40" as="geometry" />
+        </mxCell>
+
+        <!-- SISTEM: FIFO -->
+        <mxCell id="a_fifo" value="Potong Poin Metode FIFO&#xa;(Transaksi Terlama Dulu)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#e1d5e7;strokeColor=#9673a6;fontStyle=1;fontSize=11;arcSize=25;" vertex="1" parent="1">
+          <mxGeometry x="505" y="820" width="190" height="50" as="geometry" />
+        </mxCell>
+
+        <!-- DECISION: Kategori? -->
+        <mxCell id="a_dec4" value="" style="rhombus;whiteSpace=wrap;html=1;fillColor=#f5f5f5;strokeColor=#666666;" vertex="1" parent="1">
+          <mxGeometry x="580" y="910" width="40" height="40" as="geometry" />
+        </mxCell>
+
+        <!-- SISTEM: Auto Approve -->
+        <mxCell id="a_auto" value="Auto-Approve&#xa;Penukaran" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;fontSize=11;arcSize=25;" vertex="1" parent="1">
+          <mxGeometry x="680" y="910" width="130" height="40" as="geometry" />
+        </mxCell>
+
+        <!-- SISTEM: Pending -->
+        <mxCell id="a_pending" value="Set Status = Pending" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;fontSize=11;arcSize=25;" vertex="1" parent="1">
+          <mxGeometry x="510" y="990" width="180" height="40" as="geometry" />
+        </mxCell>
+
+        <!-- SISTEM: Simpan -->
+        <mxCell id="a_simpan" value="Simpan Penukaran&#xa;&amp; Update Poin Member" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;fontSize=11;arcSize=25;" vertex="1" parent="1">
+          <mxGeometry x="515" y="1070" width="170" height="45" as="geometry" />
+        </mxCell>
+
+        <!-- SISTEM: Tampilkan Kode -->
+        <mxCell id="a_kode" value="Tampilkan Kode Klaim&#xa;&amp; Status Penukaran" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;fontSize=11;arcSize=25;" vertex="1" parent="1">
+          <mxGeometry x="515" y="1150" width="170" height="45" as="geometry" />
+        </mxCell>
+
+        <!-- MEMBER: Terima Kode -->
+        <mxCell id="a_terima" value="Menerima Kode Klaim" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=11;arcSize=25;" vertex="1" parent="1">
+          <mxGeometry x="150" y="1150" width="150" height="40" as="geometry" />
+        </mxCell>
+
+        <!-- ADMIN: Lihat Permintaan -->
+        <mxCell id="a_adm_lihat" value="Melihat Daftar&#xa;Permintaan Penukaran" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;fontSize=11;arcSize=25;" vertex="1" parent="1">
+          <mxGeometry x="850" y="1070" width="170" height="45" as="geometry" />
+        </mxCell>
+
+        <!-- DECISION: Admin Approve? -->
+        <mxCell id="a_dec5" value="" style="rhombus;whiteSpace=wrap;html=1;fillColor=#f5f5f5;strokeColor=#666666;" vertex="1" parent="1">
+          <mxGeometry x="915" y="1155" width="40" height="40" as="geometry" />
+        </mxCell>
+
+        <!-- ADMIN: Approve -->
+        <mxCell id="a_adm_approve" value="Approve &amp; Kurangi&#xa;Stok Katalog" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;fontSize=10;arcSize=25;" vertex="1" parent="1">
+          <mxGeometry x="830" y="1240" width="140" height="40" as="geometry" />
+        </mxCell>
+
+        <!-- ADMIN: Reject -->
+        <mxCell id="a_adm_reject" value="Reject &amp; Refund&#xa;Poin Member" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f8cecc;strokeColor=#b85450;fontSize=10;arcSize=25;" vertex="1" parent="1">
+          <mxGeometry x="990" y="1240" width="130" height="40" as="geometry" />
+        </mxCell>
+
+        <!-- ADMIN: Complete -->
+        <mxCell id="a_adm_complete" value="Tandai Selesai&#xa;(Completed)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;fontSize=10;arcSize=25;" vertex="1" parent="1">
+          <mxGeometry x="845" y="1320" width="130" height="40" as="geometry" />
+        </mxCell>
+
+        <!-- MERGE NODE -->
+        <mxCell id="a_merge" value="" style="ellipse;whiteSpace=wrap;html=1;fillColor=#000000;strokeColor=#333333;aspect=fixed;" vertex="1" parent="1">
+          <mxGeometry x="580" y="1400" width="20" height="20" as="geometry" />
+        </mxCell>
+
+        <!-- END NODE (Activity Final Node - Bullseye) -->
+        <mxCell id="a_end_outer" value="" style="ellipse;whiteSpace=wrap;html=1;fillColor=none;strokeColor=#333333;strokeWidth=2;aspect=fixed;" vertex="1" parent="1">
+          <mxGeometry x="572" y="1460" width="36" height="36" as="geometry" />
+        </mxCell>
+        <mxCell id="a_end" value="" style="ellipse;whiteSpace=wrap;html=1;fillColor=#000000;strokeColor=#000000;aspect=fixed;" vertex="1" parent="1">
+          <mxGeometry x="580" y="1468" width="20" height="20" as="geometry" />
+        </mxCell>
+        <mxCell id="a_end_label" value="Selesai" style="text;html=1;align=center;verticalAlign=top;resizable=0;points=[];autosize=1;strokeColor=none;fillColor=none;fontSize=10;fontStyle=1;" vertex="1" parent="1">
+          <mxGeometry x="563" y="1500" width="56" height="26" as="geometry" />
+        </mxCell>
+
+        <!-- ======= EDGES ======= -->
+        <mxCell id="ae1" edge="1" parent="1" source="a_start" target="a_akses" style="html=1;rounded=0;strokeColor=#333333;">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="ae2" edge="1" parent="1" source="a_akses" target="a_input" style="html=1;rounded=0;strokeColor=#333333;">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="ae3" edge="1" parent="1" source="a_input" target="a_validasi" style="html=1;rounded=0;strokeColor=#333333;">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="ae4" edge="1" parent="1" source="a_validasi" target="a_dec1" style="html=1;rounded=0;strokeColor=#333333;">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <!-- Tidak ditemukan -->
+        <mxCell id="ae5" edge="1" parent="1" source="a_dec1" target="a_error1" style="html=1;rounded=0;strokeColor=#333333;">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="ae5_lbl" connectable="0" parent="ae5" style="edgeLabel;align=center;verticalAlign=middle;resizable=0;points=[];fontSize=9;" value="[tidak]" vertex="1">
+          <mxGeometry relative="1" as="geometry"><mxPoint as="offset" /></mxGeometry>
+        </mxCell>
+
+        <mxCell id="ae5b" edge="1" parent="1" source="a_error1" target="a_input" style="html=1;rounded=0;strokeColor=#333333;exitX=0;exitY=0.5;exitDx=0;exitDy=0;entryX=1;entryY=1;entryDx=0;entryDy=0;">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="430" y="380" />
+              <mxPoint x="430" y="245" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+
+        <!-- Ditemukan -->
+        <mxCell id="ae6" edge="1" parent="1" source="a_dec1" target="a_info" style="html=1;rounded=0;strokeColor=#333333;">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="ae6_lbl" connectable="0" parent="ae6" style="edgeLabel;align=center;verticalAlign=middle;resizable=0;points=[];fontSize=9;" value="[ya]" vertex="1">
+          <mxGeometry relative="1" as="geometry"><mxPoint as="offset" /></mxGeometry>
+        </mxCell>
+
+        <mxCell id="ae7" edge="1" parent="1" source="a_info" target="a_lihat" style="html=1;rounded=0;strokeColor=#333333;">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="ae8" edge="1" parent="1" source="a_lihat" target="a_dec2" style="html=1;rounded=0;strokeColor=#333333;">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <!-- Tidak tukar -->
+        <mxCell id="ae9" edge="1" parent="1" source="a_dec2" target="a_merge" style="html=1;rounded=0;strokeColor=#333333;exitX=0;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="80" y="540" />
+              <mxPoint x="80" y="1410" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="ae9_lbl" connectable="0" parent="ae9" style="edgeLabel;align=center;verticalAlign=middle;resizable=0;points=[];fontSize=9;" value="[tidak]" vertex="1">
+          <mxGeometry x="-0.85" relative="1" as="geometry"><mxPoint as="offset" /></mxGeometry>
+        </mxCell>
+
+        <!-- Ya tukar -->
+        <mxCell id="ae10" edge="1" parent="1" source="a_dec2" target="a_katalog" style="html=1;rounded=0;strokeColor=#333333;">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="ae10_lbl" connectable="0" parent="ae10" style="edgeLabel;align=center;verticalAlign=middle;resizable=0;points=[];fontSize=9;" value="[ya]" vertex="1">
+          <mxGeometry relative="1" as="geometry"><mxPoint as="offset" /></mxGeometry>
+        </mxCell>
+
+        <mxCell id="ae11" edge="1" parent="1" source="a_katalog" target="a_pilih" style="html=1;rounded=0;strokeColor=#333333;">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="ae12" edge="1" parent="1" source="a_pilih" target="a_cek_poin" style="html=1;rounded=0;strokeColor=#333333;">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="ae13" edge="1" parent="1" source="a_cek_poin" target="a_dec3" style="html=1;rounded=0;strokeColor=#333333;">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <!-- Poin kurang -->
+        <mxCell id="ae14" edge="1" parent="1" source="a_dec3" target="a_kurang" style="html=1;rounded=0;strokeColor=#333333;">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="ae14_lbl" connectable="0" parent="ae14" style="edgeLabel;align=center;verticalAlign=middle;resizable=0;points=[];fontSize=9;" value="[tidak cukup]" vertex="1">
+          <mxGeometry relative="1" as="geometry"><mxPoint as="offset" /></mxGeometry>
+        </mxCell>
+
+        <mxCell id="ae14b" edge="1" parent="1" source="a_kurang" target="a_katalog" style="html=1;rounded=0;strokeColor=#333333;exitX=0.5;exitY=0;exitDx=0;exitDy=0;entryX=1;entryY=0.5;entryDx=0;entryDy=0;">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="745" y="612" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+
+        <!-- Poin cukup -->
+        <mxCell id="ae15" edge="1" parent="1" source="a_dec3" target="a_fifo" style="html=1;rounded=0;strokeColor=#333333;">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="ae15_lbl" connectable="0" parent="ae15" style="edgeLabel;align=center;verticalAlign=middle;resizable=0;points=[];fontSize=9;" value="[cukup]" vertex="1">
+          <mxGeometry relative="1" as="geometry"><mxPoint as="offset" /></mxGeometry>
+        </mxCell>
+
+        <mxCell id="ae16" edge="1" parent="1" source="a_fifo" target="a_dec4" style="html=1;rounded=0;strokeColor=#333333;">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <!-- Voucher/Discount -->
+        <mxCell id="ae17" edge="1" parent="1" source="a_dec4" target="a_auto" style="html=1;rounded=0;strokeColor=#333333;">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="ae17_lbl" connectable="0" parent="ae17" style="edgeLabel;align=center;verticalAlign=middle;resizable=0;points=[];fontSize=9;" value="[voucher/discount]" vertex="1">
+          <mxGeometry relative="1" as="geometry"><mxPoint as="offset" /></mxGeometry>
+        </mxCell>
+
+        <!-- Lainnya -->
+        <mxCell id="ae18" edge="1" parent="1" source="a_dec4" target="a_pending" style="html=1;rounded=0;strokeColor=#333333;">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="ae18_lbl" connectable="0" parent="ae18" style="edgeLabel;align=center;verticalAlign=middle;resizable=0;points=[];fontSize=9;" value="[product/other]" vertex="1">
+          <mxGeometry relative="1" as="geometry"><mxPoint as="offset" /></mxGeometry>
+        </mxCell>
+
+        <!-- Auto & Pending -> Simpan -->
+        <mxCell id="ae19" edge="1" parent="1" source="a_auto" target="a_simpan" style="html=1;rounded=0;strokeColor=#333333;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=1;entryY=0.5;entryDx=0;entryDy=0;">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="745" y="1092" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="ae20" edge="1" parent="1" source="a_pending" target="a_simpan" style="html=1;rounded=0;strokeColor=#333333;">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <mxCell id="ae21" edge="1" parent="1" source="a_simpan" target="a_kode" style="html=1;rounded=0;strokeColor=#333333;">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="ae22" edge="1" parent="1" source="a_kode" target="a_terima" style="html=1;rounded=0;strokeColor=#333333;">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <!-- Pending -> Admin -->
+        <mxCell id="ae23" edge="1" parent="1" source="a_pending" target="a_adm_lihat" style="html=1;rounded=0;strokeColor=#333333;dashed=1;">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="ae23_lbl" connectable="0" parent="ae23" style="edgeLabel;align=center;verticalAlign=middle;resizable=0;points=[];fontSize=8;fontStyle=2;" value="(jika pending)" vertex="1">
+          <mxGeometry relative="1" as="geometry"><mxPoint as="offset" /></mxGeometry>
+        </mxCell>
+
+        <mxCell id="ae24" edge="1" parent="1" source="a_adm_lihat" target="a_dec5" style="html=1;rounded=0;strokeColor=#333333;">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <mxCell id="ae25" edge="1" parent="1" source="a_dec5" target="a_adm_approve" style="html=1;rounded=0;strokeColor=#333333;">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="ae25_lbl" connectable="0" parent="ae25" style="edgeLabel;align=center;verticalAlign=middle;resizable=0;points=[];fontSize=9;" value="[ya]" vertex="1">
+          <mxGeometry relative="1" as="geometry"><mxPoint as="offset" /></mxGeometry>
+        </mxCell>
+
+        <mxCell id="ae26" edge="1" parent="1" source="a_dec5" target="a_adm_reject" style="html=1;rounded=0;strokeColor=#333333;">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="ae26_lbl" connectable="0" parent="ae26" style="edgeLabel;align=center;verticalAlign=middle;resizable=0;points=[];fontSize=9;" value="[tidak]" vertex="1">
+          <mxGeometry relative="1" as="geometry"><mxPoint as="offset" /></mxGeometry>
+        </mxCell>
+
+        <mxCell id="ae27" edge="1" parent="1" source="a_adm_approve" target="a_adm_complete" style="html=1;rounded=0;strokeColor=#333333;">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <!-- All end paths -> merge -->
+        <mxCell id="ae28" edge="1" parent="1" source="a_terima" target="a_merge" style="html=1;rounded=0;strokeColor=#333333;">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="225" y="1410" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="ae29" edge="1" parent="1" source="a_adm_complete" target="a_merge" style="html=1;rounded=0;strokeColor=#333333;">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="910" y="1410" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="ae30" edge="1" parent="1" source="a_adm_reject" target="a_merge" style="html=1;rounded=0;strokeColor=#333333;">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="1055" y="1410" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+
+        <!-- Merge -> End -->
+        <mxCell id="ae31" edge="1" parent="1" source="a_merge" target="a_end" style="html=1;rounded=0;strokeColor=#333333;">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>

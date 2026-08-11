@@ -104,7 +104,7 @@ async function main() {
     console.log(`✅ Generated ${members.length} members`)
 
     const startDate = new Date('2023-10-01')
-    const endDate = new Date()
+    const endDate = new Date() // Dynamically uses current date
     const transactions: any[] = []
 
     for (const member of members) {

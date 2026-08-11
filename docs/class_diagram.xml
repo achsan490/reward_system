@@ -1,162 +1,141 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<mxfile host="app.diagrams.net" modified="2026-05-22T08:00:00.000Z" agent="5.0 (Windows NT 10.0; Win64; x64)" etag="class-diagram-updated" version="21.6.8" type="device">
+<mxfile host="app.diagrams.net" agent="Antigravity">
   <diagram id="ClassDiagram" name="Class Diagram">
-    <mxGraphModel dx="1422" dy="762" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1300" pageHeight="1100" math="0" shadow="0">
+    <mxGraphModel dx="1800" dy="1100" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1654" pageHeight="1169" math="0" shadow="0">
       <root>
         <mxCell id="0" />
         <mxCell id="1" parent="0" />
 
-        <!-- Class: Member -->
-        <mxCell id="Member" value="Member" style="swimlane;fontStyle=1;align=center;verticalAlign=top;childLayout=stackLayout;horizontal=1;startSize=26;horizontalStack=0;resizeParent=1;resizeParentMax=0;resizeLast=0;collapsible=1;marginBottom=0;whiteSpace=wrap;html=1;" vertex="1" parent="1">
-          <mxGeometry x="360" y="240" width="220" height="240" as="geometry" />
+        <!-- ======= CLASS: Admin ======= -->
+        <mxCell id="c_admin" value="Admin" style="swimlane;fontStyle=1;align=center;startSize=26;html=1;collapsible=0;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=11;" vertex="1" parent="1">
+          <mxGeometry x="30" y="30" width="220" height="250" as="geometry" />
         </mxCell>
-        <mxCell id="Mem_Attr" value="- id: String&#10;- memberId: String&#10;- name: String&#10;- email: String [NULL]&#10;- phone: String [NULL]&#10;- totalPoints: Float&#10;- totalSpent: Float&#10;- transactionCount: Int&#10;- createdAt: DateTime&#10;- updatedAt: DateTime" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;" vertex="1" parent="Member">
-          <mxGeometry y="26" width="220" height="150" as="geometry" />
-        </mxCell>
-        <mxCell id="Mem_Op" value="" style="line;strokeWidth=1;fillColor=none;align=left;verticalAlign=middle;spacingTop=-1;spacingLeft=3;spacingRight=3;rotatable=0;labelPosition=right;points=[];portConstraint=eastwest;" vertex="1" parent="Member">
-          <mxGeometry y="176" width="220" height="8" as="geometry" />
-        </mxCell>
-        <mxCell id="Mem_Meth" value="+ getBalance(): Float&#10;+ updatePoints(): void" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;" vertex="1" parent="Member">
-          <mxGeometry y="184" width="220" height="50" as="geometry" />
+        <mxCell id="c_admin_attr" value="- id: String (PK)&#xa;- email: String (Unique)&#xa;- password: String&#xa;- name: String&#xa;- phone: String?&#xa;- bio: String?&#xa;- facebook: String?&#xa;- twitter: String?&#xa;- linkedin: String?&#xa;- instagram: String?&#xa;- createdAt: DateTime&#xa;- updatedAt: DateTime" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;whiteSpace=wrap;html=0;fontSize=10;" vertex="1" parent="c_admin">
+          <mxGeometry y="26" width="220" height="224" as="geometry" />
         </mxCell>
 
-        <!-- Class: Transaction -->
-        <mxCell id="Transaction" value="Transaction" style="swimlane;fontStyle=1;align=center;verticalAlign=top;childLayout=stackLayout;horizontal=1;startSize=26;horizontalStack=0;resizeParent=1;resizeParentMax=0;resizeLast=0;collapsible=1;marginBottom=0;whiteSpace=wrap;html=1;" vertex="1" parent="1">
-          <mxGeometry x="40" y="240" width="240" height="240" as="geometry" />
+        <!-- ======= CLASS: Member ======= -->
+        <mxCell id="c_member" value="Member" style="swimlane;fontStyle=1;align=center;startSize=26;html=1;collapsible=0;fillColor=#d5e8d4;strokeColor=#82b366;fontSize=11;" vertex="1" parent="1">
+          <mxGeometry x="350" y="30" width="230" height="220" as="geometry" />
         </mxCell>
-        <mxCell id="Trans_Attr" value="- id: String&#10;- memberId: String&#10;- amount: Float&#10;- pointsEarned: Float&#10;- transactionDate: DateTime&#10;- pointsExpiryDate: DateTime [NULL]&#10;- pointsExpired: Boolean&#10;- description: String [NULL]&#10;- createdAt: DateTime&#10;- updatedAt: DateTime" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;" vertex="1" parent="Transaction">
-          <mxGeometry y="26" width="240" height="150" as="geometry" />
-        </mxCell>
-        <mxCell id="Trans_Op" value="" style="line;strokeWidth=1;fillColor=none;align=left;verticalAlign=middle;spacingTop=-1;spacingLeft=3;spacingRight=3;rotatable=0;labelPosition=right;points=[];portConstraint=eastwest;" vertex="1" parent="Transaction">
-          <mxGeometry y="176" width="240" height="8" as="geometry" />
-        </mxCell>
-        <mxCell id="Trans_Meth" value="+ calculatePoints(): Float" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;" vertex="1" parent="Transaction">
-          <mxGeometry y="184" width="240" height="50" as="geometry" />
+        <mxCell id="c_member_attr" value="- id: String (PK)&#xa;- memberId: String (Unique)&#xa;- name: String&#xa;- email: String?&#xa;- phone: String?&#xa;- totalPoints: Float&#xa;- totalSpent: Float&#xa;- transactionCount: Int&#xa;- createdAt: DateTime&#xa;- updatedAt: DateTime" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;whiteSpace=wrap;html=0;fontSize=10;" vertex="1" parent="c_member">
+          <mxGeometry y="26" width="230" height="194" as="geometry" />
         </mxCell>
 
-        <!-- Class: RewardCatalog -->
-        <mxCell id="Catalog" value="RewardCatalog" style="swimlane;fontStyle=1;align=center;verticalAlign=top;childLayout=stackLayout;horizontal=1;startSize=26;horizontalStack=0;resizeParent=1;resizeParentMax=0;resizeLast=0;collapsible=1;marginBottom=0;whiteSpace=wrap;html=1;" vertex="1" parent="1">
-          <mxGeometry x="680" y="560" width="220" height="260" as="geometry" />
+        <!-- ======= CLASS: Transaction ======= -->
+        <mxCell id="c_txn" value="Transaction" style="swimlane;fontStyle=1;align=center;startSize=26;html=1;collapsible=0;fillColor=#fff2cc;strokeColor=#d6b656;fontSize=11;" vertex="1" parent="1">
+          <mxGeometry x="680" y="30" width="230" height="220" as="geometry" />
         </mxCell>
-        <mxCell id="Cat_Attr" value="- id: String&#10;- name: String&#10;- description: String [NULL]&#10;- pointsRequired: Float&#10;- stock: Int [NULL]&#10;- imageUrl: String [NULL]&#10;- category: String [NULL]&#10;- isActive: Boolean&#10;- validUntil: DateTime [NULL]&#10;- createdAt: DateTime&#10;- updatedAt: DateTime" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;" vertex="1" parent="Catalog">
-          <mxGeometry y="26" width="220" height="170" as="geometry" />
-        </mxCell>
-        <mxCell id="Cat_Op" value="" style="line;strokeWidth=1;fillColor=none;align=left;verticalAlign=middle;spacingTop=-1;spacingLeft=3;spacingRight=3;rotatable=0;labelPosition=right;points=[];portConstraint=eastwest;" vertex="1" parent="Catalog">
-          <mxGeometry y="196" width="220" height="8" as="geometry" />
-        </mxCell>
-        <mxCell id="Cat_Meth" value="+ checkStock(): Boolean&#10;+ decreaseStock(): void" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;" vertex="1" parent="Catalog">
-          <mxGeometry y="204" width="220" height="50" as="geometry" />
+        <mxCell id="c_txn_attr" value="- id: String (PK)&#xa;- memberId: String (FK)&#xa;- transactionDate: DateTime&#xa;- amount: Float&#xa;- pointsEarned: Float&#xa;- pointsExpiryDate: DateTime?&#xa;- pointsExpired: Boolean&#xa;- description: String?&#xa;- createdAt: DateTime&#xa;- updatedAt: DateTime" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;whiteSpace=wrap;html=0;fontSize=10;" vertex="1" parent="c_txn">
+          <mxGeometry y="26" width="230" height="194" as="geometry" />
         </mxCell>
 
-        <!-- Class: Redemption -->
-        <mxCell id="Redemption" value="RewardRedemption" style="swimlane;fontStyle=1;align=center;verticalAlign=top;childLayout=stackLayout;horizontal=1;startSize=26;horizontalStack=0;resizeParent=1;resizeParentMax=0;resizeLast=0;collapsible=1;marginBottom=0;whiteSpace=wrap;html=1;" vertex="1" parent="1">
-          <mxGeometry x="360" y="560" width="240" height="300" as="geometry" />
+        <!-- ======= CLASS: SystemSetting ======= -->
+        <mxCell id="c_setting" value="SystemSetting" style="swimlane;fontStyle=1;align=center;startSize=26;html=1;collapsible=0;fillColor=#f5f5f5;strokeColor=#666666;fontSize=11;" vertex="1" parent="1">
+          <mxGeometry x="30" y="340" width="220" height="170" as="geometry" />
         </mxCell>
-        <mxCell id="Red_Attr" value="- id: String&#10;- memberId: String&#10;- catalogId: String&#10;- pointsUsed: Float&#10;- claimCode: String&#10;- status: String&#10;- notes: String [NULL]&#10;- adminNotes: String [NULL]&#10;- redeemedAt: DateTime&#10;- processedAt: DateTime [NULL]&#10;- processedBy: String [NULL]&#10;- completedAt: DateTime [NULL]&#10;- createdAt: DateTime&#10;- updatedAt: DateTime" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;" vertex="1" parent="Redemption">
-          <mxGeometry y="26" width="240" height="210" as="geometry" />
-        </mxCell>
-        <mxCell id="Red_Op" value="" style="line;strokeWidth=1;fillColor=none;align=left;verticalAlign=middle;spacingTop=-1;spacingLeft=3;spacingRight=3;rotatable=0;labelPosition=right;points=[];portConstraint=eastwest;" vertex="1" parent="Redemption">
-          <mxGeometry y="236" width="240" height="8" as="geometry" />
-        </mxCell>
-        <mxCell id="Red_Meth" value="+ process(): void&#10;+ approve(): void" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;" vertex="1" parent="Redemption">
-          <mxGeometry y="244" width="240" height="50" as="geometry" />
+        <mxCell id="c_setting_attr" value="- id: String (PK)&#xa;- key: String (Unique)&#xa;- value: String&#xa;- label: String&#xa;- type: String&#xa;- createdAt: DateTime&#xa;- updatedAt: DateTime" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;whiteSpace=wrap;html=0;fontSize=10;" vertex="1" parent="c_setting">
+          <mxGeometry y="26" width="220" height="144" as="geometry" />
         </mxCell>
 
-        <!-- Class: Admin -->
-        <mxCell id="Admin" value="Admin" style="swimlane;fontStyle=1;align=center;verticalAlign=top;childLayout=stackLayout;horizontal=1;startSize=26;horizontalStack=0;resizeParent=1;resizeParentMax=0;resizeLast=0;collapsible=1;marginBottom=0;whiteSpace=wrap;html=1;" vertex="1" parent="1">
-          <mxGeometry x="40" y="40" width="220" height="170" as="geometry" />
+        <!-- ======= CLASS: RewardCampaign ======= -->
+        <mxCell id="c_campaign" value="RewardCampaign" style="swimlane;fontStyle=1;align=center;startSize=26;html=1;collapsible=0;fillColor=#e1d5e7;strokeColor=#9673a6;fontSize=11;" vertex="1" parent="1">
+          <mxGeometry x="350" y="310" width="230" height="230" as="geometry" />
         </mxCell>
-        <mxCell id="Admin_Attr" value="- id: String&#10;- email: String&#10;- password: String&#10;- name: String&#10;- createdAt: DateTime&#10;- updatedAt: DateTime" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;" vertex="1" parent="Admin">
-          <mxGeometry y="26" width="220" height="100" as="geometry" />
-        </mxCell>
-        <mxCell id="Admin_Op" value="" style="line;strokeWidth=1;fillColor=none;align=left;verticalAlign=middle;spacingTop=-1;spacingLeft=3;spacingRight=3;rotatable=0;labelPosition=right;points=[];portConstraint=eastwest;" vertex="1" parent="Admin">
-          <mxGeometry y="126" width="220" height="8" as="geometry" />
-        </mxCell>
-        <mxCell id="Admin_Meth" value="+ verifyPassword(): Boolean" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;" vertex="1" parent="Admin">
-          <mxGeometry y="134" width="220" height="30" as="geometry" />
+        <mxCell id="c_campaign_attr" value="- id: String (PK)&#xa;- name: String&#xa;- description: String?&#xa;- criteria: String&#xa;- winnersCount: Int&#xa;- startDate: DateTime&#xa;- endDate: DateTime&#xa;- status: String&#xa;- createdAt: DateTime&#xa;- updatedAt: DateTime" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;whiteSpace=wrap;html=0;fontSize=10;" vertex="1" parent="c_campaign">
+          <mxGeometry y="26" width="230" height="204" as="geometry" />
         </mxCell>
 
-        <!-- Class: SystemSetting -->
-        <mxCell id="SystemSetting" value="SystemSetting" style="swimlane;fontStyle=1;align=center;verticalAlign=top;childLayout=stackLayout;horizontal=1;startSize=26;horizontalStack=0;resizeParent=1;resizeParentMax=0;resizeLast=0;collapsible=1;marginBottom=0;whiteSpace=wrap;html=1;" vertex="1" parent="1">
-          <mxGeometry x="360" y="40" width="220" height="170" as="geometry" />
+        <!-- ======= CLASS: RewardWinner ======= -->
+        <mxCell id="c_winner" value="RewardWinner" style="swimlane;fontStyle=1;align=center;startSize=26;html=1;collapsible=0;fillColor=#e1d5e7;strokeColor=#9673a6;fontSize=11;" vertex="1" parent="1">
+          <mxGeometry x="680" y="310" width="230" height="260" as="geometry" />
         </mxCell>
-        <mxCell id="Sys_Attr" value="- id: String&#10;- key: String&#10;- value: String&#10;- label: String&#10;- type: String&#10;- createdAt: DateTime&#10;- updatedAt: DateTime" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;" vertex="1" parent="SystemSetting">
-          <mxGeometry y="26" width="220" height="100" as="geometry" />
-        </mxCell>
-        <mxCell id="Sys_Op" value="" style="line;strokeWidth=1;fillColor=none;align=left;verticalAlign=middle;spacingTop=-1;spacingLeft=3;spacingRight=3;rotatable=0;labelPosition=right;points=[];portConstraint=eastwest;" vertex="1" parent="SystemSetting">
-          <mxGeometry y="126" width="220" height="8" as="geometry" />
-        </mxCell>
-        <mxCell id="Sys_Meth" value="+ getSetting(): String" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;" vertex="1" parent="SystemSetting">
-          <mxGeometry y="134" width="220" height="30" as="geometry" />
+        <mxCell id="c_winner_attr" value="- id: String (PK)&#xa;- campaignId: String (FK)&#xa;- memberId: String (FK)&#xa;- rank: Int&#xa;- pointsAtWin: Float&#xa;- spentAtWin: Float&#xa;- transactionsAtWin: Int&#xa;- rewardClaimed: Boolean&#xa;- claimedAt: DateTime?&#xa;- notes: String?&#xa;- createdAt: DateTime&#xa;- updatedAt: DateTime" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;whiteSpace=wrap;html=0;fontSize=10;" vertex="1" parent="c_winner">
+          <mxGeometry y="26" width="230" height="234" as="geometry" />
         </mxCell>
 
-        <!-- Class: RewardCampaign -->
-        <mxCell id="RewardCampaign" value="RewardCampaign" style="swimlane;fontStyle=1;align=center;verticalAlign=top;childLayout=stackLayout;horizontal=1;startSize=26;horizontalStack=0;resizeParent=1;resizeParentMax=0;resizeLast=0;collapsible=1;marginBottom=0;whiteSpace=wrap;html=1;" vertex="1" parent="1">
-          <mxGeometry x="680" y="40" width="220" height="220" as="geometry" />
+        <!-- ======= CLASS: RewardCatalog ======= -->
+        <mxCell id="c_catalog" value="RewardCatalog" style="swimlane;fontStyle=1;align=center;startSize=26;html=1;collapsible=0;fillColor=#fff2cc;strokeColor=#d6b656;fontSize=11;" vertex="1" parent="1">
+          <mxGeometry x="350" y="600" width="230" height="250" as="geometry" />
         </mxCell>
-        <mxCell id="Camp_Attr" value="- id: String&#10;- name: String&#10;- description: String [NULL]&#10;- criteria: String&#10;- winnersCount: Int&#10;- startDate: DateTime&#10;- endDate: DateTime&#10;- status: String&#10;- createdAt: DateTime&#10;- updatedAt: DateTime" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;" vertex="1" parent="RewardCampaign">
-          <mxGeometry y="26" width="220" height="150" as="geometry" />
-        </mxCell>
-        <mxCell id="Camp_Op" value="" style="line;strokeWidth=1;fillColor=none;align=left;verticalAlign=middle;spacingTop=-1;spacingLeft=3;spacingRight=3;rotatable=0;labelPosition=right;points=[];portConstraint=eastwest;" vertex="1" parent="RewardCampaign">
-          <mxGeometry y="176" width="220" height="8" as="geometry" />
-        </mxCell>
-        <mxCell id="Camp_Meth" value="+ determineWinners(): Winner[]" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;" vertex="1" parent="RewardCampaign">
-          <mxGeometry y="184" width="220" height="30" as="geometry" />
+        <mxCell id="c_catalog_attr" value="- id: String (PK)&#xa;- name: String&#xa;- description: String?&#xa;- pointsRequired: Float&#xa;- stock: Int?&#xa;- imageUrl: String?&#xa;- category: String?&#xa;- isActive: Boolean&#xa;- validUntil: DateTime?&#xa;- createdAt: DateTime&#xa;- updatedAt: DateTime" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;whiteSpace=wrap;html=0;fontSize=10;" vertex="1" parent="c_catalog">
+          <mxGeometry y="26" width="230" height="224" as="geometry" />
         </mxCell>
 
-        <!-- Class: RewardWinner -->
-        <mxCell id="RewardWinner" value="RewardWinner" style="swimlane;fontStyle=1;align=center;verticalAlign=top;childLayout=stackLayout;horizontal=1;startSize=26;horizontalStack=0;resizeParent=1;resizeParentMax=0;resizeLast=0;collapsible=1;marginBottom=0;whiteSpace=wrap;html=1;" vertex="1" parent="1">
-          <mxGeometry x="680" y="280" width="220" height="260" as="geometry" />
+        <!-- ======= CLASS: RewardRedemption ======= -->
+        <mxCell id="c_redeem" value="RewardRedemption" style="swimlane;fontStyle=1;align=center;startSize=26;html=1;collapsible=0;fillColor=#f8cecc;strokeColor=#b85450;fontSize=11;" vertex="1" parent="1">
+          <mxGeometry x="680" y="620" width="230" height="290" as="geometry" />
         </mxCell>
-        <mxCell id="Win_Attr" value="- id: String&#10;- campaignId: String&#10;- memberId: String&#10;- rank: Int&#10;- pointsAtWin: Float&#10;- spentAtWin: Float&#10;- transactionsAtWin: Int&#10;- rewardClaimed: Boolean&#10;- claimedAt: DateTime [NULL]&#10;- notes: String [NULL]&#10;- createdAt: DateTime&#10;- updatedAt: DateTime" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;" vertex="1" parent="RewardWinner">
-          <mxGeometry y="26" width="220" height="170" as="geometry" />
-        </mxCell>
-        <mxCell id="Win_Op" value="" style="line;strokeWidth=1;fillColor=none;align=left;verticalAlign=middle;spacingTop=-1;spacingLeft=3;spacingRight=3;rotatable=0;labelPosition=right;points=[];portConstraint=eastwest;" vertex="1" parent="RewardWinner">
-          <mxGeometry y="196" width="220" height="8" as="geometry" />
-        </mxCell>
-        <mxCell id="Win_Meth" value="+ claimReward(): Boolean" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;" vertex="1" parent="RewardWinner">
-          <mxGeometry y="204" width="220" height="50" as="geometry" />
+        <mxCell id="c_redeem_attr" value="- id: String (PK)&#xa;- memberId: String (FK)&#xa;- catalogId: String (FK)&#xa;- pointsUsed: Float&#xa;- claimCode: String (Unique)&#xa;- status: String&#xa;- notes: String?&#xa;- adminNotes: String?&#xa;- redeemedAt: DateTime&#xa;- processedAt: DateTime?&#xa;- processedBy: String?&#xa;- completedAt: DateTime?&#xa;- createdAt: DateTime&#xa;- updatedAt: DateTime" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;whiteSpace=wrap;html=0;fontSize=10;" vertex="1" parent="c_redeem">
+          <mxGeometry y="26" width="230" height="264" as="geometry" />
         </mxCell>
 
-        <!-- Class: StoreTransactionSource -->
-        <mxCell id="StoreTransactionSource" value="StoreTransactionSource" style="swimlane;fontStyle=1;align=center;verticalAlign=top;childLayout=stackLayout;horizontal=1;startSize=26;horizontalStack=0;resizeParent=1;resizeParentMax=0;resizeLast=0;collapsible=1;marginBottom=0;whiteSpace=wrap;html=1;" vertex="1" parent="1">
-          <mxGeometry x="40" y="560" width="240" height="240" as="geometry" />
+        <!-- ======= CLASS: StoreTransactionSource ======= -->
+        <mxCell id="c_store" value="StoreTransactionSource" style="swimlane;fontStyle=1;align=center;startSize=26;html=1;collapsible=0;fillColor=#f5f5f5;strokeColor=#666666;fontSize=11;" vertex="1" parent="1">
+          <mxGeometry x="30" y="570" width="230" height="240" as="geometry" />
         </mxCell>
-        <mxCell id="Store_Attr" value="- id: String&#10;- transactionId: String&#10;- memberId: String&#10;- memberName: String&#10;- transactionDate: DateTime&#10;- amount: Float&#10;- phone: String [NULL]&#10;- items: String [NULL]&#10;- cashierName: String [NULL]&#10;- createdAt: DateTime&#10;- updatedAt: DateTime" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;" vertex="1" parent="StoreTransactionSource">
-          <mxGeometry y="26" width="240" height="160" as="geometry" />
-        </mxCell>
-        <mxCell id="Store_Op" value="" style="line;strokeWidth=1;fillColor=none;align=left;verticalAlign=middle;spacingTop=-1;spacingLeft=3;spacingRight=3;rotatable=0;labelPosition=right;points=[];portConstraint=eastwest;" vertex="1" parent="StoreTransactionSource">
-          <mxGeometry y="186" width="240" height="8" as="geometry" />
-        </mxCell>
-        <mxCell id="Store_Meth" value="+ syncWithPOS(): Boolean" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;" vertex="1" parent="StoreTransactionSource">
-          <mxGeometry y="194" width="240" height="40" as="geometry" />
+        <mxCell id="c_store_attr" value="- id: String (PK)&#xa;- transactionId: String (Unique)&#xa;- memberId: String&#xa;- memberName: String&#xa;- transactionDate: DateTime&#xa;- amount: Float&#xa;- phone: String?&#xa;- items: String?&#xa;- cashierName: String?&#xa;- createdAt: DateTime&#xa;- updatedAt: DateTime" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;whiteSpace=wrap;html=0;fontSize=10;" vertex="1" parent="c_store">
+          <mxGeometry y="26" width="230" height="214" as="geometry" />
         </mxCell>
 
+        <!-- ======= RELATIONSHIPS ======= -->
+        <!-- Member 1 -* Transaction -->
+        <mxCell id="cr1" edge="1" parent="1" source="c_member_attr" target="c_txn_attr" style="html=1;endArrow=none;endFill=0;startArrow=diamondThin;startFill=1;strokeColor=#333333;fontSize=10;">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="cr1_s" connectable="0" parent="cr1" style="edgeLabel;align=left;verticalAlign=middle;resizable=0;points=[];fontSize=9;" value="1" vertex="1">
+          <mxGeometry x="-0.85" relative="1" as="geometry"><mxPoint x="-5" as="offset" /></mxGeometry>
+        </mxCell>
+        <mxCell id="cr1_t" connectable="0" parent="cr1" style="edgeLabel;align=right;verticalAlign=middle;resizable=0;points=[];fontSize=9;" value="*" vertex="1">
+          <mxGeometry x="0.85" relative="1" as="geometry"><mxPoint x="5" as="offset" /></mxGeometry>
+        </mxCell>
 
-        <!-- Relationships -->
+        <!-- Member 1 -* RewardWinner -->
+        <mxCell id="cr2" edge="1" parent="1" source="c_member_attr" target="c_winner_attr" style="html=1;endArrow=none;endFill=0;startArrow=diamondThin;startFill=1;strokeColor=#333333;fontSize=10;">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="cr2_s" connectable="0" parent="cr2" style="edgeLabel;align=left;verticalAlign=middle;resizable=0;points=[];fontSize=9;" value="1" vertex="1">
+          <mxGeometry x="-0.85" relative="1" as="geometry"><mxPoint x="-5" as="offset" /></mxGeometry>
+        </mxCell>
+        <mxCell id="cr2_t" connectable="0" parent="cr2" style="edgeLabel;align=right;verticalAlign=middle;resizable=0;points=[];fontSize=9;" value="*" vertex="1">
+          <mxGeometry x="0.85" relative="1" as="geometry"><mxPoint x="5" as="offset" /></mxGeometry>
+        </mxCell>
 
-        <!-- Member - Transaction (1:N) -->
-        <mxCell id="Rel1" value="1..*" style="endArrow=diamondThin;endFill=1;endSize=24;html=1;entryX=1;entryY=0.5;exitX=0;exitY=0.5;" edge="1" parent="1" source="Transaction" target="Member">
-          <mxGeometry width="160" relative="1" as="geometry">
-            <mxPoint x="320" y="320" as="sourcePoint" />
-            <mxPoint x="250" y="320" as="targetPoint" />
+        <!-- RewardCampaign 1 -* RewardWinner -->
+        <mxCell id="cr3" edge="1" parent="1" source="c_campaign_attr" target="c_winner_attr" style="html=1;endArrow=none;endFill=0;startArrow=diamondThin;startFill=1;strokeColor=#333333;fontSize=10;">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="cr3_s" connectable="0" parent="cr3" style="edgeLabel;align=left;verticalAlign=middle;resizable=0;points=[];fontSize=9;" value="1" vertex="1">
+          <mxGeometry x="-0.85" relative="1" as="geometry"><mxPoint x="-5" as="offset" /></mxGeometry>
+        </mxCell>
+        <mxCell id="cr3_t" connectable="0" parent="cr3" style="edgeLabel;align=right;verticalAlign=middle;resizable=0;points=[];fontSize=9;" value="*" vertex="1">
+          <mxGeometry x="0.85" relative="1" as="geometry"><mxPoint x="5" as="offset" /></mxGeometry>
+        </mxCell>
+
+        <!-- Member 1 -* RewardRedemption -->
+        <mxCell id="cr4" edge="1" parent="1" source="c_member_attr" target="c_redeem_attr" style="html=1;endArrow=none;endFill=0;startArrow=diamondThin;startFill=1;strokeColor=#333333;fontSize=10;exitX=1;exitY=0.5;exitDx=0;exitDy=0;">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="620" y="160" />
+              <mxPoint x="620" y="790" />
+            </Array>
           </mxGeometry>
         </mxCell>
-        
-        <!-- Member - Redemption (1:N) -->
-        <mxCell id="Rel2" value="1..*" style="endArrow=diamondThin;endFill=1;endSize=24;html=1;entryX=0.5;entryY=1;exitX=0;exitY=0.5;" edge="1" parent="1" source="Redemption" target="Member">
-           <mxGeometry width="160" relative="1" as="geometry">
-             <Array as="points">
-                <mxPoint x="140" y="680" />
-                <mxPoint x="140" y="520" />
-                <mxPoint x="470" y="520" />
-             </Array>
-           </mxGeometry>
+        <mxCell id="cr4_s" connectable="0" parent="cr4" style="edgeLabel;align=left;verticalAlign=middle;resizable=0;points=[];fontSize=9;" value="1" vertex="1">
+          <mxGeometry x="-0.9" relative="1" as="geometry"><mxPoint x="-5" as="offset" /></mxGeometry>
         </mxCell>
-        
-        <!-- Redemption - Catalog (N:1) -->
-        <mxCell id="Rel3" value="1" style="endArrow=open;html=1;endSize=12;startArrow=diamondThin;startSize=14;startFill=0;edgeStyle=orthogonalEdgeStyle;entryX=1;entryY=0.5;exitX=0;exitY=0.5;" edge="1" parent="1" source="Redemption" target="Catalog">
-            <mxGeometry relative="1" as="geometry" />
+        <mxCell id="cr4_t" connectable="0" parent="cr4" style="edgeLabel;align=right;verticalAlign=middle;resizable=0;points=[];fontSize=9;" value="*" vertex="1">
+          <mxGeometry x="0.9" relative="1" as="geometry"><mxPoint x="5" as="offset" /></mxGeometry>
+        </mxCell>
+
+        <!-- RewardCatalog 1 -* RewardRedemption -->
+        <mxCell id="cr5" edge="1" parent="1" source="c_catalog_attr" target="c_redeem_attr" style="html=1;endArrow=none;endFill=0;startArrow=diamondThin;startFill=1;strokeColor=#333333;fontSize=10;">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="cr5_s" connectable="0" parent="cr5" style="edgeLabel;align=left;verticalAlign=middle;resizable=0;points=[];fontSize=9;" value="1" vertex="1">
+          <mxGeometry x="-0.85" relative="1" as="geometry"><mxPoint x="-5" as="offset" /></mxGeometry>
+        </mxCell>
+        <mxCell id="cr5_t" connectable="0" parent="cr5" style="edgeLabel;align=right;verticalAlign=middle;resizable=0;points=[];fontSize=9;" value="*" vertex="1">
+          <mxGeometry x="0.85" relative="1" as="geometry"><mxPoint x="5" as="offset" /></mxGeometry>
         </mxCell>
 
       </root>

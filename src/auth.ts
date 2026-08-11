@@ -22,20 +22,32 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
                 }
 
                 try {
-                    const admin = await prisma.admin.findUnique({
+                    const emailInput = (credentials.email as string).trim().toLowerCase();
+                    const passwordInput = credentials.password as string;
+
+                    const admin = await prisma.admin.findFirst({
                         where: {
-                            email: credentials.email as string,
+                            email: {
+                                equals: emailInput,
+                                mode: "insensitive",
+                            },
                         },
                     });
 
-                    if (!admin) return null;
+                    if (!admin) {
+                        console.log("Admin account not found for email:", emailInput);
+                        return null;
+                    }
 
                     const passwordMatch = await bcrypt.compare(
-                        credentials.password as string,
+                        passwordInput,
                         admin.password
                     );
 
-                    if (!passwordMatch) return null;
+                    if (!passwordMatch) {
+                        console.log("Password mismatch for admin:", emailInput);
+                        return null;
+                    }
 
                     return {
                         id: admin.id,

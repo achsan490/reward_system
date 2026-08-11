@@ -1,0 +1,197 @@
+﻿<mxfile host="app.diagrams.net" agent="Antigravity">
+  <diagram id="UseCaseDiagram" name="Use Case Diagram">
+    <mxGraphModel dx="1422" dy="900" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1169" pageHeight="827" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+
+        <!-- SYSTEM BOUNDARY -->
+        <mxCell id="uc_boundary" value="Sistem Reward Management" style="shape=umlFrame;whiteSpace=wrap;html=1;pointerEvents=0;width=200;height=20;fillColor=none;strokeColor=#666666;fontSize=12;fontStyle=1;verticalAlign=top;" vertex="1" parent="1">
+          <mxGeometry x="200" y="20" width="700" height="760" as="geometry" />
+        </mxCell>
+
+        <!-- ACTOR: ADMIN -->
+        <mxCell id="actor_admin" value="Admin" style="shape=umlActor;verticalLabelPosition=bottom;verticalAlign=top;html=1;outlineConnect=0;fontSize=11;fontStyle=1;" vertex="1" parent="1">
+          <mxGeometry x="70" y="320" width="40" height="60" as="geometry" />
+        </mxCell>
+
+        <!-- ACTOR: MEMBER -->
+        <mxCell id="actor_member" value="Member" style="shape=umlActor;verticalLabelPosition=bottom;verticalAlign=top;html=1;outlineConnect=0;fontSize=11;fontStyle=1;" vertex="1" parent="1">
+          <mxGeometry x="1020" y="320" width="40" height="60" as="geometry" />
+        </mxCell>
+
+        <!-- ======= ADMIN USE CASES ======= -->
+        <mxCell id="uc_login" value="Login" style="ellipse;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=11;" vertex="1" parent="1">
+          <mxGeometry x="230" y="50" width="130" height="50" as="geometry" />
+        </mxCell>
+
+        <mxCell id="uc_dashboard" value="Lihat Dashboard" style="ellipse;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=11;" vertex="1" parent="1">
+          <mxGeometry x="230" y="130" width="140" height="50" as="geometry" />
+        </mxCell>
+
+        <mxCell id="uc_kelola_txn" value="Kelola Transaksi" style="ellipse;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=11;" vertex="1" parent="1">
+          <mxGeometry x="230" y="220" width="140" height="50" as="geometry" />
+        </mxCell>
+
+        <mxCell id="uc_upload_csv" value="Upload CSV&#xa;Transaksi" style="ellipse;whiteSpace=wrap;html=1;fillColor=#f5f5f5;strokeColor=#666666;fontSize=10;" vertex="1" parent="1">
+          <mxGeometry x="430" y="190" width="130" height="50" as="geometry" />
+        </mxCell>
+
+        <mxCell id="uc_sync_toko" value="Sinkronisasi&#xa;Database Toko" style="ellipse;whiteSpace=wrap;html=1;fillColor=#f5f5f5;strokeColor=#666666;fontSize=10;" vertex="1" parent="1">
+          <mxGeometry x="430" y="255" width="130" height="50" as="geometry" />
+        </mxCell>
+
+        <mxCell id="uc_kelola_member" value="Kelola Data Member" style="ellipse;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=11;" vertex="1" parent="1">
+          <mxGeometry x="230" y="310" width="150" height="50" as="geometry" />
+        </mxCell>
+
+        <mxCell id="uc_penentuan" value="Penentuan Reward&#xa;(Kampanye)" style="ellipse;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=11;" vertex="1" parent="1">
+          <mxGeometry x="230" y="400" width="155" height="55" as="geometry" />
+        </mxCell>
+
+        <mxCell id="uc_hitung_pemenang" value="Hitung Pemenang&#xa;Otomatis" style="ellipse;whiteSpace=wrap;html=1;fillColor=#f5f5f5;strokeColor=#666666;fontSize=10;" vertex="1" parent="1">
+          <mxGeometry x="440" y="345" width="130" height="50" as="geometry" />
+        </mxCell>
+
+        <mxCell id="uc_notif_wa" value="Kirim Notifikasi&#xa;WhatsApp" style="ellipse;whiteSpace=wrap;html=1;fillColor=#f5f5f5;strokeColor=#666666;fontSize=10;" vertex="1" parent="1">
+          <mxGeometry x="440" y="410" width="130" height="50" as="geometry" />
+        </mxCell>
+
+        <mxCell id="uc_kelola_katalog" value="Kelola Katalog&#xa;Reward" style="ellipse;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=11;" vertex="1" parent="1">
+          <mxGeometry x="230" y="500" width="150" height="55" as="geometry" />
+        </mxCell>
+
+        <mxCell id="uc_kelola_redeem" value="Kelola Permintaan&#xa;Penukaran" style="ellipse;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=11;" vertex="1" parent="1">
+          <mxGeometry x="230" y="590" width="155" height="55" as="geometry" />
+        </mxCell>
+
+        <mxCell id="uc_approve" value="Approve / Reject&#xa;Penukaran" style="ellipse;whiteSpace=wrap;html=1;fillColor=#f5f5f5;strokeColor=#666666;fontSize=10;" vertex="1" parent="1">
+          <mxGeometry x="440" y="540" width="140" height="50" as="geometry" />
+        </mxCell>
+
+        <mxCell id="uc_settings" value="Kelola Pengaturan&#xa;Sistem" style="ellipse;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=11;" vertex="1" parent="1">
+          <mxGeometry x="230" y="680" width="150" height="55" as="geometry" />
+        </mxCell>
+
+        <mxCell id="uc_laporan" value="Lihat Laporan" style="ellipse;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=11;" vertex="1" parent="1">
+          <mxGeometry x="430" y="680" width="130" height="50" as="geometry" />
+        </mxCell>
+
+        <mxCell id="uc_logout" value="Logout" style="ellipse;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=11;" vertex="1" parent="1">
+          <mxGeometry x="430" y="745" width="120" height="45" as="geometry" />
+        </mxCell>
+
+        <!-- ======= MEMBER USE CASES ======= -->
+        <mxCell id="uc_cek_poin" value="Cek Poin &amp;&#xa;Riwayat Transaksi" style="ellipse;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;fontSize=11;" vertex="1" parent="1">
+          <mxGeometry x="680" y="130" width="160" height="55" as="geometry" />
+        </mxCell>
+
+        <mxCell id="uc_lihat_katalog_m" value="Lihat Katalog&#xa;Reward" style="ellipse;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;fontSize=11;" vertex="1" parent="1">
+          <mxGeometry x="680" y="230" width="150" height="55" as="geometry" />
+        </mxCell>
+
+        <mxCell id="uc_tukar_poin" value="Tukar Poin&#xa;dengan Reward" style="ellipse;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;fontSize=11;" vertex="1" parent="1">
+          <mxGeometry x="680" y="330" width="155" height="55" as="geometry" />
+        </mxCell>
+
+        <mxCell id="uc_lihat_redeem" value="Lihat Status&#xa;Penukaran" style="ellipse;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;fontSize=11;" vertex="1" parent="1">
+          <mxGeometry x="680" y="430" width="150" height="55" as="geometry" />
+        </mxCell>
+
+        <mxCell id="uc_qr_code" value="Generate&#xa;QR Code Member" style="ellipse;whiteSpace=wrap;html=1;fillColor=#f5f5f5;strokeColor=#666666;fontSize=10;" vertex="1" parent="1">
+          <mxGeometry x="440" y="610" width="140" height="50" as="geometry" />
+        </mxCell>
+
+        <!-- ======= EDGES: ADMIN ======= -->
+        <mxCell id="ue1" edge="1" parent="1" source="actor_admin" target="uc_login" style="html=1;endArrow=none;strokeColor=#333333;">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="ue2" edge="1" parent="1" source="actor_admin" target="uc_dashboard" style="html=1;endArrow=none;strokeColor=#333333;">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="ue3" edge="1" parent="1" source="actor_admin" target="uc_kelola_txn" style="html=1;endArrow=none;strokeColor=#333333;">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="ue4" edge="1" parent="1" source="actor_admin" target="uc_kelola_member" style="html=1;endArrow=none;strokeColor=#333333;">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="ue5" edge="1" parent="1" source="actor_admin" target="uc_penentuan" style="html=1;endArrow=none;strokeColor=#333333;">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="ue6" edge="1" parent="1" source="actor_admin" target="uc_kelola_katalog" style="html=1;endArrow=none;strokeColor=#333333;">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="ue7" edge="1" parent="1" source="actor_admin" target="uc_kelola_redeem" style="html=1;endArrow=none;strokeColor=#333333;">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="ue8" edge="1" parent="1" source="actor_admin" target="uc_settings" style="html=1;endArrow=none;strokeColor=#333333;">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="ue9" edge="1" parent="1" source="actor_admin" target="uc_laporan" style="html=1;endArrow=none;strokeColor=#333333;">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="ue10" edge="1" parent="1" source="actor_admin" target="uc_logout" style="html=1;endArrow=none;strokeColor=#333333;">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <!-- INCLUDE / EXTEND -->
+        <mxCell id="ue_inc1" edge="1" parent="1" source="uc_kelola_txn" target="uc_upload_csv" style="html=1;dashed=1;endArrow=open;strokeColor=#999999;">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="ue_inc1_lbl" connectable="0" parent="ue_inc1" style="edgeLabel;align=center;verticalAlign=middle;resizable=0;points=[];fontSize=9;fontStyle=2;" value="&lt;&lt;extend&gt;&gt;" vertex="1">
+          <mxGeometry relative="1" as="geometry"><mxPoint as="offset" /></mxGeometry>
+        </mxCell>
+
+        <mxCell id="ue_inc2" edge="1" parent="1" source="uc_kelola_txn" target="uc_sync_toko" style="html=1;dashed=1;endArrow=open;strokeColor=#999999;">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="ue_inc2_lbl" connectable="0" parent="ue_inc2" style="edgeLabel;align=center;verticalAlign=middle;resizable=0;points=[];fontSize=9;fontStyle=2;" value="&lt;&lt;extend&gt;&gt;" vertex="1">
+          <mxGeometry relative="1" as="geometry"><mxPoint as="offset" /></mxGeometry>
+        </mxCell>
+
+        <mxCell id="ue_inc3" edge="1" parent="1" source="uc_penentuan" target="uc_hitung_pemenang" style="html=1;dashed=1;endArrow=open;strokeColor=#999999;">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="ue_inc3_lbl" connectable="0" parent="ue_inc3" style="edgeLabel;align=center;verticalAlign=middle;resizable=0;points=[];fontSize=9;fontStyle=2;" value="&lt;&lt;include&gt;&gt;" vertex="1">
+          <mxGeometry relative="1" as="geometry"><mxPoint as="offset" /></mxGeometry>
+        </mxCell>
+
+        <mxCell id="ue_inc4" edge="1" parent="1" source="uc_penentuan" target="uc_notif_wa" style="html=1;dashed=1;endArrow=open;strokeColor=#999999;">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="ue_inc4_lbl" connectable="0" parent="ue_inc4" style="edgeLabel;align=center;verticalAlign=middle;resizable=0;points=[];fontSize=9;fontStyle=2;" value="&lt;&lt;extend&gt;&gt;" vertex="1">
+          <mxGeometry relative="1" as="geometry"><mxPoint as="offset" /></mxGeometry>
+        </mxCell>
+
+        <mxCell id="ue_inc5" edge="1" parent="1" source="uc_kelola_redeem" target="uc_approve" style="html=1;dashed=1;endArrow=open;strokeColor=#999999;">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="ue_inc5_lbl" connectable="0" parent="ue_inc5" style="edgeLabel;align=center;verticalAlign=middle;resizable=0;points=[];fontSize=9;fontStyle=2;" value="&lt;&lt;include&gt;&gt;" vertex="1">
+          <mxGeometry relative="1" as="geometry"><mxPoint as="offset" /></mxGeometry>
+        </mxCell>
+
+        <mxCell id="ue_inc6" edge="1" parent="1" source="uc_kelola_redeem" target="uc_qr_code" style="html=1;dashed=1;endArrow=open;strokeColor=#999999;">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="ue_inc6_lbl" connectable="0" parent="ue_inc6" style="edgeLabel;align=center;verticalAlign=middle;resizable=0;points=[];fontSize=9;fontStyle=2;" value="&lt;&lt;extend&gt;&gt;" vertex="1">
+          <mxGeometry relative="1" as="geometry"><mxPoint as="offset" /></mxGeometry>
+        </mxCell>
+
+        <!-- EDGES: MEMBER -->
+        <mxCell id="ue_m1" edge="1" parent="1" source="actor_member" target="uc_cek_poin" style="html=1;endArrow=none;strokeColor=#333333;">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="ue_m2" edge="1" parent="1" source="actor_member" target="uc_lihat_katalog_m" style="html=1;endArrow=none;strokeColor=#333333;">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="ue_m3" edge="1" parent="1" source="actor_member" target="uc_tukar_poin" style="html=1;endArrow=none;strokeColor=#333333;">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="ue_m4" edge="1" parent="1" source="actor_member" target="uc_lihat_redeem" style="html=1;endArrow=none;strokeColor=#333333;">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>
