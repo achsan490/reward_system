@@ -493,7 +493,9 @@ export async function deleteAllCompletedRedemptions() {
 }
 
 /**
- * Automatically expire approved redemptions older than 30 days
+ * Automatically expire approved and pending redemptions older than the expiration period.
+ * - Approved: expire tanpa refund poin (sudah diproses admin)
+ * - Pending: expire DAN refund poin ke member (belum diproses admin)
  * This should be called when loading redemption pages
  */
 export async function autoExpireRedemptions() {
@@ -514,10 +516,10 @@ export async function autoExpireRedemptions() {
         const expiryThreshold = new Date();
         expiryThreshold.setDate(expiryThreshold.getDate() - expirationDays);
 
-        // Find applicable redemptions
-        const expiredRedemptions = await prisma.rewardRedemption.updateMany({
+        // 1. Expire approved redemptions (tanpa refund poin)
+        const expiredApproved = await prisma.rewardRedemption.updateMany({
             where: {
-                status: "approved", // Only approved items can expire (pending relies on admin action)
+                status: "approved",
                 processedAt: {
                     lt: expiryThreshold,
                 },
@@ -527,7 +529,51 @@ export async function autoExpireRedemptions() {
             },
         });
 
-        if (expiredRedemptions.count > 0) {
+        // 2. Expire pending redemptions (WITH refund poin karena belum diproses admin)
+        const pendingToExpire = await prisma.rewardRedemption.findMany({
+            where: {
+                status: "pending",
+                redeemedAt: {
+                    lt: expiryThreshold,
+                },
+            },
+            select: {
+                id: true,
+                memberId: true,
+                pointsUsed: true,
+            },
+        });
+
+        let expiredPendingCount = 0;
+        if (pendingToExpire.length > 0) {
+            // Update status ke expired
+            const expiredPending = await prisma.rewardRedemption.updateMany({
+                where: {
+                    id: { in: pendingToExpire.map((r) => r.id) },
+                },
+                data: {
+                    status: "expired",
+                    processedAt: new Date(),
+                    processedBy: "SYSTEM",
+                    adminNotes: "Otomatis kadaluarsa karena tidak diproses dalam batas waktu yang ditentukan.",
+                },
+            });
+            expiredPendingCount = expiredPending.count;
+
+            // Refund poin ke masing-masing member
+            const refundPromises = pendingToExpire.map((r) =>
+                prisma.member.update({
+                    where: { id: r.memberId },
+                    data: {
+                        totalPoints: { increment: r.pointsUsed },
+                    },
+                })
+            );
+            await Promise.all(refundPromises);
+        }
+
+        const totalExpired = expiredApproved.count + expiredPendingCount;
+        if (totalExpired > 0) {
             revalidatePath("/redemption-requests");
             revalidatePath("/member/my-redemptions");
             revalidatePath("/");
@@ -535,7 +581,7 @@ export async function autoExpireRedemptions() {
 
         return {
             success: true,
-            count: expiredRedemptions.count,
+            count: totalExpired,
         };
     } catch (error) {
         console.error("Error auto-expiring redemptions:", error);

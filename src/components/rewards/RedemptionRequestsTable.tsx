@@ -101,6 +101,7 @@ export default function RedemptionRequestsTable({
             approved: { color: "bg-green-100 text-green-700 dark:bg-green-900/40 dark:text-green-400", label: "Approved" },
             rejected: { color: "bg-red-100 text-red-700 dark:bg-red-900/40 dark:text-red-400", label: "Rejected" },
             completed: { color: "bg-blue-100 text-blue-700 dark:bg-blue-900/40 dark:text-blue-400", label: "Completed" },
+            expired: { color: "bg-gray-100 text-gray-500 dark:bg-gray-800 dark:text-gray-400", label: "Expired" },
         };
 
         const badge = badges[status] || badges.pending;
@@ -265,8 +266,8 @@ export default function RedemptionRequestsTable({
                                                     Complete
                                                 </button>
                                             )}
-                                            {/* Delete button available for all finished statuses */}
-                                            {["completed", "rejected", "approved"].includes(redemption.status) && (
+                                            {/* Delete button: hanya untuk status final (bukan pending) */}
+                                            {["completed", "rejected", "approved", "expired"].includes(redemption.status) && (
                                                 <button
                                                     onClick={() => handleDelete(redemption)}
                                                     disabled={processing === redemption.id}
