@@ -1,0 +1,228 @@
+<mxfile host="app.diagrams.net" agent="Antigravity">
+  <diagram id="ERD_Miniposh_Connected" name="ERD Sistem Reward Toko Miniposh">
+    <mxGraphModel dx="1600" dy="1000" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1654" pageHeight="1169" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+
+        <!-- ====================================================================== -->
+        <!-- ROW 1 (ATAS): ADMIN, SYSTEM SETTING, REWARD CAMPAIGN                   -->
+        <!-- ====================================================================== -->
+
+        <!-- ENTITY: Admin -->
+        <mxCell id="e_admin" value="Admin" style="shape=table;startSize=30;container=1;collapsible=0;childLayout=tableLayout;fixedRows=1;rowLines=0;fontStyle=1;align=center;resizeLast=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=12;html=1;" vertex="1" parent="1">
+          <mxGeometry x="40" y="40" width="240" height="200" as="geometry" />
+        </mxCell>
+        <mxCell id="e_admin_pk" value="PK  id                char(30)" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=6;fontSize=10;fontStyle=4;" vertex="1" parent="e_admin">
+          <mxGeometry y="30" width="240" height="22" as="geometry" />
+        </mxCell>
+        <mxCell id="e_admin_attr" value="     email             varchar(100) [UQ]&#xa;     password          varchar(255)&#xa;     name              varchar(100)&#xa;     phone             varchar(20) [NULL]&#xa;     createdAt         datetime&#xa;     updatedAt         datetime" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=6;fontSize=10;" vertex="1" parent="e_admin">
+          <mxGeometry y="52" width="240" height="148" as="geometry" />
+        </mxCell>
+
+        <!-- ENTITY: SystemSetting -->
+        <mxCell id="e_setting" value="SystemSetting" style="shape=table;startSize=30;container=1;collapsible=0;childLayout=tableLayout;fixedRows=1;rowLines=0;fontStyle=1;align=center;resizeLast=1;fillColor=#f5f5f5;strokeColor=#666666;fontSize=12;html=1;" vertex="1" parent="1">
+          <mxGeometry x="420" y="40" width="250" height="200" as="geometry" />
+        </mxCell>
+        <mxCell id="e_setting_pk" value="PK  id                char(30)" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=6;fontSize=10;fontStyle=4;" vertex="1" parent="e_setting">
+          <mxGeometry y="30" width="250" height="22" as="geometry" />
+        </mxCell>
+        <mxCell id="e_setting_attr" value="     key               varchar(50) [UQ]&#xa;     value             varchar(255)&#xa;     label             varchar(100)&#xa;     type              varchar(20)&#xa;     createdAt         datetime&#xa;     updatedAt         datetime" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=6;fontSize=10;" vertex="1" parent="e_setting">
+          <mxGeometry y="52" width="250" height="148" as="geometry" />
+        </mxCell>
+
+        <!-- ENTITY: RewardCampaign -->
+        <mxCell id="e_campaign" value="RewardCampaign" style="shape=table;startSize=30;container=1;collapsible=0;childLayout=tableLayout;fixedRows=1;rowLines=0;fontStyle=1;align=center;resizeLast=1;fillColor=#e1d5e7;strokeColor=#9673a6;fontSize=12;html=1;" vertex="1" parent="1">
+          <mxGeometry x="800" y="40" width="260" height="240" as="geometry" />
+        </mxCell>
+        <mxCell id="e_campaign_pk" value="PK  id                char(30)" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=6;fontSize=10;fontStyle=4;" vertex="1" parent="e_campaign">
+          <mxGeometry y="30" width="260" height="22" as="geometry" />
+        </mxCell>
+        <mxCell id="e_campaign_attr" value="     name              varchar(100)&#xa;     description       text [NULL]&#xa;     criteria          varchar(50)&#xa;     winnersCount      int&#xa;     startDate         datetime&#xa;     endDate           datetime&#xa;     status            varchar(20)&#xa;     createdAt         datetime&#xa;     updatedAt         datetime" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=6;fontSize=10;" vertex="1" parent="e_campaign">
+          <mxGeometry y="52" width="260" height="188" as="geometry" />
+        </mxCell>
+
+
+        <!-- ====================================================================== -->
+        <!-- ROW 2 (TENGAH): STORE SOURCE, MEMBER, TRANSACTION, REWARD WINNER       -->
+        <!-- ====================================================================== -->
+
+        <!-- ENTITY: StoreTransactionSource (POS Staging Table) -->
+        <mxCell id="e_store" value="StoreTransactionSource (POS)" style="shape=table;startSize=30;container=1;collapsible=0;childLayout=tableLayout;fixedRows=1;rowLines=0;fontStyle=1;align=center;resizeLast=1;fillColor=#fff2cc;strokeColor=#d6b656;fontSize=12;html=1;" vertex="1" parent="1">
+          <mxGeometry x="40" y="340" width="240" height="240" as="geometry" />
+        </mxCell>
+        <mxCell id="e_store_pk" value="PK  id                char(30)" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=6;fontSize=10;fontStyle=4;" vertex="1" parent="e_store">
+          <mxGeometry y="30" width="240" height="22" as="geometry" />
+        </mxCell>
+        <mxCell id="e_store_attr" value="     transactionId     varchar(50) [UQ]&#xa;     memberId          varchar(50)&#xa;     memberName        varchar(100)&#xa;     transactionDate   datetime&#xa;     amount            float&#xa;     phone             varchar(20) [NULL]&#xa;     items             text [NULL]&#xa;     cashierName       varchar(100) [NULL]&#xa;     createdAt         datetime&#xa;     updatedAt         datetime" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=6;fontSize=10;" vertex="1" parent="e_store">
+          <mxGeometry y="52" width="240" height="188" as="geometry" />
+        </mxCell>
+
+        <!-- ENTITY: Member -->
+        <mxCell id="e_member" value="Member" style="shape=table;startSize=30;container=1;collapsible=0;childLayout=tableLayout;fixedRows=1;rowLines=0;fontStyle=1;align=center;resizeLast=1;fillColor=#d5e8d4;strokeColor=#82b366;fontSize=12;html=1;" vertex="1" parent="1">
+          <mxGeometry x="420" y="340" width="250" height="240" as="geometry" />
+        </mxCell>
+        <mxCell id="e_member_pk" value="PK  id                char(30)" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=6;fontSize=10;fontStyle=4;" vertex="1" parent="e_member">
+          <mxGeometry y="30" width="250" height="22" as="geometry" />
+        </mxCell>
+        <mxCell id="e_member_attr" value="     memberId          varchar(50) [UQ]&#xa;     name              varchar(100)&#xa;     email             varchar(100) [NULL]&#xa;     phone             varchar(20) [NULL]&#xa;     totalPoints       float&#xa;     totalSpent        float&#xa;     transactionCount  int&#xa;     createdAt         datetime&#xa;     updatedAt         datetime" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=6;fontSize=10;" vertex="1" parent="e_member">
+          <mxGeometry y="52" width="250" height="188" as="geometry" />
+        </mxCell>
+
+        <!-- ENTITY: Transaction -->
+        <mxCell id="e_txn" value="Transaction" style="shape=table;startSize=30;container=1;collapsible=0;childLayout=tableLayout;fixedRows=1;rowLines=0;fontStyle=1;align=center;resizeLast=1;fillColor=#d5e8d4;strokeColor=#82b366;fontSize=12;html=1;" vertex="1" parent="1">
+          <mxGeometry x="800" y="340" width="260" height="250" as="geometry" />
+        </mxCell>
+        <mxCell id="e_txn_pk" value="PK  id                char(30)" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=6;fontSize=10;fontStyle=4;" vertex="1" parent="e_txn">
+          <mxGeometry y="30" width="260" height="22" as="geometry" />
+        </mxCell>
+        <mxCell id="e_txn_fk" value="FK  memberId          char(30)" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=6;fontSize=10;fontStyle=2;" vertex="1" parent="e_txn">
+          <mxGeometry y="52" width="260" height="22" as="geometry" />
+        </mxCell>
+        <mxCell id="e_txn_attr" value="     transactionDate   datetime&#xa;     amount            float&#xa;     pointsEarned      float&#xa;     pointsExpiryDate  datetime [NULL]&#xa;     pointsExpired     bool&#xa;     description       varchar(255) [NULL]&#xa;     createdAt         datetime&#xa;     updatedAt         datetime" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=6;fontSize=10;" vertex="1" parent="e_txn">
+          <mxGeometry y="74" width="260" height="176" as="geometry" />
+        </mxCell>
+
+        <!-- ENTITY: RewardWinner -->
+        <mxCell id="e_winner" value="RewardWinner" style="shape=table;startSize=30;container=1;collapsible=0;childLayout=tableLayout;fixedRows=1;rowLines=0;fontStyle=1;align=center;resizeLast=1;fillColor=#e1d5e7;strokeColor=#9673a6;fontSize=12;html=1;" vertex="1" parent="1">
+          <mxGeometry x="1160" y="190" width="260" height="300" as="geometry" />
+        </mxCell>
+        <mxCell id="e_winner_pk" value="PK  id                char(30)" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=6;fontSize=10;fontStyle=4;" vertex="1" parent="e_winner">
+          <mxGeometry y="30" width="260" height="22" as="geometry" />
+        </mxCell>
+        <mxCell id="e_winner_fk1" value="FK  campaignId        char(30)" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=6;fontSize=10;fontStyle=2;" vertex="1" parent="e_winner">
+          <mxGeometry y="52" width="260" height="22" as="geometry" />
+        </mxCell>
+        <mxCell id="e_winner_fk2" value="FK  memberId          char(30)" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=6;fontSize=10;fontStyle=2;" vertex="1" parent="e_winner">
+          <mxGeometry y="74" width="260" height="22" as="geometry" />
+        </mxCell>
+        <mxCell id="e_winner_attr" value="     rank              int&#xa;     pointsAtWin       float&#xa;     spentAtWin        float&#xa;     transactionsAtWin int&#xa;     rewardClaimed     bool&#xa;     claimedAt         datetime [NULL]&#xa;     notes             varchar(255) [NULL]&#xa;     createdAt         datetime&#xa;     updatedAt         datetime" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=6;fontSize=10;" vertex="1" parent="e_winner">
+          <mxGeometry y="96" width="260" height="204" as="geometry" />
+        </mxCell>
+
+
+        <!-- ====================================================================== -->
+        <!-- ROW 3 (BAWAH): REWARD REDEMPTION & REWARD CATALOG                     -->
+        <!-- ====================================================================== -->
+
+        <!-- ENTITY: RewardRedemption -->
+        <mxCell id="e_redeem" value="RewardRedemption" style="shape=table;startSize=30;container=1;collapsible=0;childLayout=tableLayout;fixedRows=1;rowLines=0;fontStyle=1;align=center;resizeLast=1;fillColor=#f8cecc;strokeColor=#b85450;fontSize=12;html=1;" vertex="1" parent="1">
+          <mxGeometry x="420" y="670" width="250" height="320" as="geometry" />
+        </mxCell>
+        <mxCell id="e_redeem_pk" value="PK  id                char(30)" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=6;fontSize=10;fontStyle=4;" vertex="1" parent="e_redeem">
+          <mxGeometry y="30" width="250" height="22" as="geometry" />
+        </mxCell>
+        <mxCell id="e_redeem_fk1" value="FK  memberId          char(30)" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=6;fontSize=10;fontStyle=2;" vertex="1" parent="e_redeem">
+          <mxGeometry y="52" width="250" height="22" as="geometry" />
+        </mxCell>
+        <mxCell id="e_redeem_fk2" value="FK  catalogId         char(30)" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=6;fontSize=10;fontStyle=2;" vertex="1" parent="e_redeem">
+          <mxGeometry y="74" width="250" height="22" as="geometry" />
+        </mxCell>
+        <mxCell id="e_redeem_fk3" value="FK  processedBy       char(30) [NULL]" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=6;fontSize=10;fontStyle=2;" vertex="1" parent="e_redeem">
+          <mxGeometry y="96" width="250" height="22" as="geometry" />
+        </mxCell>
+        <mxCell id="e_redeem_attr" value="     pointsUsed        float&#xa;     claimCode         varchar(50) [UQ]&#xa;     status            varchar(20)&#xa;     notes             text [NULL]&#xa;     adminNotes        text [NULL]&#xa;     redeemedAt        datetime&#xa;     processedAt       datetime [NULL]&#xa;     completedAt       datetime [NULL]&#xa;     createdAt         datetime&#xa;     updatedAt         datetime" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=6;fontSize=10;" vertex="1" parent="e_redeem">
+          <mxGeometry y="118" width="250" height="202" as="geometry" />
+        </mxCell>
+
+        <!-- ENTITY: RewardCatalog -->
+        <mxCell id="e_catalog" value="RewardCatalog" style="shape=table;startSize=30;container=1;collapsible=0;childLayout=tableLayout;fixedRows=1;rowLines=0;fontStyle=1;align=center;resizeLast=1;fillColor=#f8cecc;strokeColor=#b85450;fontSize=12;html=1;" vertex="1" parent="1">
+          <mxGeometry x="800" y="670" width="260" height="260" as="geometry" />
+        </mxCell>
+        <mxCell id="e_catalog_pk" value="PK  id                char(30)" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=6;fontSize=10;fontStyle=4;" vertex="1" parent="e_catalog">
+          <mxGeometry y="30" width="260" height="22" as="geometry" />
+        </mxCell>
+        <mxCell id="e_catalog_attr" value="     name              varchar(100)&#xa;     description       text [NULL]&#xa;     pointsRequired    float&#xa;     stock             int [NULL]&#xa;     imageUrl          varchar(255) [NULL]&#xa;     category          varchar(50) [NULL]&#xa;     isActive          bool&#xa;     validUntil        datetime [NULL]&#xa;     createdAt         datetime&#xa;     updatedAt         datetime" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=6;fontSize=10;" vertex="1" parent="e_catalog">
+          <mxGeometry y="52" width="260" height="208" as="geometry" />
+        </mxCell>
+
+
+        <!-- ====================================================================== -->
+        <!-- RELATIONSHIP LINES (SEMUA ENTITAS TERHUBUNG LENGKAP & RAPI)            -->
+        <!-- ====================================================================== -->
+
+        <!-- 1. Admin (1) to SystemSetting (N) [Mengatur Konfigurasi Sistem] -->
+        <mxCell id="rel_adm_set" edge="1" parent="1" source="e_admin" target="e_setting" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;startArrow=ERmandOne;startFill=0;endArrow=ERmany;endFill=0;strokeWidth=2;strokeColor=#1565C0;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="lbl_adm_set" connectable="0" parent="rel_adm_set" style="edgeLabel;align=center;verticalAlign=middle;fontSize=10;fontStyle=1;backgroundColor=#ffffff;" value="1 : N (Mengelola Pengaturan)" vertex="1">
+          <mxGeometry x="0.0" relative="1" as="geometry"><mxPoint y="-12" as="offset" /></mxGeometry>
+        </mxCell>
+
+        <!-- 2. Admin (1) to RewardCampaign (N) [Membuat & Mengelola Kampanye] -->
+        <mxCell id="rel_adm_camp" edge="1" parent="1" source="e_setting" target="e_campaign" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;startArrow=ERmandOne;startFill=0;endArrow=ERmany;endFill=0;strokeWidth=2;strokeColor=#6A1B9A;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="lbl_adm_camp" connectable="0" parent="rel_adm_camp" style="edgeLabel;align=center;verticalAlign=middle;fontSize=10;fontStyle=1;backgroundColor=#ffffff;" value="1 : N (Membuat Kampanye)" vertex="1">
+          <mxGeometry x="0.0" relative="1" as="geometry"><mxPoint y="-12" as="offset" /></mxGeometry>
+        </mxCell>
+
+        <!-- 3. Admin (1) to RewardRedemption (N via processedBy) [Memproses Klaim Penukaran] -->
+        <mxCell id="rel_adm_red" edge="1" parent="1" source="e_admin" target="e_redeem" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;startArrow=ERmandOne;startFill=0;endArrow=ERmany;endFill=0;strokeWidth=2;strokeColor=#1565C0;exitX=0.2;exitY=1;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="88" y="830" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="lbl_adm_red" connectable="0" parent="rel_adm_red" style="edgeLabel;align=center;verticalAlign=middle;fontSize=10;fontStyle=1;backgroundColor=#ffffff;" value="1 : N (Memproses Klaim [processedBy])" vertex="1">
+          <mxGeometry x="0.2" relative="1" as="geometry"><mxPoint y="-12" as="offset" /></mxGeometry>
+        </mxCell>
+
+        <!-- 4. Member (1) to Transaction (N) [Memiliki Riwayat Transaksi] -->
+        <mxCell id="rel_mem_txn" edge="1" parent="1" source="e_member" target="e_txn" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;startArrow=ERmandOne;startFill=0;endArrow=ERmany;endFill=0;strokeWidth=2;strokeColor=#2E7D32;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="lbl_mem_txn" connectable="0" parent="rel_mem_txn" style="edgeLabel;align=center;verticalAlign=middle;fontSize=10;fontStyle=1;backgroundColor=#ffffff;" value="1 : N (Memiliki Transaksi)" vertex="1">
+          <mxGeometry x="0.0" relative="1" as="geometry"><mxPoint y="-12" as="offset" /></mxGeometry>
+        </mxCell>
+
+        <!-- 5. RewardCampaign (1) to RewardWinner (N) [Menghasilkan Pemenang] -->
+        <mxCell id="rel_camp_win" edge="1" parent="1" source="e_campaign" target="e_winner" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;startArrow=ERmandOne;startFill=0;endArrow=ERmany;endFill=0;strokeWidth=2;strokeColor=#6A1B9A;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="lbl_camp_win" connectable="0" parent="rel_camp_win" style="edgeLabel;align=center;verticalAlign=middle;fontSize=10;fontStyle=1;backgroundColor=#ffffff;" value="1 : N (Menghasilkan Pemenang)" vertex="1">
+          <mxGeometry x="0.0" relative="1" as="geometry"><mxPoint x="40" as="offset" /></mxGeometry>
+        </mxCell>
+
+        <!-- 6. Member (1) to RewardWinner (N) [Memperoleh Penghargaan Pemenang] -->
+        <mxCell id="rel_mem_win" edge="1" parent="1" source="e_member" target="e_winner" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;startArrow=ERmandOne;startFill=0;endArrow=ERmany;endFill=0;strokeWidth=2;strokeColor=#6A1B9A;exitX=1;exitY=0.2;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="740" y="388" />
+              <mxPoint x="740" y="340" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="lbl_mem_win" connectable="0" parent="rel_mem_win" style="edgeLabel;align=center;verticalAlign=middle;fontSize=10;fontStyle=1;backgroundColor=#ffffff;" value="1 : N (Memperoleh Pemenang)" vertex="1">
+          <mxGeometry x="0.2" relative="1" as="geometry"><mxPoint y="-12" as="offset" /></mxGeometry>
+        </mxCell>
+
+        <!-- 7. Member (1) to RewardRedemption (N) [Melakukan Penukaran Reward] -->
+        <mxCell id="rel_mem_red" edge="1" parent="1" source="e_member" target="e_redeem" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;startArrow=ERmandOne;startFill=0;endArrow=ERmany;endFill=0;strokeWidth=2;strokeColor=#C62828;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="lbl_mem_red" connectable="0" parent="rel_mem_red" style="edgeLabel;align=center;verticalAlign=middle;fontSize=10;fontStyle=1;backgroundColor=#ffffff;" value="1 : N (Klaim Penukaran)" vertex="1">
+          <mxGeometry x="0.0" relative="1" as="geometry"><mxPoint x="30" as="offset" /></mxGeometry>
+        </mxCell>
+
+        <!-- 8. RewardCatalog (1) to RewardRedemption (N) [Disediakan untuk Ditukar] -->
+        <mxCell id="rel_cat_red" edge="1" parent="1" source="e_catalog" target="e_redeem" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;startArrow=ERmandOne;startFill=0;endArrow=ERmany;endFill=0;strokeWidth=2;strokeColor=#C62828;exitX=0;exitY=0.5;exitDx=0;exitDy=0;entryX=1;entryY=0.5;entryDx=0;entryDy=0;">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="lbl_cat_red" connectable="0" parent="rel_cat_red" style="edgeLabel;align=center;verticalAlign=middle;fontSize=10;fontStyle=1;backgroundColor=#ffffff;" value="1 : N (Disediakan untuk Ditukar)" vertex="1">
+          <mxGeometry x="0.0" relative="1" as="geometry"><mxPoint y="-12" as="offset" /></mxGeometry>
+        </mxCell>
+
+        <!-- 9. StoreTransactionSource (POS) to Member [ETL Sync & Deduplication] -->
+        <mxCell id="rel_etl_sync" edge="1" parent="1" source="e_store" target="e_member" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;dashed=1;dashPattern=6 3;endArrow=open;strokeWidth=2;strokeColor=#F57F17;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="lbl_etl_sync" connectable="0" parent="rel_etl_sync" style="edgeLabel;align=center;verticalAlign=middle;fontSize=10;fontStyle=2;backgroundColor=#ffffff;" value="ETL Sync &amp; Deduplication" vertex="1">
+          <mxGeometry x="0.0" relative="1" as="geometry"><mxPoint y="-12" as="offset" /></mxGeometry>
+        </mxCell>
+
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>
